@@ -1,5 +1,19 @@
 site_name: FastAPI CRUD Router
-repo_url: https://github.com/squidfunk/mkdocs-material
-repo_name: squidfunk/mkdocs-material
+repo_url: https://github.com/awtkns/fastapi-crudrouter
+repo_name: awtkns/fastapi-crudrouter
 theme:
   name: material
+
+extra:
+  social:
+  - icon: fontawesome/brands/github-alt
+    link: https://github.com/awtkns/fastapi-crudrouter
+  - icon: fontawesome/brands/linkedin
+    link: https://www.linkedin.com/in/adam-watkins-yvr/
+  - icon: fontawesome/solid/globe
+    link: https://wtkns.dev
+
+extra_css:
+- css/termynal.css
+extra_javascript:
+- js/termynal.js

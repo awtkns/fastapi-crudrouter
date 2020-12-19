@@ -54,6 +54,7 @@ class CRUDGenerator(APIRouter):
         super().add_api_route('', get_all, methods=['GET'], response_model=List[self.model_cls])
         super().add_api_route('', create, methods=['POST'], response_model=self.model_cls)
         super().add_api_route('', delete_all, methods=['DELETE'], response_model=List[self.model_cls])
+        super().add_api_route('', delete_all, methods=['PUT'], response_model=List[self.model_cls])
 
         super().add_api_route('/{item_id}', get_one, methods=['GET'], response_model=self.model_cls)
         super().add_api_route('/{item_id}', update, methods=['POST'], response_model=self.model_cls)

@@ -1,17 +1,20 @@
-# Welcome to MkDocs
+<p align="center">
+  <a href="https://awtkns.github.io/fastapi-crudrouter"><img src="assets/logo.png"></a>
+</p>
+<p align="center">
+    <em>FastAPI CRUD Route Generation for Rapid Prototyping</em>
+</p>
+<p align="center">
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
-## Commands
+Description: TBD
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+## Installation
+<div id="termynal">
 
-## Project layout
+```console
+$ pip install fastapi fastapi-crudrouter
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+---> 100%
+```
+</div>
