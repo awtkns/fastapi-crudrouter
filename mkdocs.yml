@@ -1,0 +1,5 @@
+site_name: FastAPI CRUD Router
+repo_url: https://github.com/squidfunk/mkdocs-material
+repo_name: squidfunk/mkdocs-material
+theme:
+  name: material
