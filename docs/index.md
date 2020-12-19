@@ -4,17 +4,11 @@
 <p align="center">
     <em>FastAPI CRUD Route Generation for Rapid Prototyping</em>
 </p>
-<p align="center">
 
+# Installation
 
-Description: TBD
-
-## Installation
-<div id="termynal">
-
-```console
-$ pip install fastapi fastapi-crudrouter
-
----> 100%
-```
+<div id="termynal" data-termynal>
+    <span data-ty="input">pip install fastapi fastapi-crudrouter</span>
+    <span data-ty="progress"></span>
+    <span data-ty>Successfully installed spacy</span>
 </div>
