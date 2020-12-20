@@ -4,7 +4,10 @@ from . import CRUDGenerator, NOT_FOUND
 
 
 class MemoryCRUDRouter(CRUDGenerator):
-    models = []
+    
+    def __init__(self, *args, **kwargs):
+        super(MemoryCRUDRouter, self).__init__(*args, **kwargs)
+        self.models = []
 
     def get_all(self) -> Callable:
         def route():

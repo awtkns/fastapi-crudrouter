@@ -18,13 +18,13 @@ class CRUDGenerator(APIRouter):
 
         super().__init__(prefix=self._base_path, tags=[self._base_path.strip('/')], *args, **kwargs)
 
-        super().add_api_route('', self.get_all(), methods=['GET'], response_model=Optional[List[self.model_cls]])
-        super().add_api_route('', self.create(), methods=['POST'], response_model=self.model_cls)
-        super().add_api_route('', self.delete_all(), methods=['DELETE'], response_model=Optional[List[self.model_cls]])
+        super().add_api_route('', self.get_all(), methods=['GET'], response_model=Optional[List[self.model_cls]], summary='Get All')
+        super().add_api_route('', self.create(), methods=['POST'], response_model=self.model_cls, summary='Create One')
+        super().add_api_route('', self.delete_all(), methods=['DELETE'], response_model=Optional[List[self.model_cls]], summary='Delete All')
 
-        super().add_api_route('/{item_id}', self.get_one(), methods=['GET'], response_model=self.model_cls)
-        super().add_api_route('/{item_id}', self.update(), methods=['POST'], response_model=self.model_cls)
-        super().add_api_route('/{item_id}', self.delete_one(), methods=['DELETE'], response_model=self.model_cls)
+        super().add_api_route('/{item_id}', self.get_one(), methods=['GET'], response_model=self.model_cls, summary='Get One')
+        super().add_api_route('/{item_id}', self.update(), methods=['PUT'], response_model=self.model_cls, summary='Update One')
+        super().add_api_route('/{item_id}', self.delete_one(), methods=['DELETE'], response_model=self.model_cls, summary='Delete All')
 
     def get_all(self, *args, **kwargs) -> Callable:
         raise NotImplementedError

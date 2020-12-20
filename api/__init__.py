@@ -1,24 +1,15 @@
-import pydantic
+from pydantic import BaseModel
 from fastapi import FastAPI
 
-from .gen import CRUDGenerator
-from fastapi_crudrouter import MemoryCRUDRouter
+from fastapi_crudrouter import MemoryCRUDRouter as CRUDRouter
 
 app = FastAPI(title='FastAPI-CRUDRouter', docs_url='/')
 
 
-class Item(pydantic.BaseModel):
-    id: int
-    name: str
-
-
-class Carrot(pydantic.BaseModel):
+class Potato(BaseModel):
     id: int
     thickness: float
     color: str
 
 
-item_router = CRUDGenerator(model=Item)
-carrot_router = MemoryCRUDRouter(model=Carrot)
-app.include_router(item_router)
-app.include_router(carrot_router)
+app.include_router(CRUDRouter(model=Potato))
