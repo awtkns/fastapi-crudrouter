@@ -1,6 +1,6 @@
-from . import Potato
+from . import Potato, PotatoCreate
 
-basic_potato = Potato(id=0, thickness=.24, mass=1.2, color='Brown', type='Russet')
+basic_potato = PotatoCreate(id=0, thickness=.24, mass=1.2, color='Brown', type='Russet')
 
 
 def test_get(client):

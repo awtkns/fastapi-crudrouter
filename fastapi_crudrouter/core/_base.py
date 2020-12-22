@@ -12,8 +12,9 @@ class CRUDGenerator(APIRouter):
     model_cls: BaseModel = None
     _base_path: str = '/'
 
-    def __init__(self, model: BaseModel, *args, **kwargs):
+    def __init__(self, model: BaseModel, create_schema: BaseModel = None, *args, **kwargs):
         self.model_cls = model
+        self.create_schema = create_schema
         self._base_path += self.model_cls.__name__.lower()
 
         super().__init__(prefix=self._base_path, tags=[self._base_path.strip('/')], *args, **kwargs)

@@ -1,13 +1,15 @@
 from pydantic import BaseModel
 
 
-class Potato(BaseModel):
-    id: int
+class PotatoCreate(BaseModel):
     thickness: float
     mass: float
     color: str
     type: str
 
+
+class Potato(PotatoCreate):
+    id: int
+
     class Config:
         orm_mode = True
-

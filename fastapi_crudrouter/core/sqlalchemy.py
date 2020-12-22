@@ -22,29 +22,38 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def get_one(self) -> Callable:
-        def route(item_id: int):
-            for m in self.models:
-                if m.id == item_id:
-                    return m
+        def route(item_id: int, db: Session = Depends(self.db_func)):
+            model = db.query(self.db_model).get(item_id)
 
-            raise NOT_FOUND
+            if model:
+                return model
+            else:
+                raise NOT_FOUND
 
         return route
 
     def create(self) -> Callable:
-        def route(model: self.model_cls):
-            self.models.append(model)
-            return model
+        def route(model: self.create_schema, db: Session = Depends(self.db_func)):
+            db_model = self.db_model(**model.dict())
+            db.add(db_model)
+            db.commit()
+            db.refresh(db_model)
+
+            return db_model
 
         return route
 
     def update(self) -> Callable:
-        def route(item_id: int, model: self.model_cls):
-            for i, m in enumerate(self.models):
-                if m.id == item_id:
-                    self.models[i] = model
-                    return model
-            raise NOT_FOUND
+        def route(item_id: int, model: self.model_cls, db: Session = Depends(self.db_func)):
+            db_model = self.get_one()(item_id, db)
+
+            # TOOD: Implement update
+            add.add(db_model)
+            db.commit()
+            db.refresh(db_model)
+
+            return db_model
+
 
         return route
 

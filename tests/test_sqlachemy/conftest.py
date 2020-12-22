@@ -12,7 +12,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import drop_database, create_database, database_exists
 
-from . import Potato
+from . import Potato, PotatoCreate
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -54,7 +54,7 @@ def client():
 
     Base.metadata.create_all(bind=engine)
 
-    app.include_router(SQLAlchemyCRUDRouter(model=Potato, db_model=PotatoModel, db=session))
+    app.include_router(SQLAlchemyCRUDRouter(model=Potato, db_model=PotatoModel, db=session, create_schema=PotatoCreate))
 
     yield TestClient(app)
 
