@@ -16,7 +16,7 @@ class MemoryCRUDRouter(CRUDGenerator):
 
     def get_one(self) -> Callable:
         def route(item_id: int):
-            for m in models:
+            for m in self.models:
                 if m.id == item_id:
                     return m
 
@@ -51,7 +51,7 @@ class MemoryCRUDRouter(CRUDGenerator):
         def route(item_id: int):
             for i, m in enumerate(self.models):
                 if m.id == item_id:
-                    self.models.remove(i)
+                    del self.models[i]
                     return m
 
             raise NOT_FOUND
