@@ -47,30 +47,32 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         def route(item_id: int, model: self.model_cls, db: Session = Depends(self.db_func)):
             db_model = self.get_one()(item_id, db)
 
-            # TOOD: Implement update
-            add.add(db_model)
+            for key, value in model.dict(exclude={'id'}).items():
+                if hasattr(db_model, key):
+                    setattr(db_model, key, value)
+
             db.commit()
             db.refresh(db_model)
 
             return db_model
 
-
         return route
 
     def delete_all(self) -> Callable:
-        def route():
-            self.models = []
-            return self.models
+        def route(db: Session = Depends(self.db_func)):
+            db.query(self.db_model).delete()
+            db.commit()
+
+            return self.get_all()(db)
 
         return route
 
     def delete_one(self) -> Callable:
-        def route(item_id: int):
-            for i, m in enumerate(self.models):
-                if m.id == item_id:
-                    del self.models[i]
-                    return m
+        def route(item_id: int, db: Session = Depends(self.db_func)):
+            db_model = self.get_one()(item_id, db)
+            db.delete(db_model)
+            db.commit()
 
-            raise NOT_FOUND
+            return db_model
 
         return route

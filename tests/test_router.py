@@ -3,6 +3,17 @@ from . import Potato
 basic_potato = Potato(id=0, thickness=.24, mass=1.2, color='Brown', type='Russet')
 
 
+def compare_dict(d1, d2, exclude: list = ['id']) -> bool:
+    assert len(d1.keys()) == len(d2.keys())
+
+    for key in d1.keys():
+        if key not in exclude and d1[key] != d2[key]:
+            return False
+
+    return True
+
+
+
 def test_get(client):
     res = client.get('/potato')
     data = res.json()
@@ -28,7 +39,8 @@ def test_get_one(client):
 
     res = client.get(f'/potato/{data[0]["id"]}')
     assert res.status_code == 200
-    assert res.json() == basic_potato.dict()
+
+    assert compare_dict(res.json(), basic_potato.dict())
 
 
 def test_update(client):
@@ -42,12 +54,13 @@ def test_update(client):
 
     res = client.put(f'/potato/{data["id"]}', json=tuber.dict())
     assert res.status_code == 200
-    assert res.json() == tuber.dict()
-    assert res.json() != basic_potato.dict()
+    assert compare_dict(res.json(), tuber.dict())
+    assert not compare_dict(res.json(), basic_potato.dict())
 
     res = client.get(f'/potato/{data["id"]}')
-    assert res.json() == tuber.dict()
-    assert res.json() != basic_potato.dict()
+    assert res.status_code == 200
+    assert compare_dict(res.json(), tuber.dict())
+    assert not compare_dict(res.json(), basic_potato.dict())
 
 
 def test_delete_one(client):
@@ -57,11 +70,11 @@ def test_delete_one(client):
 
     res = client.get(f'/potato/{data["id"]}')
     assert res.status_code == 200
-    assert res.json() == basic_potato.dict()
+    assert compare_dict(res.json(), basic_potato.dict())
 
     res = client.delete(f'/potato/{data["id"]}')
     assert res.status_code == 200
-    assert res.json() == basic_potato.dict()
+    assert compare_dict(res.json(), basic_potato.dict())
 
     res = client.get('/potato')
     assert res.status_code == 200
