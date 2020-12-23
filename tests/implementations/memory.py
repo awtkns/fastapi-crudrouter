@@ -1,21 +1,11 @@
-import pytest
-
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
 
 from fastapi_crudrouter import MemoryCRUDRouter as CRUDRouter
+from tests import Potato
 
-from . import Potato
 
-
-@pytest.fixture
-def client():
+def memory_implementation():
     app = FastAPI()
-
     app.include_router(CRUDRouter(model=Potato))
 
-    yield TestClient(app)
-
-
-
-
+    return app

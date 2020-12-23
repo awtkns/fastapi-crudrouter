@@ -1,35 +1,22 @@
-import pathlib
-
-import pytest
-
 from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from fastapi_crudrouter import SQLAlchemyCRUDRouter
-
 from sqlalchemy import Column, String, Float, Integer
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import drop_database, create_database, database_exists
 
-from . import Potato, PotatoCreate
+from fastapi_crudrouter import SQLAlchemyCRUDRouter
+from tests import Potato, PotatoCreate
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
 
-@pytest.fixture(scope="module", autouse=True)
-def create_test_database():
+def sqlalchemy_implementation():
     if database_exists(SQLALCHEMY_DATABASE_URL):
         drop_database(SQLALCHEMY_DATABASE_URL)
 
     create_database(SQLALCHEMY_DATABASE_URL)
 
-    yield
-
-
-# noinspection PyPep8Naming
-@pytest.fixture
-def client():
     app = FastAPI()
 
     engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
@@ -45,7 +32,7 @@ def client():
             session.close()
 
     class PotatoModel(Base):
-        __tablename__= 'potatoes'
+        __tablename__ = 'potatoes'
         id = Column(Integer, primary_key=True, index=True)
         thickness = Column(Float)
         mass = Column(Float)
@@ -56,8 +43,5 @@ def client():
 
     app.include_router(SQLAlchemyCRUDRouter(model=Potato, db_model=PotatoModel, db=session, create_schema=PotatoCreate))
 
-    yield TestClient(app)
-
-
-
+    return app
 
