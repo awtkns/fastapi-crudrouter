@@ -3,3 +3,5 @@ sqlalchemy
 sqlalchemy_utils
 pytest
 requests
+async-exit-stack
+async-generator
