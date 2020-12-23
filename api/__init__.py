@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from fastapi import FastAPI
+from starlette.routing import Route
 
 from fastapi_crudrouter import MemoryCRUDRouter as CRUDRouter
 
@@ -11,5 +12,16 @@ class Potato(BaseModel):
     thickness: float
     color: str
 
+router = CRUDRouter(model=Potato)
 
-app.include_router(CRUDRouter(model=Potato))
+
+@router.api_route('')
+def custom_getds():
+    return 'ok'
+
+for r in router.routes:
+    print(r.path)
+
+
+
+app.include_router(router)

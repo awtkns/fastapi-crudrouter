@@ -15,13 +15,13 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
 
         super().__init__(model, *args, **kwargs)
 
-    def get_all(self) -> Callable:
+    def _get_all(self) -> Callable:
         def route(db: Session = Depends(self.db_func)):
             return db.query(self.db_model).all()
 
         return route
 
-    def get_one(self) -> Callable:
+    def _get_one(self) -> Callable:
         def route(item_id: int, db: Session = Depends(self.db_func)):
             model = db.query(self.db_model).get(item_id)
 
@@ -32,7 +32,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
 
         return route
 
-    def create(self) -> Callable:
+    def _create(self) -> Callable:
         def route(model: self.create_schema, db: Session = Depends(self.db_func)):
             db_model = self.db_model(**model.dict())
             db.add(db_model)
@@ -43,7 +43,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
 
         return route
 
-    def update(self) -> Callable:
+    def _update(self) -> Callable:
         def route(item_id: int, model: self.model_cls, db: Session = Depends(self.db_func)):
             db_model = self.get_one()(item_id, db)
 
@@ -58,7 +58,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
 
         return route
 
-    def delete_all(self) -> Callable:
+    def _delete_all(self) -> Callable:
         def route(db: Session = Depends(self.db_func)):
             db.query(self.db_model).delete()
             db.commit()
@@ -67,7 +67,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
 
         return route
 
-    def delete_one(self) -> Callable:
+    def _delete_one(self) -> Callable:
         def route(item_id: int, db: Session = Depends(self.db_func)):
             db_model = self.get_one()(item_id, db)
             db.delete(db_model)

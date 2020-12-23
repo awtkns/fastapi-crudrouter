@@ -10,12 +10,12 @@ class MemoryCRUDRouter(CRUDGenerator):
         self.models = []
         self._id = 0
 
-    def get_all(self) -> Callable:
+    def _get_all(self) -> Callable:
         def route():
             return self.models
         return route
 
-    def get_one(self) -> Callable:
+    def _get_one(self) -> Callable:
         def route(item_id: int):
             for m in self.models:
                 if m.id == item_id:
@@ -25,7 +25,7 @@ class MemoryCRUDRouter(CRUDGenerator):
 
         return route
 
-    def create(self) -> Callable:
+    def _create(self) -> Callable:
         def route(model: self.model_cls):
             model.id = self._get_next_id()
             self.models.append(model)
@@ -33,7 +33,7 @@ class MemoryCRUDRouter(CRUDGenerator):
 
         return route
 
-    def update(self) -> Callable:
+    def _update(self) -> Callable:
         def route(item_id: int, model: self.model_cls):
             for i, m in enumerate(self.models):
                 if m.id == item_id:
@@ -44,14 +44,14 @@ class MemoryCRUDRouter(CRUDGenerator):
             raise NOT_FOUND
         return route
 
-    def delete_all(self) -> Callable:
+    def _delete_all(self) -> Callable:
         def route():
             self.models = []
             return self.models
 
         return route
 
-    def delete_one(self) -> Callable:
+    def _delete_one(self) -> Callable:
         def route(item_id: int):
             for i, m in enumerate(self.models):
                 if m.id == item_id:
