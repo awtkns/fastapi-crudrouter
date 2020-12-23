@@ -1,3 +1,5 @@
 fastapi
 sqlalchemy
 sqlalchemy_utils
+pytest
+requests
