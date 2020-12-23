@@ -45,7 +45,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
 
     def _update(self) -> Callable:
         def route(item_id: int, model: self.model_cls, db: Session = Depends(self.db_func)):
-            db_model = self.get_one()(item_id, db)
+            db_model = self._get_one()(item_id, db)
 
             for key, value in model.dict(exclude={'id'}).items():
                 if hasattr(db_model, key):
@@ -63,13 +63,13 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
             db.query(self.db_model).delete()
             db.commit()
 
-            return self.get_all()(db)
+            return self._get_all()(db)
 
         return route
 
     def _delete_one(self) -> Callable:
         def route(item_id: int, db: Session = Depends(self.db_func)):
-            db_model = self.get_one()(item_id, db)
+            db_model = self._get_one()(item_id, db)
             db.delete(db_model)
             db.commit()
 

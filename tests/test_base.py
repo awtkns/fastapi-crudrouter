@@ -30,7 +30,6 @@ def test_get_one():
         with pytest.raises(NotImplementedError):
             app.include_router(CRUDGenerator(model=Potato))
 
-        setattr(CRUDGenerator, m, foo)
+        setattr(CRUDGenerator, f'_{m}', foo)
 
     app.include_router(CRUDGenerator(model=Potato))
-

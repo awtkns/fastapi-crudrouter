@@ -17,6 +17,7 @@ router = CRUDRouter(model=Potato)
 
 @router.api_route('')
 def custom_getds():
+    """ LONG DESC """
     return 'ok'
 
 @router.put('')
