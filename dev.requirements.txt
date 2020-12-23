@@ -1,0 +1,3 @@
+fastapi
+sqlalchemy
+sqlalchemy_utils
