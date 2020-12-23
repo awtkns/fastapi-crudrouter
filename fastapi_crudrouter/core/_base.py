@@ -44,3 +44,9 @@ class CRUDGenerator(APIRouter):
 
     def delete_all(self, *args, **kwargs) -> Callable:
         raise NotImplementedError
+
+    @staticmethod
+    def get_routes() -> list:
+        return [
+            'get_all', 'create', 'delete_all', 'get_one', 'update', 'delete_one'
+        ]
