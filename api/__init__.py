@@ -19,6 +19,11 @@ router = CRUDRouter(model=Potato)
 def custom_getds():
     return 'ok'
 
+@router.put('')
+def my_put():
+    return 'ok'
+
+
 for r in router.routes:
     print(r.path)
 

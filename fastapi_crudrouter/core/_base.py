@@ -30,13 +30,32 @@ class CRUDGenerator(APIRouter):
 
     def api_route(self, path: str, *args, **kwargs):
         """ Overrides and exiting route if it exists"""
-        methods = set(kwargs['methods'] if 'methods' in kwargs else ['GET'])
+        methods = kwargs['methods'] if 'methods' in kwargs else ['GET']
+        self.remove_api_route(path, methods)
+        return super().api_route(path, *args, **kwargs)
 
-        for i, r in enumerate(self.routes):
+    def get(self, path, *args, **kwargs):
+        self.remove_api_route(path, ['Get'])
+        return super().get(path, *args, **kwargs)
+
+    def post(self, path, *args, **kwargs):
+        self.remove_api_route(path, ['POST'])
+        return super().post(path, *args, **kwargs)
+
+    def put(self, path, *args, **kwargs):
+        self.remove_api_route(path, ['PUT'])
+        return super().put(path, *args, **kwargs)
+
+    def delete(self, path, *args, **kwargs):
+        self.remove_api_route(path, ['DELETE'])
+        return super().delete(path, *args, **kwargs)
+
+    def remove_api_route(self, path: str, methods: List[str]):
+        methods = set(methods)
+
+        for r in self.routes:
             if r.path == f'{self._base_path}{path}' and r.methods == methods:
                 self.routes.remove(r)
-
-        return super().api_route(path, *args, **kwargs)
 
     def _get_all(self, *args, **kwargs) -> Callable:
         raise NotImplementedError
