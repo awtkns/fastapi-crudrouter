@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="docs/assets/logo2.png" alt="CRUD Router Logo" height="200" />
+  <img src="https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/assets/logo2.png" height="200" />
 </p>
 <p align="center">
   <em>⚡ Create CRUD routes with lighting speed</em> ⚡</br>
-  <sub>A dynamic FastAPI router that automatically creates routes CRUD for your models</sub>
+  <sub>A dynamic FastAPI router that automatically creates CRUD routes for your models</sub>
 </p>
 <p align="center">
 <img alt="Tests" src="https://github.com/awtkns/fastapi-crudrouter/workflows/Python%20application/badge.svg" />
