@@ -13,6 +13,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         self.db_model = db_model
         self.db_func = db
 
+        kwargs['prefix'] = db_model.__tablename__ if 'prefix' not in kwargs else kwargs['prefix']
         super().__init__(model, *args, **kwargs)
 
     def _get_all(self) -> Callable:

@@ -5,9 +5,10 @@ from . import Potato
 from .utils import compare_dict
 
 basic_potato = Potato(id=0, thickness=.24, mass=1.2, color='Brown', type='Russet')
+URL = '/potato'
 
 
-def test_get(client, url: str = '/potato'):
+def test_get(client, url: str = URL):
     res = client.get(url)
     data = res.json()
 
@@ -15,7 +16,7 @@ def test_get(client, url: str = '/potato'):
     assert type(data) == list and len(data) == 0
 
 
-def test_post(client, url: str = '/potato', model: BaseModel = basic_potato):
+def test_post(client, url: str = URL, model: BaseModel = basic_potato):
     res = client.post(url, json=model.dict())
     assert res.status_code == 200
 
@@ -23,7 +24,7 @@ def test_post(client, url: str = '/potato', model: BaseModel = basic_potato):
     assert len(data) == 1
 
 
-def test_get_one(client, url: str = '/potato', model: BaseModel = basic_potato):
+def test_get_one(client, url: str = URL, model: BaseModel = basic_potato):
     res = client.post(url, json=model.dict())
     assert res.status_code == 200
 
@@ -36,7 +37,7 @@ def test_get_one(client, url: str = '/potato', model: BaseModel = basic_potato):
     assert compare_dict(res.json(), model.dict())
 
 
-def test_update(client, url: str = '/potato', model: BaseModel = basic_potato):
+def test_update(client, url: str = URL, model: BaseModel = basic_potato):
     res = client.post(url, json=model.dict())
     data = res.json()
     assert res.status_code == 200
@@ -55,7 +56,7 @@ def test_update(client, url: str = '/potato', model: BaseModel = basic_potato):
     assert not compare_dict(res.json(), model.dict())
 
 
-def test_delete_one(client, url: str = '/potato', model: BaseModel = basic_potato):
+def test_delete_one(client, url: str = URL, model: BaseModel = basic_potato):
     res = client.post(url, json=model.dict())
     data = res.json()
     assert res.status_code == 200
@@ -73,7 +74,7 @@ def test_delete_one(client, url: str = '/potato', model: BaseModel = basic_potat
     assert len(res.json()) == 0
 
 
-def test_delete_all(client, url: str = '/potato', model: BaseModel = basic_potato):
+def test_delete_all(client, url: str = URL, model: BaseModel = basic_potato):
     res = client.post(url, json=model.dict())
     assert res.status_code == 200
 
@@ -90,7 +91,7 @@ def test_delete_all(client, url: str = '/potato', model: BaseModel = basic_potat
 
 
 @pytest.mark.parametrize('id_', [-1, 0, 4, '14'])
-def test_not_found(client, id_, url='/potato', model=basic_potato):
+def test_not_found(client, id_, url=URL, model=basic_potato):
     url = f'{url}/{id_}'
 
     assert client.get(url).status_code == 404

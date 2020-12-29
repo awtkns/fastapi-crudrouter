@@ -13,12 +13,12 @@ class CRUDGenerator(APIRouter):
     model_cls: BaseModel = None
     _base_path: str = '/'
 
-    def __init__(self, model: BaseModel, create_schema: BaseModel = None, *args, **kwargs):
+    def __init__(self, model: BaseModel, create_schema: BaseModel = None, prefix: str = None, *args, **kwargs):
         self.model_cls = model
         self.create_schema = create_schema
-        self._base_path += self.model_cls.__name__.lower()
 
-        super().__init__(prefix=self._base_path, tags=[self._base_path.strip('/')], *args, **kwargs)
+        prefix = self._base_path + (self.model_cls.__name__.lower() if not prefix else prefix).strip('/')
+        super().__init__(prefix=prefix, tags=[self._base_path.strip('/')], *args, **kwargs)
 
         super().add_api_route('', self._get_all(), methods=['GET'], response_model=Optional[List[self.model_cls]], summary='Get All')
         super().add_api_route('', self._create(), methods=['POST'], response_model=self.model_cls, summary='Create One')
@@ -54,7 +54,7 @@ class CRUDGenerator(APIRouter):
         methods = set(methods)
 
         for r in self.routes:
-            if r.path == f'{self._base_path}{path}' and r.methods == methods:
+            if r.path == f'{self.prefix}{path}' and r.methods == methods:
                 self.routes.remove(r)
 
     def _get_all(self, *args, **kwargs) -> Callable:

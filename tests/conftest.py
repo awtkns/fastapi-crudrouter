@@ -1,7 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from .implementations import memory_implementation, sqlalchemy_implementation, overloaded_app
+from .implementations import *
 
 
 @pytest.fixture(params=[memory_implementation, sqlalchemy_implementation])
@@ -14,5 +14,11 @@ def client(request):
 def overloaded_client():
 
     yield TestClient(overloaded_app())
+
+
+@pytest.fixture
+def custom_id_client():
+
+    yield TestClient(sqlalchemy_implementation_custom_ids())
 
 

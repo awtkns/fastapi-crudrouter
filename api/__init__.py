@@ -12,22 +12,9 @@ class Potato(BaseModel):
     thickness: float
     color: str
 
-router = CRUDRouter(model=Potato)
+class CarrotModel(Base):
+    __tablename__ = 'carrots'
+    id = Column(Integer, primary_key=True, index=True)
+    length = Column(Float)
+    color = Column(String)
 
-
-@router.api_route('')
-def custom_getds():
-    """ LONG DESC """
-    return 'ok'
-
-@router.put('')
-def my_put():
-    return 'ok'
-
-
-for r in router.routes:
-    print(r.path)
-
-
-
-app.include_router(router)

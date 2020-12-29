@@ -1,17 +1,20 @@
+import uvicorn
+
 from fastapi import FastAPI
 from sqlalchemy import Column, String, Float, Integer
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql.base import ColumnCollection
 from sqlalchemy_utils import drop_database, create_database, database_exists
 
 from fastapi_crudrouter import SQLAlchemyCRUDRouter
-from tests import Potato, PotatoCreate, Carrot, CarrotCreate
+from tests import Potato, PotatoCreate, Carrot, CarrotCreate, CustomPotato
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
 
-def sqlalchemy_implementation():
+def _setup_base_app():
     if database_exists(SQLALCHEMY_DATABASE_URL):
         drop_database(SQLALCHEMY_DATABASE_URL)
 
@@ -31,6 +34,12 @@ def sqlalchemy_implementation():
         finally:
             session.close()
 
+    return app, engine, Base, session
+
+
+def sqlalchemy_implementation():
+    app, engine, Base, session = _setup_base_app()
+
     class PotatoModel(Base):
         __tablename__ = 'potatoes'
         id = Column(Integer, primary_key=True, index=True)
@@ -46,9 +55,29 @@ def sqlalchemy_implementation():
         color = Column(String)
 
     Base.metadata.create_all(bind=engine)
-
-    app.include_router(SQLAlchemyCRUDRouter(model=Potato, db_model=PotatoModel, db=session, create_schema=PotatoCreate))
-    app.include_router(SQLAlchemyCRUDRouter(model=Carrot, db_model=CarrotModel, db=session, create_schema=CarrotCreate))
+    app.include_router(SQLAlchemyCRUDRouter(model=Potato, db_model=PotatoModel, db=session, create_schema=PotatoCreate, prefix='potato'))
+    app.include_router(SQLAlchemyCRUDRouter(model=Carrot, db_model=CarrotModel, db=session, create_schema=CarrotCreate, prefix='carrot'))
 
     return app
 
+
+# noinspection DuplicatedCode
+def sqlalchemy_implementation_custom_ids():
+    app, engine, Base, session = _setup_base_app()
+
+    class PotatoModel(Base):
+        __tablename__ = 'potatoes'
+        potato_id = Column(Integer, primary_key=True, index=True)
+        thickness = Column(Float)
+        mass = Column(Float)
+        color = Column(String)
+        type = Column(String)
+
+    Base.metadata.create_all(bind=engine)
+    app.include_router(SQLAlchemyCRUDRouter(model=CustomPotato, db_model=PotatoModel, db=session, create_schema=PotatoCreate))
+
+    return app
+
+
+if __name__ == '__main__':
+    uvicorn.run(sqlalchemy_implementation())
