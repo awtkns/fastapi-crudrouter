@@ -18,7 +18,7 @@ class CRUDGenerator(APIRouter):
         self.create_schema = create_schema
 
         prefix = self._base_path + (self.model_cls.__name__.lower() if not prefix else prefix).strip('/')
-        super().__init__(prefix=prefix, tags=[self._base_path.strip('/')], *args, **kwargs)
+        super().__init__(prefix=prefix, tags=[prefix.strip('/').capitalize()], *args, **kwargs)
 
         super().add_api_route('', self._get_all(), methods=['GET'], response_model=Optional[List[self.model_cls]], summary='Get All')
         super().add_api_route('', self._create(), methods=['POST'], response_model=self.model_cls, summary='Create One')
