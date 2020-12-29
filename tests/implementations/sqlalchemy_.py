@@ -1,5 +1,3 @@
-import uvicorn
-
 from fastapi import FastAPI
 from sqlalchemy import Column, String, Float, Integer
 from sqlalchemy import create_engine
@@ -77,7 +75,3 @@ def sqlalchemy_implementation_custom_ids():
     app.include_router(SQLAlchemyCRUDRouter(model=CustomPotato, db_model=PotatoModel, db=session, create_schema=PotatoCreate))
 
     return app
-
-
-if __name__ == '__main__':
-    uvicorn.run(sqlalchemy_implementation_custom_ids())
