@@ -14,6 +14,14 @@
 </p>
 
 ---
+Tired of rewriting the same generic CRUD routes? Need to rapidly prototype a feature for a presentation
+or a hackathon? Thankfully, [fastapi-crudrouter](https://github.com/awtkns/fastapi-crudrouter) has your back. As an 
+extension to the APIRouter included with [FastAPI](https://fastapi.tiangolo.com/), the FastAPI CRUDRouter will automatically
+generate and document your CRUD routes for you, all you have to do is pass your model and maybe your database connection.
+
+FastAPI-CRUDRouter is also **lighting fast**, well tested, and **production ready**.
+
+
 ## Installation
 ```bash
 pip install fastapi-crudrouter
@@ -34,4 +42,8 @@ app = FastAPI()
 app.include_router(CRUDRouter(model=Potato))
 
 ```
+
+## Database Support
+
+- All databases supported by SQLAlchemy
 

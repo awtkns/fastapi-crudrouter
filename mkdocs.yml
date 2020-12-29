@@ -19,10 +19,11 @@ theme:
 nav:
 - FastAPI CRUD Router: index.md
 - Generated Routes: routing.md
-- Overidng Routes: overrides.md
+- Overriding Routes: overrides.md
 - Backends:
-    - SQLAlchemy: backends/sqlalchemy.md
     - In Memory: backends/memory.md
+    - SQLAlchemy: backends/sqlalchemy.md
+
 
 markdown_extensions:
   - extra
