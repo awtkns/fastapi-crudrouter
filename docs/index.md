@@ -59,9 +59,8 @@ app.include_router(CRUDRouter(model=Potato))
 
 Below are the default routes created by the CRUDRouter shown in the generated OpenAPI documentation.
 
-![Placeholder](assets/routeOverview.png)
+![OpenAPI Route Overview](https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/assets/RouteOverview.PNG)
 
 The CRUDRouter is able to dynamically generate detailed documentation based on the models given to it.
 
-![Placeholder](assets/routeDetail.png)
-
+![OpenAPI Route Detail](https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/assets/RouteDetail.PNG)
