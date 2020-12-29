@@ -3,6 +3,9 @@ your database using your [SQLAlchemy](https://www.sqlalchemy.org/) models. To us
 [pydantic](https://pydantic-docs.helpmanual.io/) model, your SQLAlchemy model to it, and the 
 database dependency.
 
+!!! warning
+    To use the `SQLAlchemyCRUDRouter`, SQLAlchemy must be first installed.
+
 ## Simple Example
 Below is an example assuming that you have already imported and created all the required models.
 

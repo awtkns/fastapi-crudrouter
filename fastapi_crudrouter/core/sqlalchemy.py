@@ -1,15 +1,21 @@
 from typing import Callable
-
 from fastapi import Depends
-from sqlalchemy.orm import Session
 
 from . import CRUDGenerator, NOT_FOUND
 
+try:
+    from sqlalchemy.orm import Session
+except ImportError:
+    sqlalchemy_installed = False
+else:
+    sqlalchemy_installed = True
+
 
 class SQLAlchemyCRUDRouter(CRUDGenerator):
-    # db_func = None
 
     def __init__(self, db_model, db, model, *args, **kwargs):
+        assert sqlalchemy_installed, "SQLAlchemy must be installed to use the SQLAlchemyCRUDRouter."
+
         self.db_model = db_model
         self.db_func = db
         self._primary_key: str = db_model.__table__.primary_key.columns.keys()[0]

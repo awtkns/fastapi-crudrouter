@@ -12,6 +12,12 @@
 </p>
 
 ---
+
+**Documentation**: <a href="https://awtkns.github.io/fastapi-crudrouter" target="_blank">https://awtkns.github.io/fastapi-crudrouter</a>
+
+**Source Code**: <a href="https://github.com/awtkns/fastapi-crudrouter" target="_blank">https://github.com/awtkns/fastapi-crudrouter</a>
+
+---
 Tired of rewriting the same generic CRUD routes? Need to rapidly prototype a feature for a presentation
 or a hackathon? Thankfully, [fastapi-crudrouter](https://github.com/awtkns/fastapi-crudrouter) has your back. As an 
 extension to the APIRouter included with [FastAPI](https://fastapi.tiangolo.com/), the FastAPI CRUDRouter will automatically
