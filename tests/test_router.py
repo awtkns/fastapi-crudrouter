@@ -105,6 +105,3 @@ def test_dne(client):
 
     res = client.get(f'/tomatoes')
     assert res.status_code == 404
-
-
-
