@@ -80,4 +80,4 @@ def sqlalchemy_implementation_custom_ids():
 
 
 if __name__ == '__main__':
-    uvicorn.run(sqlalchemy_implementation())
+    uvicorn.run(sqlalchemy_implementation_custom_ids())

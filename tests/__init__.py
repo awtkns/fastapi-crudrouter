@@ -20,7 +20,7 @@ class Potato(PotatoCreate, ORMModel):
 
 
 class CustomPotato(PotatoCreate):
-    potato_id = int
+    potato_id: int
 
     class Config:
         orm_mode = True

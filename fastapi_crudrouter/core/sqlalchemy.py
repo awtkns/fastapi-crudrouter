@@ -12,8 +12,10 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
     def __init__(self, db_model, db, model, *args, **kwargs):
         self.db_model = db_model
         self.db_func = db
+        self._primary_key: str = db_model.__table__.primary_key.columns.keys()[0]
 
         kwargs['prefix'] = db_model.__tablename__ if 'prefix' not in kwargs else kwargs['prefix']
+
         super().__init__(model, *args, **kwargs)
 
     def _get_all(self) -> Callable:
@@ -23,7 +25,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _get_one(self) -> Callable:
-        def route(item_id: int, db: Session = Depends(self.db_func)):
+        def route(item_id, db: Session = Depends(self.db_func)):
             model = db.query(self.db_model).get(item_id)
 
             if model:
@@ -48,7 +50,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         def route(item_id: int, model: self.model_cls, db: Session = Depends(self.db_func)):
             db_model = self._get_one()(item_id, db)
 
-            for key, value in model.dict(exclude={'id'}).items():
+            for key, value in model.dict(exclude={self._primary_key}).items():
                 if hasattr(db_model, key):
                     setattr(db_model, key, value)
 

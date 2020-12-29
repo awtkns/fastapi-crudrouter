@@ -1,12 +1,10 @@
 import pytest
 
-from . import Potato, Carrot, test_router
+from . import Potato, Carrot, CustomPotato, test_router
 
-basic_potato = Potato(id=0, thickness=.24, mass=1.2, color='Brown', type='Russet')
-basic_carrot = Carrot(id=0, length=1.2, color='Orange')
+basic_potato = CustomPotato(potato_id=0, thickness=.24, mass=1.2, color='Brown', type='Russet')
 
-PotatoUrl = '/potato'
-CarrotUrl = '/carrot'
+PotatoUrl = '/potatoes'
 
 
 def test_get(custom_id_client):
@@ -18,15 +16,15 @@ def test_post(custom_id_client):
 
 
 def test_get_one(custom_id_client):
-    test_router.test_get_one(custom_id_client, PotatoUrl, basic_potato)
+    test_router.test_get_one(custom_id_client, PotatoUrl, basic_potato, id_key='potato_id')
 
 
 def test_update(custom_id_client):
-    test_router.test_update(custom_id_client, PotatoUrl, basic_potato)
+    test_router.test_update(custom_id_client, PotatoUrl, basic_potato, id_key='potato_id')
 
 
 def test_delete_one(custom_id_client):
-    test_router.test_delete_one(custom_id_client, PotatoUrl, basic_potato)
+    test_router.test_delete_one(custom_id_client, PotatoUrl, basic_potato, id_key='potato_id')
 
 
 def test_delete_all(custom_id_client):

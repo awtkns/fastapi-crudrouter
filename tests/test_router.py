@@ -24,20 +24,20 @@ def test_post(client, url: str = URL, model: BaseModel = basic_potato):
     assert len(data) == 1
 
 
-def test_get_one(client, url: str = URL, model: BaseModel = basic_potato):
+def test_get_one(client, url: str = URL, model: BaseModel = basic_potato, id_key: str = 'id'):
     res = client.post(url, json=model.dict())
     assert res.status_code == 200
 
     data = client.get(url).json()
     assert len(data) == 1
 
-    res = client.get(f'{url}/{data[0]["id"]}')
+    res = client.get(f'{url}/{data[0][id_key]}')
     assert res.status_code == 200
 
-    assert compare_dict(res.json(), model.dict())
+    assert compare_dict(res.json(), model.dict(), exclude=[id_key])
 
 
-def test_update(client, url: str = URL, model: BaseModel = basic_potato):
+def test_update(client, url: str = URL, model: BaseModel = basic_potato, id_key: str = 'id'):
     res = client.post(url, json=model.dict())
     data = res.json()
     assert res.status_code == 200
@@ -45,29 +45,29 @@ def test_update(client, url: str = URL, model: BaseModel = basic_potato):
     tuber = model.copy()
     tuber.color = 'yellow'
 
-    res = client.put(f'{url}/{data["id"]}', json=tuber.dict())
+    res = client.put(f'{url}/{data[id_key]}', json=tuber.dict())
     assert res.status_code == 200
-    assert compare_dict(res.json(), tuber.dict())
-    assert not compare_dict(res.json(), model.dict())
+    assert compare_dict(res.json(), tuber.dict(), exclude=[id_key])
+    assert not compare_dict(res.json(), model.dict(), exclude=[id_key])
 
-    res = client.get(f'{url}/{data["id"]}')
+    res = client.get(f'{url}/{data[id_key]}')
     assert res.status_code == 200
-    assert compare_dict(res.json(), tuber.dict())
-    assert not compare_dict(res.json(), model.dict())
+    assert compare_dict(res.json(), tuber.dict(), exclude=[id_key])
+    assert not compare_dict(res.json(), model.dict(), exclude=[id_key])
 
 
-def test_delete_one(client, url: str = URL, model: BaseModel = basic_potato):
+def test_delete_one(client, url: str = URL, model: BaseModel = basic_potato, id_key: str = 'id'):
     res = client.post(url, json=model.dict())
     data = res.json()
     assert res.status_code == 200
 
-    res = client.get(f'{url}/{data["id"]}')
+    res = client.get(f'{url}/{data[id_key]}')
     assert res.status_code == 200
-    assert compare_dict(res.json(), model.dict())
+    assert compare_dict(res.json(), model.dict(), exclude=[id_key])
 
-    res = client.delete(f'{url}/{data["id"]}')
+    res = client.delete(f'{url}/{data[id_key]}')
     assert res.status_code == 200
-    assert compare_dict(res.json(), model.dict())
+    assert compare_dict(res.json(), model.dict(), exclude=[id_key])
 
     res = client.get(url)
     assert res.status_code == 200
