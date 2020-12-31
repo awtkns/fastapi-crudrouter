@@ -37,3 +37,8 @@ are shown below.
 | delete_one_route | True    | Setting this to false will prevent the delete one route from generating
 | create_route     | True    | Setting this to false will prevent the create route from generating
 | update_route     | True    | Setting this to false will prevent the update route from generating
+
+As an example, the *delete all* route can be disabled by doing the following:
+```python
+router = MemmoryCRUDRouter(model=MyModel, deleta_all_route=False)
+```
