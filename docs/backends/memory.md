@@ -6,7 +6,7 @@ well suited for rapid bootstrapping and prototyping.
 ```python
 from pydantic import BaseModel
 from fastapi import FastAPI
-from fastapi_crudrouter import MemoryCRUDRouter as CRUDRouter
+from fastapi_crudrouter import MemoryCRUDRouter
 
 class Potato(BaseModel):
     id: int
@@ -14,7 +14,8 @@ class Potato(BaseModel):
     mass: float
 
 app = FastAPI()
-app.include_router(CRUDRouter(model=Potato))
+router = MemoryCRUDRouter(model=Potato)
+app.include_router(router)
 ```
 
 !!! warning
