@@ -25,6 +25,9 @@ nav:
     - SQLAlchemy: backends/sqlalchemy.md
     - Databases (async): backends/async.md
 
+google_analytics:
+  - UA-186315536-1
+  - auto
 
 markdown_extensions:
   - extra
