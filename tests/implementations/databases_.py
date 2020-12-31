@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy_utils import drop_database, create_database, database_exists
 
 from fastapi_crudrouter import DatabasesCRUDRouter
-from tests import Potato, PotatoCreate, Carrot, CarrotCreate
+from tests import Potato, PotatoCreate, CustomPotato, Carrot, CarrotCreate
 
 DATABASE_URL = "sqlite:///./test.db"
 
@@ -64,8 +64,33 @@ def databases_implementation():
     return app
 
 
-if __name__ == '__main__':
-    import uvicorn
-    app = databases_implementation()
+def databases_implementation_custom_ids():
+    engine, database = _setup_database()
 
-    uvicorn.run(app)
+    metadata = MetaData()
+    potatoes = Table(
+        "potatoes",
+        metadata,
+        Column("potato_id", Integer, primary_key=True),
+        Column("thickness", Float),
+        Column("mass", Float),
+        Column("color", String),
+        Column("type", String),
+    )
+
+    metadata.create_all(bind=engine)
+
+    app = FastAPI()
+
+    @app.on_event("startup")
+    async def startup():
+        await database.connect()
+
+    @app.on_event("shutdown")
+    async def shutdown():
+        await database.disconnect()
+
+    potato_router = DatabasesCRUDRouter(database=database, table=potatoes, model=CustomPotato)
+    app.include_router(potato_router)
+
+    return app
