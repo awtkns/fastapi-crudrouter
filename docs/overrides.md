@@ -1,4 +1,5 @@
-Should you need to add custom functionality to any of your routes any of the included routers allows you to do so.
+Should you need to add custom functionality to any of your routes any of the included routers allows you to do so. 
+Should you wish to disable a route from being generated, it can be done [here](../routing/#disabling-routes).
 
 ## Overriding
 Routes in the CRUDRouter can be overridden by using the standard fastapi route decorators. These include:
