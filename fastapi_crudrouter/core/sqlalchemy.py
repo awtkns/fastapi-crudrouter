@@ -20,7 +20,11 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         self.db_func = db
         self._primary_key: str = db_model.__table__.primary_key.columns.keys()[0]
 
-        kwargs['prefix'] = db_model.__tablename__ if 'prefix' not in kwargs else kwargs['prefix']
+        if 'prefix' not in kwargs:
+            kwargs['prefix'] = db_model.__tablename__
+
+        if 'create_schema' not in kwargs:
+            kwargs['create_schema'] = self.schema_factory(model, self._primary_key)
 
         super().__init__(model, *args, **kwargs)
 
