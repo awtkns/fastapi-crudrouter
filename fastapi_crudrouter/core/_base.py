@@ -13,20 +13,46 @@ class CRUDGenerator(APIRouter):
     model_cls: BaseModel = None
     _base_path: str = '/'
 
-    def __init__(self, model: BaseModel, create_schema: BaseModel = None, prefix: str = None, *args, **kwargs):
+    def __init__(
+        self,
+        model:
+        BaseModel,
+        create_schema:
+        BaseModel = None,
+        prefix: str = None,
+        get_all_route: bool = True,
+        get_one_route: bool = True,
+        create_route: bool = True,
+        update_route: bool = True,
+        delete_one_route: bool = True,
+        delete_all_route: bool = True,
+        *args,
+        **kwargs
+    ) -> APIRouter:
+
         self.model_cls = model
         self.create_schema = create_schema if create_schema else self.schema_factory(self.model_cls)
 
         prefix = self._base_path + (self.model_cls.__name__.lower() if not prefix else prefix).strip('/')
         super().__init__(prefix=prefix, tags=[prefix.strip('/').capitalize()], *args, **kwargs)
 
-        super().add_api_route('', self._get_all(), methods=['GET'], response_model=Optional[List[self.model_cls]], summary='Get All')
-        super().add_api_route('', self._create(), methods=['POST'], response_model=self.model_cls, summary='Create One')
-        super().add_api_route('', self._delete_all(), methods=['DELETE'], response_model=Optional[List[self.model_cls]], summary='Delete All')
+        if get_all_route:
+            super().add_api_route('', self._get_all(), methods=['GET'], response_model=Optional[List[self.model_cls]], summary='Get All')
 
-        super().add_api_route('/{item_id}', self._get_one(), methods=['GET'], response_model=self.model_cls, summary='Get One')
-        super().add_api_route('/{item_id}', self._update(), methods=['PUT'], response_model=self.model_cls, summary='Update One')
-        super().add_api_route('/{item_id}', self._delete_one(), methods=['DELETE'], response_model=self.model_cls, summary='Delete All')
+        if create_route:
+            super().add_api_route('', self._create(), methods=['POST'], response_model=self.model_cls, summary='Create One')
+
+        if delete_all_route:
+            super().add_api_route('', self._delete_all(), methods=['DELETE'], response_model=Optional[List[self.model_cls]], summary='Delete All')
+
+        if get_one_route:
+            super().add_api_route('/{item_id}', self._get_one(), methods=['GET'], response_model=self.model_cls, summary='Get One')
+
+        if update_route:
+            super().add_api_route('/{item_id}', self._update(), methods=['PUT'], response_model=self.model_cls, summary='Update One')
+
+        if delete_one_route:
+            super().add_api_route('/{item_id}', self._delete_one(), methods=['DELETE'], response_model=self.model_cls, summary='Delete All')
 
     def api_route(self, path: str, *args, **kwargs):
         """ Overrides and exiting route if it exists"""

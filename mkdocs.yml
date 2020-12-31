@@ -23,6 +23,7 @@ nav:
 - Backends:
     - In Memory: backends/memory.md
     - SQLAlchemy: backends/sqlalchemy.md
+    - Databases (async): backends/async.md
 
 
 markdown_extensions:

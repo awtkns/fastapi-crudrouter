@@ -1,14 +1,14 @@
 ## Default Routes
 By default, the CRUDRouter will generate the six routes below for you. 
 
-| Route        | Method   | Description |
-| ------------ | -------- | ----------- |
-| `/`          | `GET`    | Get all the resources |
-| `/`          | `POST`   | Create a new resource |
-| `/`          | `DELETE` | Delete all the resources|
-| `/{item_id}` | `GET`    | Get an existing resource matching the given `item_id` |
-| `/{item_id}` | `PUT`    | Update an existing resource matching the given `item_id`  |
-| `/{item_id}` | `DELETE` | Delete an existing resource matching the given `item_id` |
+| Route        | Method   | Description
+| ------------ | -------- | ----
+| `/`          | `GET`    | Get all the resources 
+| `/`          | `POST`   | Create a new resource 
+| `/`          | `DELETE` | Delete all the resources
+| `/{item_id}` | `GET`    | Get an existing resource matching the given `item_id`
+| `/{item_id}` | `PUT`    | Update an existing resource matching the given `item_id`
+| `/{item_id}` | `DELETE` | Delete an existing resource matching the given `item_id`
 
 !!! note "Route URLs"
     Note that the route url is prefixed by the defined prefix.
@@ -26,4 +26,19 @@ the [SQLAlchemyCRUDRouter](backends/sqlalchemy.md) will use the model's table na
     `router = CRUDRouter(model=mymodel, prefix='carrot')`
 
 ## Disabling Routes
-This feature has not been implemented yet. For now, a workaround is overriding your routes so they do nothing. 
+Routes can be disabled from generating with a key word argument (kwarg) when creating your CRUDRouter. The valid kwargs 
+are shown below.
+
+| Argument         | Default | Description 
+| ---------------- | ------  | ---
+| get_all_route    | True    | Setting this to false will prevent the get all route from generating
+| get_one_route    | True    | Setting this to false will prevent the get one route from generating
+| delete_all_route | True    | Setting this to false will prevent the delete all route from generating
+| delete_one_route | True    | Setting this to false will prevent the delete one route from generating
+| create_route     | True    | Setting this to false will prevent the create route from generating
+| update_route     | True    | Setting this to false will prevent the update route from generating
+
+As an example, the *delete all* route can be disabled by doing the following:
+```python
+router = MemmoryCRUDRouter(model=MyModel, deleta_all_route=False)
+```
