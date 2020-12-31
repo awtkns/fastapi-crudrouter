@@ -7,7 +7,6 @@ theme:
   name: material
   palette:
     - scheme: primary
-      primary: teal
       accent: amber
   icon:
     repo: fontawesome/brands/github-alt
@@ -32,7 +31,8 @@ google_analytics:
 markdown_extensions:
   - extra
   - admonition
-  - codehilite
+  - pymdownx.highlight
+  - pymdownx.superfences
 
 extra:
   social:
@@ -44,6 +44,7 @@ extra:
     link: https://wtkns.dev
 
 extra_css:
-- css/termynal.css
+  - css/main.css
+  - css/termynal.css
 extra_javascript:
-- js/termynal.js
+  - js/termynal.js
