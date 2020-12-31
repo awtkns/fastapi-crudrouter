@@ -34,8 +34,17 @@ from fastapi import FastAPI
 from fastapi_crudrouter import SQLAlchemyCRUDRouter
 
 app = FastAPI()
-engine = create_engine("sqlite:///./app.db", connect_args={"check_same_thread": False})
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(
+    "sqlite:///./app.db", 
+    connect_args={"check_same_thread": False}
+)
+
+SessionLocal = sessionmaker(
+    autocommit=False, 
+    autoflush=False, 
+    bind=engine
+)
+
 Base = declarative_base()
 
 def get_db():
@@ -68,6 +77,14 @@ class PotatoModel(Base):
     type = Column(String)
 
 Base.metadata.create_all(bind=engine)
-app.include_router(SQLAlchemyCRUDRouter(model=Potato, db_model=PotatoModel, db=get_db, create_schema=PotatoCreate, prefix='potato'))
 
+router = SQLAlchemyCRUDRouter(
+    model=Potato, 
+    db_model=PotatoModel, 
+    db=get_db, 
+    create_schema=PotatoCreate, 
+    prefix='potato'
+)
+
+app.include_router(router)
 ```

@@ -1,1 +1,1 @@
-from .core import MemoryCRUDRouter, SQLAlchemyCRUDRouter
+from .core import MemoryCRUDRouter, SQLAlchemyCRUDRouter, DatabasesCRUDRouter
