@@ -3,8 +3,14 @@ from fastapi.testclient import TestClient
 
 from .implementations import *
 
+implementations = [
+    memory_implementation,
+    sqlalchemy_implementation,
+    databases_implementation
+]
 
-@pytest.fixture(params=[memory_implementation, sqlalchemy_implementation])
+
+@pytest.fixture(params=implementations)
 def client(request):
 
     yield TestClient(request.param())
