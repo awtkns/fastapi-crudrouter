@@ -56,8 +56,8 @@ def databases_implementation():
     async def shutdown():
         await database.disconnect()
 
-    potato_router = DatabasesCRUDRouter(database=database, table=potatoes, model=Potato, create_schema=PotatoCreate)
-    carrot_router = DatabasesCRUDRouter(database=database, table=carrots, model=Carrot, create_schema=CarrotCreate)
+    potato_router = DatabasesCRUDRouter(database=database, table=potatoes, model=Potato, prefix='potato')
+    carrot_router = DatabasesCRUDRouter(database=database, table=carrots, model=Carrot, create_schema=CarrotCreate, prefix='carrot')
     app.include_router(potato_router)
     app.include_router(carrot_router)
 
