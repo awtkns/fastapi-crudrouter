@@ -1,4 +1,25 @@
+:root {
+  /*--md-primary-fg-color:        #3d3393;*/
+  /*--md-primary-fg-color--light: #3d3393;*/
+  /*--md-primary-fg-color--dark:  #3d3393;*/
+}
+
 header {
  /* https://webgradients.com/ - 142 Space Shift */
  background-image: linear-gradient(60deg, #3d3393 0%, #2b76b9 37%, #2cacd1 65%, #35eb93 100%);
+}
+
+[for="__toc"] {
+ background-image: none !important;
+}
+
+/* Sidebar */
+@media screen and (max-width: 76.1875em) {
+ .md-nav__title {
+   background-image: linear-gradient(60deg, #3d3393 0%, #2b76b9 37%, #2cacd1 65%, #35eb93 100%);
+ }
+
+ .md-nav--primary .md-nav__title {
+  color: white;
+ }
 }

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo2.png" alt="CRUD Router Logo" height="200" />
+  <img src="assets/banner.png" alt="CRUD Router Logo" style="margin-bottom: 20px" />
 </p>
 <p align="center">
   <em>⚡ Create CRUD routes with lighting speed</em> ⚡</br>

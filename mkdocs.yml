@@ -16,7 +16,7 @@ theme:
 
 # Nav
 nav:
-- FastAPI CRUD Router: index.md
+- Overview: index.md
 - Generated Routes: routing.md
 - Overriding Routes: overrides.md
 - Backends:

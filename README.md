@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/assets/logo2.png" height="200" />
+  <img src="https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/assets/logo.png" height="200" />
 </p>
 <p align="center">
   <em>⚡ Create CRUD routes with lighting speed</em> ⚡</br>
