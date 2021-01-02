@@ -15,7 +15,7 @@
 
 ---
 
-**Documentation**: <a href="https://fastapi-crudrouter.wtkns.dev" target="_blank">https://fastapi-crudrouter.wtkns.dev</a>
+**Documentation**: <a href="https://fastapi-crudrouter.awtkns.com" target="_blank">https://fastapi-crudrouter.awtkns.com</a>
 
 **Source Code**: <a href="https://github.com/awtkns/fastapi-crudrouter" target="_blank">https://github.com/awtkns/fastapi-crudrouter</a>
 
