@@ -27,11 +27,16 @@ FastAPI-CRUDRouter is also **lighting fast**, well tested, and production ready.
 
 ## Installation
 
-<div id="termynal" data-termynal>
-    <span data-ty="input">pip install fastapi-crudrouter</span>
-    <span data-ty="progress"></span>
-    <span data-ty>Successfully installed fastapi-crudrouter</span>
+<div class="termy">
+
+```console
+$ pip install fastapi
+
+---> 100%
+```
+
 </div>
+
 
 
 ## Basic Usage
