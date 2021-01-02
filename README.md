@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/assets/logo.png" height="200" />
+  <img src="https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/assets/logo.svg" height="200" />
 </p>
 <p align="center">
   <em>⚡ Create CRUD routes with lighting speed</em> ⚡</br>
@@ -15,7 +15,7 @@
 
 ---
 
-**Documentation**: <a href="https://awtkns.github.io/fastapi-crudrouter" target="_blank">https://awtkns.github.io/fastapi-crudrouter</a>
+**Documentation**: <a href="https://fastapi-crudrouter.wtkns.dev" target="_blank">https://fastapi-crudrouter.wtkns.dev</a>
 
 **Source Code**: <a href="https://github.com/awtkns/fastapi-crudrouter" target="_blank">https://github.com/awtkns/fastapi-crudrouter</a>
 

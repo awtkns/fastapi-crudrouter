@@ -13,7 +13,7 @@
 
 ---
 
-**Documentation**: <a href="https://awtkns.github.io/fastapi-crudrouter" target="_blank">https://awtkns.github.io/fastapi-crudrouter</a>
+**Documentation**: <a href="https://fastapi-crudrouter.wtkns.dev" target="_blank">https://fastapi-crudrouter.wtkns.dev</a>
 
 **Source Code**: <a href="https://github.com/awtkns/fastapi-crudrouter" target="_blank">https://github.com/awtkns/fastapi-crudrouter</a>
 
