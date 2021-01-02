@@ -10,8 +10,8 @@ theme:
       accent: amber
   icon:
     repo: fontawesome/brands/github-alt
-    logo: octicons/zap-24
-  favicon: assets/zap.svg
+  logo: assets/bolt.svg
+  favicon: assets/bolt-grad.svg
   language: en
 
 # Nav
