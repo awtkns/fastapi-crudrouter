@@ -30,7 +30,7 @@ FastAPI-CRUDRouter is also **lighting fast**, well tested, and production ready.
 <div class="termy">
 
 ```console
-$ pip install fastapi
+$ pip install fastapi-crudrouter
 
 ---> 100%
 ```
