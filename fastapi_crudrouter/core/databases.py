@@ -1,10 +1,12 @@
 from typing import Callable
 from fastapi import Depends
+from pydantic import BaseModel
 
 from . import CRUDGenerator, NOT_FOUND
 
 try:
     from databases.core import Database
+    from sqlalchemy.sql.schema import Table
 except ImportError:
     databases_installed = False
 else:
@@ -13,10 +15,10 @@ else:
 
 class DatabasesCRUDRouter(CRUDGenerator):
 
-    def __init__(self, database, table, schema, *args, **kwargs):
-        assert databases_installed, "Databases must be installed to use the DatabasesCRUDRouter."
-        self.db = database
+    def __init__(self, schema: BaseModel, table: Table, database: Database, *args, **kwargs):
+        assert databases_installed, "Databases and SQLAlchemy must be installed to use the DatabasesCRUDRouter."
         self.table = table
+        self.db = database
         self._pk = table.primary_key.columns.values()[0].name
         self._pk_col = self.table.c[self._pk]
 

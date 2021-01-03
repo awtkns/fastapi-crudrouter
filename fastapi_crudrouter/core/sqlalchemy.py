@@ -1,5 +1,6 @@
 from typing import Callable
 from fastapi import Depends
+from pydantic import BaseModel
 
 from . import CRUDGenerator, NOT_FOUND
 
@@ -13,7 +14,7 @@ else:
 
 class SQLAlchemyCRUDRouter(CRUDGenerator):
 
-    def __init__(self, db_model, db, schema, *args, **kwargs):
+    def __init__(self, schema: BaseModel, db_model: Session, db: ..., *args, **kwargs):
         assert sqlalchemy_installed, "SQLAlchemy must be installed to use the SQLAlchemyCRUDRouter."
 
         self.db_model = db_model

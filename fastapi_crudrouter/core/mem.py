@@ -1,12 +1,14 @@
 from typing import Callable
+from pydantic import BaseModel
+
 
 from . import CRUDGenerator, NOT_FOUND
 
 
 class MemoryCRUDRouter(CRUDGenerator):
     
-    def __init__(self, *args, **kwargs):
-        super(MemoryCRUDRouter, self).__init__(*args, **kwargs)
+    def __init__(self, schema: BaseModel, *args, **kwargs):
+        super(MemoryCRUDRouter, self).__init__(schema, *args, **kwargs)
         self.models = []
         self._id = 0
 
