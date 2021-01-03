@@ -22,6 +22,7 @@ app.include_router(router)
 ```
 
 ## Full Example
+
 ```python
 import databases
 import sqlalchemy
@@ -34,15 +35,15 @@ DATABASE_URL = "sqlite:///./test.db"
 
 database = databases.Database(DATABASE_URL)
 engine = sqlalchemy.create_engine(
-    DATABASE_URL, 
+    DATABASE_URL,
     connect_args={"check_same_thread": False}
 )
 
 metadata = sqlalchemy.MetaData()
-potatoes =  sqlalchemy.Table(
+potatoes = sqlalchemy.Table(
     "potatoes",
     metadata,
-    sqlalchemy.Column("id",  sqlalchemy.Integer, primary_key=True),
+    sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("thickness", sqlalchemy.Float),
     sqlalchemy.Column("mass", sqlalchemy.Float),
     sqlalchemy.Column("color", sqlalchemy.String),
@@ -57,24 +58,28 @@ class PotatoCreate(BaseModel):
     color: str
     type: str
 
+
 class Potato(PotatoCreate):
     id: int
 
-    
+
 app = FastAPI()
+
 
 @app.on_event("startup")
 async def startup():
     await database.connect()
 
+
 @app.on_event("shutdown")
 async def shutdown():
     await database.disconnect()
 
+
 router = DatabasesCRUDRouter(
-    database=database, 
-    table=potatoes, 
-    model=Potato, 
+    database=database,
+    table=potatoes,
+    schema=Potato,
     create_schema=PotatoCreate
 )
 app.include_router(router)

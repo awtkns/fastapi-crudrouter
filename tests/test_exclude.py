@@ -11,7 +11,7 @@ URL = '/potato'
 
 def get_client(**kwargs):
     app = FastAPI()
-    app.include_router(MemoryCRUDRouter(model=Potato, prefix=URL, **kwargs))
+    app.include_router(MemoryCRUDRouter(schema=Potato, prefix=URL, **kwargs))
 
     return testclient.TestClient(app)
 
@@ -21,7 +21,7 @@ def test_exclude_internal(i):
     keys = random.sample(MemoryCRUDRouter.get_routes(), k=i)
     kwargs = {r + '_route': False for r in keys}
 
-    router = MemoryCRUDRouter(model=Potato, prefix=URL, **kwargs)
+    router = MemoryCRUDRouter(schema=Potato, prefix=URL, **kwargs)
     assert len(router.routes) == len(MemoryCRUDRouter.get_routes()) - i
 
 

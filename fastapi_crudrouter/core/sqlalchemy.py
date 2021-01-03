@@ -13,7 +13,7 @@ else:
 
 class SQLAlchemyCRUDRouter(CRUDGenerator):
 
-    def __init__(self, db_model, db, model, *args, **kwargs):
+    def __init__(self, db_model, db, schema, *args, **kwargs):
         assert sqlalchemy_installed, "SQLAlchemy must be installed to use the SQLAlchemyCRUDRouter."
 
         self.db_model = db_model
@@ -24,9 +24,9 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
             kwargs['prefix'] = db_model.__tablename__
 
         if 'create_schema' not in kwargs:
-            kwargs['create_schema'] = self.schema_factory(model, self._primary_key)
+            kwargs['create_schema'] = self.schema_factory(schema, self._primary_key)
 
-        super().__init__(model, *args, **kwargs)
+        super().__init__(schema, *args, **kwargs)
 
     def _get_all(self) -> Callable:
         def route(db: Session = Depends(self.db_func)):
@@ -57,7 +57,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        def route(item_id: int, model: self.model_cls, db: Session = Depends(self.db_func)):
+        def route(item_id: int, model: self.schema, db: Session = Depends(self.db_func)):
             db_model = self._get_one()(item_id, db)
 
             for key, value in model.dict(exclude={self._primary_key}).items():

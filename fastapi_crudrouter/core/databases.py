@@ -13,7 +13,7 @@ else:
 
 class DatabasesCRUDRouter(CRUDGenerator):
 
-    def __init__(self, database, table, model, *args, **kwargs):
+    def __init__(self, database, table, schema, *args, **kwargs):
         assert databases_installed, "Databases must be installed to use the DatabasesCRUDRouter."
         self.db = database
         self.table = table
@@ -24,9 +24,9 @@ class DatabasesCRUDRouter(CRUDGenerator):
             kwargs['prefix'] = table.name
 
         if 'create_schema' not in kwargs:
-            kwargs['create_schema'] = self.schema_factory(model, self._pk)
+            kwargs['create_schema'] = self.schema_factory(schema, self._pk)
 
-        super().__init__(model, *args, **kwargs)
+        super().__init__(schema, *args, **kwargs)
 
     def _get_all(self) -> Callable:
         async def route():
@@ -56,7 +56,7 @@ class DatabasesCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        async def route(item_id: int, schema: self.model_cls):
+        async def route(item_id: int, schema: self.schema):
             q = self.table.update().where(self._pk_col == item_id)
             rid = await self.db.execute(query=q, values=schema.dict(exclude={self._pk}))
 

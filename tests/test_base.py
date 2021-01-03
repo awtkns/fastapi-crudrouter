@@ -28,8 +28,8 @@ def test_get_one():
 
     for m in methods:
         with pytest.raises(NotImplementedError):
-            app.include_router(CRUDGenerator(model=Potato))
+            app.include_router(CRUDGenerator(schema=Potato))
 
         setattr(CRUDGenerator, f'_{m}', foo)
 
-    app.include_router(CRUDGenerator(model=Potato))
+    app.include_router(CRUDGenerator(schema=Potato))

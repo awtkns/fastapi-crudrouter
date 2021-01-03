@@ -26,7 +26,7 @@ class MemoryCRUDRouter(CRUDGenerator):
         return route
 
     def _create(self) -> Callable:
-        def route(model: self.model_cls):
+        def route(model: self.schema):
             model.id = self._get_next_id()
             self.models.append(model)
             return model
@@ -34,7 +34,7 @@ class MemoryCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        def route(item_id: int, model: self.model_cls):
+        def route(item_id: int, model: self.schema):
             for i, m in enumerate(self.models):
                 if m.id == item_id:
                     model.id = m.id
