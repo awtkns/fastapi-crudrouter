@@ -14,12 +14,12 @@ class Potato(BaseModel):
     mass: float
 
 app = FastAPI()
-router = MemoryCRUDRouter(model=Potato)
+router = MemoryCRUDRouter(schema=Potato)
 app.include_router(router)
 ```
 
 !!! warning
-    When using the `MemoryCRUDRouter`, the model passed to it must have the `id: int` property.
+    When using the `MemoryCRUDRouter`, the schema (model) passed to it must have the `id: int` property.
 
 !!! danger
     The storage for the `MemoryCRUDRouter` resides in memory, not a database. Hence, the data is not persistent. Be careful when using it beyond

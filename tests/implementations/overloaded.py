@@ -7,7 +7,7 @@ from tests import Potato, Carrot
 def overloaded_app():
     app = FastAPI()
 
-    router = CRUDRouter(model=Potato)
+    router = CRUDRouter(schema=Potato)
 
     @router.api_route('')
     def overloaded_get():

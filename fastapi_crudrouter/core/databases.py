@@ -1,10 +1,12 @@
 from typing import Callable
 from fastapi import Depends
+from pydantic import BaseModel
 
 from . import CRUDGenerator, NOT_FOUND
 
 try:
     from databases.core import Database
+    from sqlalchemy.sql.schema import Table
 except ImportError:
     databases_installed = False
 else:
@@ -13,10 +15,10 @@ else:
 
 class DatabasesCRUDRouter(CRUDGenerator):
 
-    def __init__(self, database, table, model, *args, **kwargs):
-        assert databases_installed, "Databases must be installed to use the DatabasesCRUDRouter."
-        self.db = database
+    def __init__(self, schema: BaseModel, table: Table, database: Database, *args, **kwargs):
+        assert databases_installed, "Databases and SQLAlchemy must be installed to use the DatabasesCRUDRouter."
         self.table = table
+        self.db = database
         self._pk = table.primary_key.columns.values()[0].name
         self._pk_col = self.table.c[self._pk]
 
@@ -24,9 +26,9 @@ class DatabasesCRUDRouter(CRUDGenerator):
             kwargs['prefix'] = table.name
 
         if 'create_schema' not in kwargs:
-            kwargs['create_schema'] = self.schema_factory(model, self._pk)
+            kwargs['create_schema'] = self.schema_factory(schema, self._pk)
 
-        super().__init__(model, *args, **kwargs)
+        super().__init__(schema, *args, **kwargs)
 
     def _get_all(self) -> Callable:
         async def route():
@@ -56,7 +58,7 @@ class DatabasesCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        async def route(item_id: int, schema: self.model_cls):
+        async def route(item_id: int, schema: self.schema):
             q = self.table.update().where(self._pk_col == item_id)
             rid = await self.db.execute(query=q, values=schema.dict(exclude={self._pk}))
 
