@@ -7,17 +7,16 @@ theme:
   name: material
   palette:
     - scheme: primary
-      primary: teal
       accent: amber
   icon:
     repo: fontawesome/brands/github-alt
-    logo: octicons/zap-24
-  favicon: assets/zap.svg
+  logo: assets/bolt.svg
+  favicon: assets/bolt-grad.svg
   language: en
 
 # Nav
 nav:
-- FastAPI CRUD Router: index.md
+- Overview: index.md
 - Generated Routes: routing.md
 - Overriding Routes: overrides.md
 - Backends:
@@ -25,11 +24,15 @@ nav:
     - SQLAlchemy: backends/sqlalchemy.md
     - Databases (async): backends/async.md
 
+google_analytics:
+  - UA-186315536-1
+  - auto
 
 markdown_extensions:
   - extra
   - admonition
-  - codehilite
+  - pymdownx.highlight
+  - pymdownx.superfences
 
 extra:
   social:
@@ -41,6 +44,8 @@ extra:
     link: https://wtkns.dev
 
 extra_css:
-- css/termynal.css
+  - css/main.css
+  - css/termynal.css
 extra_javascript:
-- js/termynal.js
+  - js/termynal.js
+  - js/termy.js

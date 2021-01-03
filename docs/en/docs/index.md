@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo2.png" alt="CRUD Router Logo" height="200" />
+  <img src="assets/banner.png" alt="CRUD Router Logo" style="margin-bottom: 20px" />
 </p>
 <p align="center">
   <em>⚡ Create CRUD routes with lighting speed</em> ⚡</br>
@@ -13,7 +13,7 @@
 
 ---
 
-**Documentation**: <a href="https://awtkns.github.io/fastapi-crudrouter" target="_blank">https://awtkns.github.io/fastapi-crudrouter</a>
+**Documentation**: <a href="https://fastapi-crudrouter.awtkns.com" target="_blank">https://fastapi-crudrouter.awtkns.com</a>
 
 **Source Code**: <a href="https://github.com/awtkns/fastapi-crudrouter" target="_blank">https://github.com/awtkns/fastapi-crudrouter</a>
 
@@ -27,11 +27,16 @@ FastAPI-CRUDRouter is also **lighting fast**, well tested, and production ready.
 
 ## Installation
 
-<div id="termynal" data-termynal>
-    <span data-ty="input">pip install fastapi-crudrouter</span>
-    <span data-ty="progress"></span>
-    <span data-ty>Successfully installed fastapi-crudrouter</span>
+<div class="termy">
+
+```console
+$ pip install fastapi-crudrouter
+
+---> 100%
+```
+
 </div>
+
 
 
 ## Basic Usage
@@ -59,8 +64,8 @@ app.include_router(CRUDRouter(model=Potato))
 
 Below are the default routes created by the CRUDRouter shown in the generated OpenAPI documentation.
 
-![OpenAPI Route Overview](https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/assets/RouteOverview.PNG)
+![OpenAPI Route Overview](https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/en/docs/assets/RouteOverview.PNG)
 
 The CRUDRouter is able to dynamically generate detailed documentation based on the models given to it.
 
-![OpenAPI Route Detail](https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/assets/RouteDetail.PNG)
+![OpenAPI Route Detail](https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/en/docs/assets/RouteDetail.PNG)
