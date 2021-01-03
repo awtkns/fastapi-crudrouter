@@ -2,7 +2,7 @@ from typing import List, Optional, Callable
 
 from starlette.routing import Route
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, create_model
 
 models = []
 
@@ -31,7 +31,7 @@ class CRUDGenerator(APIRouter):
     ) -> APIRouter:
 
         self.model_cls = model
-        self.create_schema = create_schema
+        self.create_schema = create_schema if create_schema else self.schema_factory(self.model_cls)
 
         prefix = self._base_path + (self.model_cls.__name__.lower() if not prefix else prefix).strip('/')
         super().__init__(prefix=prefix, tags=[prefix.strip('/').capitalize()], *args, **kwargs)
@@ -106,3 +106,15 @@ class CRUDGenerator(APIRouter):
         return [
             'get_all', 'create', 'delete_all', 'get_one', 'update', 'delete_one'
         ]
+
+    @staticmethod
+    def schema_factory(schema_cls: BaseModel, pk_field_name: str = 'id'):
+        """
+        Is used to create a CreateSchema which does not contain pk
+        """
+
+        fields = {f.name: (f.type_, ...) for f in schema_cls.__fields__.values() if f.name != pk_field_name}
+
+        name = schema_cls.__name__ + 'Create'
+        schema = create_model(name, **fields)
+        return schema

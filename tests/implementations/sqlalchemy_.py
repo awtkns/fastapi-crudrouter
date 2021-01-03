@@ -53,7 +53,7 @@ def sqlalchemy_implementation():
         color = Column(String)
 
     Base.metadata.create_all(bind=engine)
-    app.include_router(SQLAlchemyCRUDRouter(model=Potato, db_model=PotatoModel, db=session, create_schema=PotatoCreate, prefix='potato'))
+    app.include_router(SQLAlchemyCRUDRouter(model=Potato, db_model=PotatoModel, db=session, prefix='potato'))
     app.include_router(SQLAlchemyCRUDRouter(model=Carrot, db_model=CarrotModel, db=session, create_schema=CarrotCreate, prefix='carrot'))
 
     return app
@@ -72,6 +72,6 @@ def sqlalchemy_implementation_custom_ids():
         type = Column(String)
 
     Base.metadata.create_all(bind=engine)
-    app.include_router(SQLAlchemyCRUDRouter(model=CustomPotato, db_model=PotatoModel, db=session, create_schema=PotatoCreate))
+    app.include_router(SQLAlchemyCRUDRouter(model=CustomPotato, db_model=PotatoModel, db=session))
 
     return app
