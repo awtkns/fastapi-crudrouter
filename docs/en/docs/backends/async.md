@@ -13,10 +13,9 @@ all the required models and database connections.
 
 ```python
 router = DatabasesCRUDRouter(
-    database=my_database, 
-    table=my_table, 
-    model=MyPydanticModel, 
-    create_schema=MyPydanticCreateModel
+    schema=MyPydanticModel, 
+    table=my_table,
+    database=my_database
 )
 app.include_router(router)
 ```
@@ -77,10 +76,10 @@ async def shutdown():
 
 
 router = DatabasesCRUDRouter(
-    database=database,
-    table=potatoes,
     schema=Potato,
-    create_schema=PotatoCreate
+    create_schema=PotatoCreate,
+    table=potatoes,
+    database=database
 )
 app.include_router(router)
 ```

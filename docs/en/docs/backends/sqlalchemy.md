@@ -11,11 +11,12 @@ Below is an example assuming that you have already imported and created all the 
 
 ```python
 router = SQLAlchemyCRUDRouter(
-    model=MyPydanticModel, 
-    db_model=MyDBModel,
-    db=get_db, 
+    schema=MyPydanticModel,
     create_schema=MyPydanticCreateModel, 
+    db_model=MyDBModel,
+    db=get_db
 )
+
 app.include_router(router)
 ```
 
@@ -85,9 +86,9 @@ Base.metadata.create_all(bind=engine)
 
 router = SQLAlchemyCRUDRouter(
     schema=Potato,
+    create_schema=PotatoCreate,
     db_model=PotatoModel,
     db=get_db,
-    create_schema=PotatoCreate,
     prefix='potato'
 )
 
