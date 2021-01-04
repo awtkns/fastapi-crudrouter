@@ -18,12 +18,12 @@ theme:
 nav:
   - Overview: index.md
   - Schemas: schemas.md
-  - Generated Routes: routing.md
-  - Overriding Routes: overrides.md
+  - Routing: routing.md
   - Backends:
       - In Memory: backends/memory.md
       - SQLAlchemy: backends/sqlalchemy.md
       - Databases (async): backends/async.md
+  - Dependencies: dependencies.md
 
 google_analytics:
   - UA-186315536-1
