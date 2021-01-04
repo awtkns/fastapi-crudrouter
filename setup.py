@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='FastAPI-CRUDRouter',
-    version='0.2.1',
+    version='0.3.0',
     author='Adam Watkins',
     author_email='cadamrun@gmail.com',
     packages=find_packages(exclude=('tests', 'tests.implementations')),

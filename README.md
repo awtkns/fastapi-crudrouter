@@ -62,9 +62,14 @@ The CRUDRouter is able to dynamically generate detailed documentation based on t
 
 ![OpenAPI Route Detail](https://raw.githubusercontent.com/awtkns/fastapi-crudrouter/master/docs/en/docs/assets/RouteDetail.PNG)
 
-## Database Support
-Currently, fastapi-crudrouter supports all database supported by SQLAlchemy.  Async and NonRelational database support will
-be coming soon.
+## Future Features :sunglasses:
+Features planned for future releases include:
+ - Pagination support
+ - MongoDB / motor support
+ - Support for other backends
+ - And much more
+
+Please open an issue if there is a specific feature you would like supported.
 
 
 
