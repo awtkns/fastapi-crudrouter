@@ -26,7 +26,7 @@ class CRUDGenerator(APIRouter):
         delete_all_route: bool = True,
         *args,
         **kwargs
-    ) -> APIRouter:
+    ):
 
         self.schema = schema
         self.create_schema = create_schema if create_schema else self.schema_factory(self.schema)
