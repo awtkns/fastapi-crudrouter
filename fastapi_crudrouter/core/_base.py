@@ -50,7 +50,7 @@ class CRUDGenerator(APIRouter):
             super().add_api_route('/{item_id}', self._update(), methods=['PUT'], response_model=self.schema, summary='Update One')
 
         if delete_one_route:
-            super().add_api_route('/{item_id}', self._delete_one(), methods=['DELETE'], response_model=self.schema, summary='Delete All')
+            super().add_api_route('/{item_id}', self._delete_one(), methods=['DELETE'], response_model=self.schema, summary='Delete One')
 
     def api_route(self, path: str, *args, **kwargs):
         """ Overrides and exiting route if it exists"""
