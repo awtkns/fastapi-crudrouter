@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='fastapi-crudrouter',
-    version='0.3.0',
+    version='0.3.1',
     author='Adam Watkins',
     author_email='cadamrun@gmail.com',
     packages=find_packages(exclude=('tests', 'tests.implementations')),
