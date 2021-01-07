@@ -48,7 +48,7 @@ class Potato(BaseModel):
     mass: float
 
 app = FastAPI()
-app.include_router(CRUDRouter(model=Potato))
+app.include_router(CRUDRouter(schema=Potato))
 ```
 
 ## OpenAPI Support
