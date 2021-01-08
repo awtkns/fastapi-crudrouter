@@ -1,3 +1,3 @@
-All ideas, contributions are wellcome :)
+All ideas and contributions are wellcome :)
 
-Please submit a PR.
+Please feel free to create issues and submit PRs.
