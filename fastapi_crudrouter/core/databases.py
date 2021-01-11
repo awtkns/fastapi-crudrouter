@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from . import CRUDGenerator, NOT_FOUND
 
 try:
+   from sqlalchemy.sql.schema import Table
     from databases.core import Database
 except ImportError:
     databases_installed = False
