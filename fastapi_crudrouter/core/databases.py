@@ -1,12 +1,12 @@
 from typing import Callable
 from fastapi import Depends
 from pydantic import BaseModel
+from sqlalchemy.sql.schema import Table
 
 from . import CRUDGenerator, NOT_FOUND
 
 try:
     from databases.core import Database
-    from sqlalchemy.sql.schema import Table
 except ImportError:
     databases_installed = False
 else:
