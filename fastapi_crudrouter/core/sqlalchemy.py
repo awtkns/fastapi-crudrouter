@@ -8,6 +8,7 @@ try:
     from sqlalchemy.orm import Session
 except ImportError:
     sqlalchemy_installed = False
+    Session = None
 else:
     sqlalchemy_installed = True
 
