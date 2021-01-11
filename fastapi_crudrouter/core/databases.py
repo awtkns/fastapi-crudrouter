@@ -6,11 +6,11 @@ from . import CRUDGenerator, NOT_FOUND
 
 try:
    from sqlalchemy.sql.schema import Table
-    from databases.core import Database
+   from databases.core import Database
 except ImportError:
-    databases_installed = False
+   databases_installed = False
 else:
-    databases_installed = True
+   databases_installed = True
 
 
 class DatabasesCRUDRouter(CRUDGenerator):
