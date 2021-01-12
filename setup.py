@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages
 
+VERSION = '0.3.3'
+
 setup(
     name='fastapi-crudrouter',
-    version='0.3.3',
+    version=VERSION,
     author='Adam Watkins',
     author_email='cadamrun@gmail.com',
     packages=find_packages(exclude=('tests', 'tests.implementations')),
@@ -38,5 +40,5 @@ setup(
         "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
         "Topic :: Internet :: WWW/HTTP",
     ]
-
 )
+
