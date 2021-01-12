@@ -6,7 +6,7 @@ name: Upload Python Package
 on:
   push:
     branches:
-      - awtkns-patch-1
+      - master
 
 jobs:
   deploy:
