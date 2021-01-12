@@ -23,7 +23,7 @@ jobs:
       env:
         TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      if: github.event.pusher.name == "awtkns" 
+      if: github.event.pusher.login == awtkns 
       run: |
         curl -s https://pypi.org/pypi/fastapi-crudrouter/json | grep -Eo '"version":"[0-9].[0-9][0-9]?.[0-9][0-9]?"' | grep -Eo "[0-9].[0-9][0-9]?.[0-9][0-9]?" > old
         grep -Eo "VERSION = '[0-9].[0-9][0-9]?.[0-9][0-9]?'" setup.py | grep -Eo "[0-9].[0-9][0-9]?.[0-9][0-9]?" > new
