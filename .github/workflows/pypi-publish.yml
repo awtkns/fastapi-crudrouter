@@ -20,20 +20,24 @@ jobs:
       with:
         python-version: '3.6'
     - name: Bump Version
+      env:
+        TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
+        TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         curl -s https://pypi.org/pypi/fastapi-crudrouter/json | grep -Eo '"version":"[0-9].[0-9][0-9]?.[0-9][0-9]?"' | grep -Eo "[0-9].[0-9][0-9]?.[0-9][0-9]?" > old
         grep -Eo "VERSION = '[0-9].[0-9][0-9]?.[0-9][0-9]?'" setup.py | grep -Eo "[0-9].[0-9][0-9]?.[0-9][0-9]?" > new
         cat new
         cat old
-        if [ diff old new ]
+        if ! [ diff old new ]
         then
-          echo passed
-          ls
+          echo ---BUMPING VERSION---
+          cat new
           rm old
           rm new
+          
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
-        else
-          echo failed   
+          
+          python setup.py sdist bdist_wheel
+          twine upload dist/*
         fi
-        echo here
