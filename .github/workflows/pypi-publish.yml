@@ -23,11 +23,17 @@ jobs:
       run: |
         curl -s https://pypi.org/pypi/fastapi-crudrouter/json | grep -Eo '"version":"[0-9].[0-9][0-9]?.[0-9][0-9]?"' | grep -Eo "[0-9].[0-9][0-9]?.[0-9][0-9]?" > old
         grep -Eo "VERSION = '[0-9].[0-9][0-9]?.[0-9][0-9]?'" setup.py | grep -Eo "[0-9].[0-9][0-9]?.[0-9][0-9]?" > new
-        if [ diff old new ]; then
+        cat new
+        cat old
+        if [ diff old new ]
+        then
           echo passed
           ls
           rm old
           rm new
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
+        else
+          echo failed   
         fi
+        echo here
