@@ -37,7 +37,7 @@ TestSchema = pydantic_model_creator(TestModel, name=f"{TestModel.__name__}Schema
 
 from fastapi_crudrouter.core.tortoise import TortoiseCRUDRouter
 
-router = TortoiseCRUDRouter(schema=TestSchema, db_model=TestModel, prefix="test", config=TORTOISE_ORM)
+router = TortoiseCRUDRouter(schema=TestSchema, db_model=TestModel, prefix="test")
 
 app.include_router(router)
 

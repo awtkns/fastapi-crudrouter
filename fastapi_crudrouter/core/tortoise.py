@@ -17,25 +17,14 @@ except ImportError:
 else:
     tortoise_installed = True
 
-try:
-    from database.tortoise_config import TORTOISE_ORM
-
-    # register_tortoise(app, config=TORTOISE_ORM)
-    print("tortoise config found")
-except ImportError:
-    print("cannot find tortoise config")
-
 
 class TortoiseCRUDRouter(CRUDGenerator):
 
-    def __init__(self, schema: BaseModel, db_model: Model, config: dict, *args, **kwargs):
+    def __init__(self, schema: BaseModel, db_model: Model, *args, **kwargs):
         assert tortoise_installed, "Tortoise ORM must be installed to use the TortoiseCRUDRouter."
 
         self.db_model = db_model
         self._primary_key: str = db_model.describe()['pk_field']['db_column']
-
-        # todo add the other methods of configuration (got config, need file and link+modules)
-        # Tortoise.init(config=config)
 
         if 'prefix' not in kwargs:
             # unsure why the name has a "None." appended but I handle it
@@ -55,7 +44,6 @@ class TortoiseCRUDRouter(CRUDGenerator):
 
     def _get_one(self) -> Callable:
         async def route(item_id):
-            # todo this aint it chief
             model = await self.db_model.filter(id=item_id).first()
 
             if model:
@@ -75,19 +63,24 @@ class TortoiseCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        def route(item_id: int, model: self.schema):
-            raise NotImplementedError
+        async def route(item_id: int, model: self.create_schema):
+            await self.db_model.filter(id=item_id).update(**model.dict(exclude_unset=True))
+            return await self._get_one()(item_id)
 
         return route
 
     def _delete_all(self) -> Callable:
-        def route():
-            raise NotImplementedError
+        async def route():
+            await self.db_model.all().delete()
+            return await self._get_all()()
 
         return route
 
     def _delete_one(self) -> Callable:
-        def route(item_id: int):
-            raise NotImplementedError
+        async def route(item_id: int):
+            model = await self.db_model.filter(id=item_id).first()
+            await self.db_model.filter(id=item_id).delete()
+
+            return model
 
         return route
