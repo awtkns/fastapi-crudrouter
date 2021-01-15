@@ -23,6 +23,7 @@ nav:
       - In Memory: backends/memory.md
       - SQLAlchemy: backends/sqlalchemy.md
       - Databases (async): backends/async.md
+      - Tortoise (async): backends/tortoise.md
   - Dependencies: dependencies.md
 
 google_analytics:

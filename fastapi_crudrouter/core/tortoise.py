@@ -1,19 +1,13 @@
-import asyncio
 from typing import Callable
-from fastapi import Depends
 from pydantic import BaseModel
 
 from . import CRUDGenerator, NOT_FOUND
 
 try:
-    # from sqlalchemy.orm import Session
-    from tortoise import Tortoise, run_async
+    from tortoise import Tortoise
     from tortoise.models import Model
-    from tortoise.contrib.fastapi import register_tortoise
 except ImportError:
     tortoise_installed = False
-    Session = None
-    DeclarativeMeta = None
 else:
     tortoise_installed = True
 
