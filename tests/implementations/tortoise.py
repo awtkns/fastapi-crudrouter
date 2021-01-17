@@ -15,11 +15,12 @@ TORTOISE_CONFIG = {
     },
 }
 
-def _setup_base_app():
+async def _setup_base_app():
     if database_exists(DATABASE_URL):
         drop_database(DATABASE_URL)
 
     create_database(DATABASE_URL)
+    await Tortoise.generate_schemas()
 
     app = FastAPI()
     register_tortoise(app, config=TORTOISE_CONFIG)
@@ -27,8 +28,8 @@ def _setup_base_app():
     return app
 
 
-def tortoiose_implementation():
-    app = _setup_base_app()
+def tortoise_implementation():
+    app = await _setup_base_app()
 
     class PotatoModel(Model):
         thickness = fields.FloatField(description="Thickness of your potato")
