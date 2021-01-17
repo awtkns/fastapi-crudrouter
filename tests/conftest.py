@@ -6,7 +6,8 @@ from .implementations import *
 implementations = [
     memory_implementation,
     sqlalchemy_implementation,
-    databases_implementation
+    databases_implementation,
+    tortoiose_implementation
 ]
 
 
