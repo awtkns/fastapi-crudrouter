@@ -7,7 +7,7 @@ implementations = [
     memory_implementation,
     sqlalchemy_implementation,
     databases_implementation,
-    tortoiose_implementation
+    tortoise_implementation
 ]
 
 

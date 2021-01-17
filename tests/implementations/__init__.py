@@ -2,3 +2,4 @@ from .memory import memory_implementation
 from .sqlalchemy_ import sqlalchemy_implementation, sqlalchemy_implementation_custom_ids
 from .overloaded import overloaded_app
 from .databases_ import databases_implementation, databases_implementation_custom_ids
+from .tortoise import tortoise_implementation
