@@ -51,3 +51,6 @@ venv.bak/
 
 # Databases
 *.db
+
+# IDEs
+.idea
