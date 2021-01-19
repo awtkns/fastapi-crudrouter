@@ -62,7 +62,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        def route(item_id: int, model: self.schema, db: Session = Depends(self.db_func)):
+        def route(item_id, model: self.schema, db: Session = Depends(self.db_func)):
             db_model = self._get_one()(item_id, db)
 
             for key, value in model.dict(exclude={self._primary_key}).items():
@@ -86,7 +86,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _delete_one(self) -> Callable:
-        def route(item_id: int, db: Session = Depends(self.db_func)):
+        def route(item_id, db: Session = Depends(self.db_func)):
             db_model = self._get_one()(item_id, db)
             db.delete(db_model)
             db.commit()
