@@ -64,7 +64,7 @@ class DatabasesCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        async def route(item_id: self._pk_type, schema: self.schema):
+        async def route(item_id: self._pk_type, schema: self.update_schema):
             q = self.table.update().where(self._pk_col == item_id)
             rid = await self.db.execute(query=q, values=schema.dict(exclude={self._pk}))
 
