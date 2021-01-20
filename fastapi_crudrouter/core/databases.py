@@ -2,7 +2,7 @@ from typing import Callable
 from fastapi import Depends
 from pydantic import BaseModel
 
-from . import CRUDGenerator, NOT_FOUND
+from . import CRUDGenerator, NOT_FOUND, utils
 
 try:
     from sqlalchemy.sql.schema import Table
@@ -23,6 +23,7 @@ class DatabasesCRUDRouter(CRUDGenerator):
         self.db = database
         self._pk = table.primary_key.columns.values()[0].name
         self._pk_col = self.table.c[self._pk]
+        self._pk_type: type = utils.get_pk_type(schema, self._pk)
 
         if 'prefix' not in kwargs:
             kwargs['prefix'] = table.name
@@ -40,7 +41,7 @@ class DatabasesCRUDRouter(CRUDGenerator):
         return route
 
     def _get_one(self) -> Callable:
-        async def route(item_id):
+        async def route(item_id: self._pk_type):
             q = self.table.select().where(self._pk_col == item_id)
             model = await self.db.fetch_one(q)
 
@@ -60,7 +61,7 @@ class DatabasesCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        async def route(item_id: int, schema: self.schema):
+        async def route(item_id: self._pk_type, schema: self.schema):
             q = self.table.update().where(self._pk_col == item_id)
             rid = await self.db.execute(query=q, values=schema.dict(exclude={self._pk}))
 
@@ -81,7 +82,7 @@ class DatabasesCRUDRouter(CRUDGenerator):
         return route
 
     def _delete_one(self) -> Callable:
-        async def route(item_id: int):
+        async def route(item_id: self._pk_type):
             q = self.table.delete().where(self._pk_col == item_id)
 
             row = await self._get_one()(item_id)

@@ -1,9 +1,9 @@
-from typing import Callable, Union
+from typing import Callable
+
 from fastapi import Depends
 from pydantic import BaseModel
 
-from . import CRUDGenerator, NOT_FOUND
-
+from . import CRUDGenerator, NOT_FOUND, utils
 
 try:
     from sqlalchemy.orm import Session
@@ -23,13 +23,14 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
 
         self.db_model = db_model
         self.db_func = db
-        self._primary_key: str = db_model.__table__.primary_key.columns.keys()[0]
+        self._pk: str = db_model.__table__.primary_key.columns.keys()[0]
+        self._pk_type: type = utils.get_pk_type(schema, self._pk)
 
         if 'prefix' not in kwargs:
             kwargs['prefix'] = db_model.__tablename__
 
         if 'create_schema' not in kwargs:
-            kwargs['create_schema'] = self.schema_factory(schema, self._primary_key)
+            kwargs['create_schema'] = self.schema_factory(schema, self._pk)
 
         super().__init__(schema, *args, **kwargs)
 
@@ -40,7 +41,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _get_one(self) -> Callable:
-        def route(item_id: Union[int, str], db: Session = Depends(self.db_func)):
+        def route(item_id: self._pk_type, db: Session = Depends(self.db_func)):
             model = db.query(self.db_model).get(item_id)
 
             if model:
@@ -62,10 +63,10 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        def route(item_id: Union[int, str], model: self.schema, db: Session = Depends(self.db_func)):
+        def route(item_id: self._pk_type, model: self.schema, db: Session = Depends(self.db_func)):
             db_model = self._get_one()(item_id, db)
 
-            for key, value in model.dict(exclude={self._primary_key}).items():
+            for key, value in model.dict(exclude={self._pk}).items():
                 if hasattr(db_model, key):
                     setattr(db_model, key, value)
 
@@ -86,7 +87,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _delete_one(self) -> Callable:
-        def route(item_id: Union[int, str], db: Session = Depends(self.db_func)):
+        def route(item_id: self._pk_type, db: Session = Depends(self.db_func)):
             db_model = self._get_one()(item_id, db)
             db.delete(db_model)
             db.commit()
