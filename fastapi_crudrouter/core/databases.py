@@ -1,5 +1,5 @@
 from typing import Callable
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from pydantic import BaseModel
 
 from . import CRUDGenerator, NOT_FOUND, utils
@@ -54,9 +54,12 @@ class DatabasesCRUDRouter(CRUDGenerator):
 
     def _create(self) -> Callable:
         async def route(schema: self.create_schema):
-            q = self.table.insert()
-            rid = await self.db.execute(query=q, values=schema.dict())
-            return {**schema.dict(), self._pk: rid}
+            try:
+                q = self.table.insert()
+                rid = await self.db.execute(query=q, values=schema.dict())
+                return {self._pk: rid, **schema.dict()}
+            except Exception:
+                raise HTTPException(422, 'Key already exists')
 
         return route
 
@@ -66,7 +69,7 @@ class DatabasesCRUDRouter(CRUDGenerator):
             rid = await self.db.execute(query=q, values=schema.dict(exclude={self._pk}))
 
             if rid:
-                return {**schema.dict(), self._pk: rid}
+                return {self._pk: rid, **schema.dict()}
             else:
                 raise NOT_FOUND
 

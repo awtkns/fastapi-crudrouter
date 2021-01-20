@@ -89,8 +89,3 @@ def sqlalchemy_implementation_string_pk():
     app.include_router(SQLAlchemyCRUDRouter(schema=PotatoType, create_schema=PotatoType, db_model=PotatoTypeModel, db=session, prefix='potato_type'))
 
     return app
-
-if __name__ == '__main__':
-    import uvicorn
-
-    uvicorn.run(sqlalchemy_implementation_string_pk())
