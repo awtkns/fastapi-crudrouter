@@ -29,7 +29,7 @@ jobs:
         grep -Eo "VERSION = '[0-9].[0-9][0-9]?.[0-9][0-9]?'" setup.py | grep -Eo "[0-9].[0-9][0-9]?.[0-9][0-9]?" > new
         cat new
         cat old
-        if [ cmp old new ]
+        if ! [ cmp old new ]
         then
           echo ---BUMPING VERSION---
           cat new
