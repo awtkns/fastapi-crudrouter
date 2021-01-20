@@ -28,5 +28,7 @@ def overloaded_client():
     yield TestClient(overloaded_app())
 
 
+@pytest.fixture
+def string_pk_client():
 
-
+    yield TestClient(sqlalchemy_implementation_string_pk())

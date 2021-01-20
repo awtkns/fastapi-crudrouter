@@ -1,6 +1,6 @@
 from typing import Callable
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 from pydantic import BaseModel
 
 from . import CRUDGenerator, NOT_FOUND, utils
@@ -8,6 +8,7 @@ from . import CRUDGenerator, NOT_FOUND, utils
 try:
     from sqlalchemy.orm import Session
     from sqlalchemy.ext.declarative import DeclarativeMeta
+    from sqlalchemy.exc import IntegrityError
 except ImportError:
     sqlalchemy_installed = False
     Session = None
@@ -53,12 +54,15 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
 
     def _create(self) -> Callable:
         def route(model: self.create_schema, db: Session = Depends(self.db_func)):
-            db_model = self.db_model(**model.dict())
-            db.add(db_model)
-            db.commit()
-            db.refresh(db_model)
-
-            return db_model
+            try:
+                db_model = self.db_model(**model.dict())
+                db.add(db_model)
+                db.commit()
+                db.refresh(db_model)
+                return db_model
+            except IntegrityError:
+                db.rollback()
+                raise HTTPException(422, 'Key already exists')
 
         return route
 

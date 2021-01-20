@@ -36,7 +36,7 @@ def test_delete_one(client):
 
 def test_delete_all(client):
     test_router.test_delete_all(client, PotatoUrl, basic_potato)
-    test_router.test_delete_all(client, CarrotUrl, basic_carrot)
+    test_router.test_delete_all(client, CarrotUrl, basic_carrot, basic_carrot)
 
 
 @pytest.mark.parametrize('id_', [-1, 0, 4, '14'])

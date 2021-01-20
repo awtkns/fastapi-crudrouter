@@ -33,3 +33,11 @@ class CarrotCreate(BaseModel):
 
 class Carrot(CarrotCreate, ORMModel):
     pass
+
+
+class PotatoType(BaseModel):
+    name: str
+    origin: str
+
+    class Config:
+        orm_mode = True

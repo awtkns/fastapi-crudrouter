@@ -27,11 +27,12 @@ def test_post(client, url: str = URL, model: BaseModel = basic_potato):
 def test_get_one(client, url: str = URL, model: BaseModel = basic_potato, id_key: str = 'id'):
     res = client.post(url, json=model.dict())
     assert res.status_code == 200
+    id_ = res.json()[id_key]
 
     data = client.get(url).json()
-    assert len(data) == 1
+    assert len(data)
 
-    res = client.get(f'{url}/{data[0][id_key]}')
+    res = client.get(f'{url}/{id_}')
     assert res.status_code == 200
 
     assert compare_dict(res.json(), model.dict(), exclude=[id_key])
@@ -65,23 +66,25 @@ def test_delete_one(client, url: str = URL, model: BaseModel = basic_potato, id_
     assert res.status_code == 200
     assert compare_dict(res.json(), model.dict(), exclude=[id_key])
 
+    length_before = len(client.get(url).json())
+
     res = client.delete(f'{url}/{data[id_key]}')
     assert res.status_code == 200
     assert compare_dict(res.json(), model.dict(), exclude=[id_key])
 
     res = client.get(url)
     assert res.status_code == 200
-    assert len(res.json()) == 0
+    assert len(res.json()) < length_before
 
 
-def test_delete_all(client, url: str = URL, model: BaseModel = basic_potato):
+def test_delete_all(client, url: str = URL, model: BaseModel = basic_potato, model2: BaseModel = basic_potato):
     res = client.post(url, json=model.dict())
     assert res.status_code == 200
 
-    res = client.post(url, json=model.dict())
+    res = client.post(url, json=model2.dict())
     assert res.status_code == 200
 
-    assert len(client.get(url).json()) == 2
+    assert len(client.get(url).json()) >= 2
 
     res = client.delete(url)
     assert res.status_code == 200
