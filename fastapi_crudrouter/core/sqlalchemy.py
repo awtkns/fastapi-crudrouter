@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Union
 from fastapi import Depends
 from pydantic import BaseModel
 
@@ -40,7 +40,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _get_one(self) -> Callable:
-        def route(item_id, db: Session = Depends(self.db_func)):
+        def route(item_id: Union[int, str], db: Session = Depends(self.db_func)):
             model = db.query(self.db_model).get(item_id)
 
             if model:
@@ -62,7 +62,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        def route(item_id, model: self.schema, db: Session = Depends(self.db_func)):
+        def route(item_id: Union[int, str], model: self.schema, db: Session = Depends(self.db_func)):
             db_model = self._get_one()(item_id, db)
 
             for key, value in model.dict(exclude={self._primary_key}).items():
