@@ -18,6 +18,10 @@ By default, the CRUDRouter will generate the six routes below for you.
 
     **Example:** If the CRUDRouter's prefix is set as *potato* and I want to update a specific potato the route I want to access is
     `/potato/my_potato_id` where *my_potato_id* is the ID of the potato.
+    
+!!! tip "Custom Base Path"
+    You are also able to set a custom base path (instead of `/`) with the optional `base_path` kwarg when creating your CRUDRouter.
+    This can be done like so: `router = CRUDRouter(model=mymodel, base_path='/api/v1/')`
 
 ## Prefixes
 Depending on which CRUDRouter you are using, the CRUDRouter will try to automatically generate a suitable prefix for your
