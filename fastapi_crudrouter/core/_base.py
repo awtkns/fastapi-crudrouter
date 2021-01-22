@@ -11,13 +11,13 @@ NOT_FOUND = HTTPException(404, 'Item not found')
 
 class CRUDGenerator(APIRouter):
     schema: BaseModel = None
-    _base_path: str = '/'
 
     def __init__(
         self,
         schema: BaseModel,
         create_schema: BaseModel = None,
         prefix: str = None,
+        base_path: str = '/',
         get_all_route: bool = True,
         get_one_route: bool = True,
         create_route: bool = True,
@@ -29,9 +29,10 @@ class CRUDGenerator(APIRouter):
     ):
 
         self.schema = schema
+        self.base_path = base_path
         self.create_schema = create_schema if create_schema else self.schema_factory(self.schema)
 
-        prefix = self._base_path + (self.schema.__name__.lower() if not prefix else prefix).strip('/')
+        prefix = self.base_path + (self.schema.__name__.lower() if not prefix else prefix).strip('/')
         super().__init__(prefix=prefix, tags=[prefix.strip('/').capitalize()], *args, **kwargs)
 
         if get_all_route:
