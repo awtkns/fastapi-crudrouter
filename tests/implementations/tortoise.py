@@ -2,21 +2,34 @@ import asyncio
 
 from fastapi import FastAPI
 from tortoise import Tortoise
-from tortoise.contrib.fastapi import register_tortoise
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 from fastapi_crudrouter import TortoiseCRUDRouter
-from tests.implementations.models import PotatoModel, CarrotModel
+from tortoise import Model, fields
+
+
+class PotatoModel(Model):
+    thickness = fields.FloatField()
+    mass = fields.FloatField()
+    color = fields.CharField(max_length=255)
+    type = fields.CharField(max_length=255)
+
+
+class CarrotModel(Model):
+    length = fields.FloatField()
+    color = fields.CharField(max_length=255)
+
 
 TORTOISE_ORM = {
     "connections": {"default": 'sqlite://db.sqlite3'},
     "apps": {
         "models": {
-            "models": ["tests.implementations.models"],
+            "models": ["tests.implementations.tortoise"],
             "default_connection": "default",
         },
     },
 }
+
 
 async def setup(app):
     import os
@@ -33,8 +46,10 @@ async def setup(app):
     app.include_router(
         TortoiseCRUDRouter(schema=Carrot, db_model=CarrotModel, create_schema=CarrotCreate, prefix='carrot'))
 
+
 async def some_shutdown_task():
     await Tortoise.close_connections()
+
 
 def tortoise_implementation():
     app = FastAPI(on_shutdown=[some_shutdown_task])
