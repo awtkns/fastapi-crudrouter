@@ -14,7 +14,7 @@ else:
 
 class TortoiseCRUDRouter(CRUDGenerator):
 
-    def __init__(self, schema: BaseModel, db_model: Model, *args, **kwargs):
+    def __init__(self, schema: BaseModel, db_model, *args, **kwargs):
         assert tortoise_installed, "Tortoise ORM must be installed to use the TortoiseCRUDRouter."
 
         self.db_model = db_model
@@ -72,7 +72,7 @@ class TortoiseCRUDRouter(CRUDGenerator):
 
     def _delete_one(self) -> Callable:
         async def route(item_id: int):
-            model = await self.db_model.filter(id=item_id).first()
+            model = await self._get_one()(item_id)
             await self.db_model.filter(id=item_id).delete()
 
             return model
