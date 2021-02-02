@@ -1,11 +1,10 @@
-import asyncio
+import os
 
 from fastapi import FastAPI
-from tortoise import Tortoise
+from tortoise import Tortoise, Model, fields
 from tortoise.contrib.pydantic import pydantic_model_creator
 
 from fastapi_crudrouter import TortoiseCRUDRouter
-from tortoise import Model, fields
 
 
 class PotatoModel(Model):
@@ -20,6 +19,11 @@ class CarrotModel(Model):
     color = fields.CharField(max_length=255)
 
 
+Potato = pydantic_model_creator(PotatoModel, name="Potato")
+Carrot = pydantic_model_creator(CarrotModel, name="Carrot")
+CarrotCreate = pydantic_model_creator(CarrotModel, name="CarrotCreate", exclude_readonly=True)
+
+
 TORTOISE_ORM = {
     "connections": {"default": 'sqlite://db.sqlite3'},
     "apps": {
@@ -31,28 +35,19 @@ TORTOISE_ORM = {
 }
 
 
-async def setup(app):
-    import os
-    os.system('rm db.sqlite3 db.sqlite3-wal db.sqlite3-shm')
-
-    await Tortoise.init(config=TORTOISE_ORM)
-    await Tortoise.generate_schemas()
-
-    Potato = pydantic_model_creator(PotatoModel, name="Potato")
-    Carrot = pydantic_model_creator(CarrotModel, name="Carrot")
-    CarrotCreate = pydantic_model_creator(CarrotModel, name="CarrotCreate", exclude_readonly=True)
-
-    app.include_router(TortoiseCRUDRouter(schema=Potato, db_model=PotatoModel, prefix='potato'))
-    app.include_router(
-        TortoiseCRUDRouter(schema=Carrot, db_model=CarrotModel, create_schema=CarrotCreate, prefix='carrot'))
-
-
-async def some_shutdown_task():
+async def on_shutdown():
     await Tortoise.close_connections()
 
 
 def tortoise_implementation():
-    app = FastAPI(on_shutdown=[some_shutdown_task])
-    asyncio.run(setup(app))
+    [os.remove(f'./db.sqlite3{s}') for s in ['', '-wal', '-shm'] if os.path.exists(f'./db.sqlite3{s}')]
+
+    app = FastAPI(on_shutdown=[on_shutdown])
+
+    Tortoise.init(config=TORTOISE_ORM)
+    Tortoise.generate_schemas()
+
+    app.include_router(TortoiseCRUDRouter(schema=Potato, db_model=PotatoModel, prefix='potato'))
+    app.include_router(TortoiseCRUDRouter(schema=Carrot, db_model=CarrotModel, create_schema=CarrotCreate, prefix='carrot'))
 
     return app
