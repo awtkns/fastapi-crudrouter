@@ -1,27 +1,24 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from .implementations import *
+try:
+    from tortoise.contrib.test import initializer, finalizer
+except ImportError:
+    pass
 
-implementations = [
-    memory_implementation,
-    sqlalchemy_implementation,
-    databases_implementation,
-    tortoise_implementation
-]
+from .implementations import *
 
 
 @pytest.fixture(params=implementations)
 def client(request):
     impl = request.param
 
-    if impl is tortoise_implementation:
-        from tortoise.contrib.test import initializer, finalizer
-
+    if impl.__name__ is 'tortoise_implementation':
         initializer(["tests.implementations.tortoise_"])
         with TestClient(impl()) as c:
             yield c
         finalizer()
+
     else:
         yield TestClient(impl())
 
