@@ -9,6 +9,7 @@ setup(
     author_email='cadamrun@gmail.com',
     packages=find_packages(exclude=('tests', 'tests.implementations')),
     url='https://github.com/awtkns/fastapi-crudrouter',
+    documentation='https://fastapi-crudrouter.awtkns.com/',
     license='MIT',
     description='A dynamic FastAPI router that automatically creates CRUD routes for your models',
     long_description=open('README.md').read(),

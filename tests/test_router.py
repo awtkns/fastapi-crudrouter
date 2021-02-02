@@ -18,7 +18,7 @@ def test_get(client, url: str = URL):
 
 def test_post(client, url: str = URL, model: BaseModel = basic_potato):
     res = client.post(url, json=model.dict())
-    assert res.status_code == 200
+    assert res.status_code == 200, res.json()
 
     data = client.get(url).json()
     assert len(data) == 1
