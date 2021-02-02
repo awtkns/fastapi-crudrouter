@@ -8,3 +8,4 @@ async-generator
 databases
 aiosqlite
 tortoise-orm
+asynctest

@@ -8,7 +8,7 @@ from .implementations import *
 def client(request):
     impl = request.param
 
-    if impl.__name__ is 'tortoise_implementation':
+    if impl.__name__ == 'tortoise_implementation':
         from tortoise.contrib.test import initializer, finalizer
 
         initializer(["tests.implementations.tortoise_"])
