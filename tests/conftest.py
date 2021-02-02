@@ -18,7 +18,7 @@ def client(request):
     if impl is tortoise_implementation:
         from tortoise.contrib.test import initializer, finalizer
 
-        initializer(["tests.implementations.tortoise"])
+        initializer(["tests.implementations.tortoise_"])
         with TestClient(impl()) as c:
             yield c
         finalizer()
