@@ -48,6 +48,6 @@ def tortoise_implementation():
     Tortoise.generate_schemas()
 
     app.include_router(TortoiseCRUDRouter(schema=Potato, db_model=PotatoModel, prefix='potato'))
-    app.include_router(TortoiseCRUDRouter(schema=Carrot, db_model=CarrotModel, create_schema=CarrotCreate, prefix='carrot'))
+    app.include_router(TortoiseCRUDRouter(schema=Carrot, db_model=CarrotModel, prefix='carrot'))
 
     return app
