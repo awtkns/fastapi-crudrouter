@@ -48,9 +48,3 @@ def tortoise_implementation():
     app.include_router(TortoiseCRUDRouter(schema=Carrot, db_model=CarrotModel, create_schema=CarrotCreate, prefix='carrot'))
 
     return app
-
-
-if __name__ == '__main__':
-    import uvicorn
-
-    uvicorn.run(tortoise_implementation())
