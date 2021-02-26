@@ -17,6 +17,7 @@ class CRUDGenerator(APIRouter):
         self,
         schema: BaseModel,
         create_schema: BaseModel = None,
+        update_schema: BaseModel = None,
         prefix: str = None,
         get_all_route: bool = True,
         get_one_route: bool = True,
@@ -29,7 +30,8 @@ class CRUDGenerator(APIRouter):
     ):
 
         self.schema = schema
-        self.create_schema = create_schema if create_schema else self.schema_factory(self.schema)
+        self.create_schema = create_schema if create_schema else self.schema_factory(self.schema, name='Create')
+        self.update_schema = update_schema if update_schema else self.schema_factory(self.schema, name="Update")
 
         prefix = self._base_path + (self.schema.__name__.lower() if not prefix else prefix).strip('/')
         super().__init__(prefix=prefix, tags=[prefix.strip('/').capitalize()], *args, **kwargs)
@@ -106,13 +108,13 @@ class CRUDGenerator(APIRouter):
         ]
 
     @staticmethod
-    def schema_factory(schema_cls: BaseModel, pk_field_name: str = 'id'):
+    def schema_factory(schema_cls: BaseModel, pk_field_name: str = 'id', name: str = 'Create'):
         """
         Is used to create a CreateSchema which does not contain pk
         """
 
         fields = {f.name: (f.type_, ...) for f in schema_cls.__fields__.values() if f.name != pk_field_name}
 
-        name = schema_cls.__name__ + 'Create'
+        name = schema_cls.__name__ + name
         schema = create_model(name, **fields)
         return schema

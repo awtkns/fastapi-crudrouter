@@ -36,12 +36,11 @@ class MemoryCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        def route(item_id: int, model: self.schema):
+        def route(item_id: int, model: self.update_schema):
             for i, m in enumerate(self.models):
                 if m.id == item_id:
-                    model.id = m.id
-                    self.models[i] = model
-                    return model
+                    self.models[i] = self.schema(**model.dict(), id=m.id)
+                    return self.models[i]
 
             raise NOT_FOUND
         return route

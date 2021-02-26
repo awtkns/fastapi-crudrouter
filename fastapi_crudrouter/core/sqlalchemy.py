@@ -8,7 +8,6 @@ from . import CRUDGenerator, NOT_FOUND, utils
 try:
     from sqlalchemy.orm import Session
     from sqlalchemy.ext.declarative import DeclarativeMeta
-    from sqlalchemy.exc import IntegrityError
 except ImportError:
     sqlalchemy_installed = False
     Session = None
@@ -67,7 +66,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        def route(item_id: self._pk_type, model: self.schema, db: Session = Depends(self.db_func)):
+        def route(item_id: self._pk_type, model: self.update_schema, db: Session = Depends(self.db_func)):
             db_model = self._get_one()(item_id, db)
 
             for key, value in model.dict(exclude={self._pk}).items():
