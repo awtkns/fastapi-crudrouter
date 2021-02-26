@@ -57,7 +57,7 @@ class TortoiseCRUDRouter(CRUDGenerator):
         return route
 
     def _update(self) -> Callable:
-        async def route(item_id: int, model: self.create_schema):
+        async def route(item_id: int, model: self.update_schema):
             await self.db_model.filter(id=item_id).update(**model.dict(exclude_unset=True))
             return await self._get_one()(item_id)
 
