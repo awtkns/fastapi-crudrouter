@@ -7,5 +7,3 @@ async-exit-stack
 async-generator
 databases
 aiosqlite
-tortoise-orm
-asynctest
