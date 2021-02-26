@@ -51,6 +51,7 @@ venv.bak/
 
 # Databases
 *.db
+db.sqlite3*
 
 # IDEs
 .idea

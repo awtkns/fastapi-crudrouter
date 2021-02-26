@@ -16,7 +16,6 @@ def get_client():
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
     def token_auth(token: str = Depends(oauth2_scheme)):
-        print(token)
         if not token:
             raise HTTPException(401, "Invalid token")
 

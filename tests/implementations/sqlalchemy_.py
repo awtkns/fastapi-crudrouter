@@ -1,13 +1,13 @@
 from fastapi import FastAPI
+from pydantic import BaseModel
 from sqlalchemy import Column, String, Float, Integer
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql.base import ColumnCollection
 from sqlalchemy_utils import drop_database, create_database, database_exists
 
 from fastapi_crudrouter import SQLAlchemyCRUDRouter
-from tests import Potato, PotatoCreate, Carrot, CarrotCreate, CustomPotato
+from tests import Potato, PotatoType, Carrot, CarrotCreate, CustomPotato
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -73,5 +73,19 @@ def sqlalchemy_implementation_custom_ids():
 
     Base.metadata.create_all(bind=engine)
     app.include_router(SQLAlchemyCRUDRouter(schema=CustomPotato, db_model=PotatoModel, db=session))
+
+    return app
+
+
+def sqlalchemy_implementation_string_pk():
+    app, engine, Base, session = _setup_base_app()
+
+    class PotatoTypeModel(Base):
+        __tablename__ = 'potato_type'
+        name = Column(String, primary_key=True, index=True)
+        origin = Column(String)
+
+    Base.metadata.create_all(bind=engine)
+    app.include_router(SQLAlchemyCRUDRouter(schema=PotatoType, create_schema=PotatoType, db_model=PotatoTypeModel, db=session, prefix='potato_type'))
 
     return app
