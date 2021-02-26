@@ -8,7 +8,7 @@ from pydantic import BaseModel
 from sqlalchemy_utils import drop_database, create_database, database_exists
 
 from fastapi_crudrouter import DatabasesCRUDRouter
-from tests import Potato, PotatoCreate, CustomPotato, Carrot, CarrotCreate, PotatoType
+from tests import Potato, PotatoCreate, CustomPotato, Carrot, CarrotCreate, PotatoType, CarrotUpdate
 
 DATABASE_URL = "sqlite:///./test.db"
 
@@ -57,7 +57,7 @@ def databases_implementation():
         await database.disconnect()
 
     potato_router = DatabasesCRUDRouter(database=database, table=potatoes, schema=Potato, prefix='potato')
-    carrot_router = DatabasesCRUDRouter(database=database, table=carrots, schema=Carrot, create_schema=CarrotCreate, prefix='carrot')
+    carrot_router = DatabasesCRUDRouter(database=database, table=carrots, schema=Carrot, create_schema=CarrotCreate, update_schema=CarrotUpdate, prefix='carrot')
     app.include_router(potato_router)
     app.include_router(carrot_router)
 

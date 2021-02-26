@@ -6,7 +6,7 @@ from tortoise.contrib.pydantic import pydantic_model_creator
 
 from fastapi_crudrouter import TortoiseCRUDRouter
 
-from tests import Potato, Carrot, CarrotCreate
+from tests import Potato, Carrot, CarrotCreate, CarrotUpdate
 
 
 class PotatoModel(Model):
@@ -45,6 +45,6 @@ def tortoise_implementation():
     Tortoise.generate_schemas()
 
     app.include_router(TortoiseCRUDRouter(schema=Potato, db_model=PotatoModel, prefix='potato'))
-    app.include_router(TortoiseCRUDRouter(schema=Carrot, db_model=CarrotModel, create_schema=CarrotCreate, prefix='carrot'))
+    app.include_router(TortoiseCRUDRouter(schema=Carrot, db_model=CarrotModel, create_schema=CarrotCreate, update_schema=CarrotUpdate, prefix='carrot'))
 
     return app

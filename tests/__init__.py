@@ -31,6 +31,10 @@ class CarrotCreate(BaseModel):
     color: str = 'Orange'
 
 
+class CarrotUpdate(BaseModel):
+    length: float
+
+
 class Carrot(CarrotCreate, ORMModel):
     pass
 
