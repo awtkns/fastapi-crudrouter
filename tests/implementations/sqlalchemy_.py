@@ -3,11 +3,10 @@ from sqlalchemy import Column, String, Float, Integer
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.sql.base import ColumnCollection
 from sqlalchemy_utils import drop_database, create_database, database_exists
 
 from fastapi_crudrouter import SQLAlchemyCRUDRouter
-from tests import Potato, PotatoCreate, Carrot, CarrotCreate, CustomPotato
+from tests import Potato, Carrot, CarrotCreate, CarrotUpdate, CustomPotato
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -54,7 +53,7 @@ def sqlalchemy_implementation():
 
     Base.metadata.create_all(bind=engine)
     app.include_router(SQLAlchemyCRUDRouter(schema=Potato, db_model=PotatoModel, db=session, prefix='potato'))
-    app.include_router(SQLAlchemyCRUDRouter(schema=Carrot, db_model=CarrotModel, db=session, create_schema=CarrotCreate, prefix='carrot'))
+    app.include_router(SQLAlchemyCRUDRouter(schema=Carrot, db_model=CarrotModel, db=session, create_schema=CarrotCreate, update_schema=CarrotUpdate, prefix='carrot'))
 
     return app
 
@@ -75,3 +74,9 @@ def sqlalchemy_implementation_custom_ids():
     app.include_router(SQLAlchemyCRUDRouter(schema=CustomPotato, db_model=PotatoModel, db=session))
 
     return app
+
+
+import uvicorn
+
+if __name__ == '__main__':
+    uvicorn.run(sqlalchemy_implementation())

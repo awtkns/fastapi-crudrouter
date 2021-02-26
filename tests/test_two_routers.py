@@ -1,6 +1,7 @@
 import pytest
 
 from . import Potato, Carrot, test_router
+from .utils import compare_dict
 
 basic_potato = Potato(id=0, thickness=.24, mass=1.2, color='Brown', type='Russet')
 basic_carrot = Carrot(id=0, length=1.2, color='Orange')
@@ -26,7 +27,29 @@ def test_get_one(client):
 
 def test_update(client):
     test_router.test_update(client, PotatoUrl, basic_potato)
-    test_router.test_update(client, CarrotUrl, basic_carrot)
+
+    with pytest.raises(AssertionError):
+        test_router.test_update(client, CarrotUrl, basic_carrot)
+
+    res = client.post(CarrotUrl, json=basic_carrot.dict())
+    data = res.json()
+    assert res.status_code == 200
+
+    carrot = basic_carrot.copy()
+    carrot.color = 'Red'
+    carrot.length = 54
+
+    res = client.put(f'{CarrotUrl}/{data["id"]}', json=carrot.dict())
+    assert res.status_code == 200
+    assert not compare_dict(res.json(), carrot.dict(), exclude=['id'])
+    assert not compare_dict(res.json(), basic_carrot.dict(), exclude=['id'])
+    assert compare_dict(res.json(), carrot.dict(), exclude=['id', 'color'])
+
+    res = client.get(f'{CarrotUrl}/{data["id"]}')
+    assert res.status_code == 200
+    assert not compare_dict(res.json(), carrot.dict(), exclude=['id'])
+    assert not compare_dict(res.json(), basic_carrot.dict(), exclude=['id'])
+    assert compare_dict(res.json(), carrot.dict(), exclude=['id', 'color'])
 
 
 def test_delete_one(client):
