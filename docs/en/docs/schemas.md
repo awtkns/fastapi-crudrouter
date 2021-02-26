@@ -4,8 +4,13 @@ The CRUDRouter is able to generate and document your routes based on the schema,
 In general, the all provided CRUDRouter's have the option to pass both a `schema` and a `create` schema to it.  If no
 create schema is provided, the CRUDRouter will automatically generate one. Optionally you can also pass an `update` schema
 allowing for custom update behavior.
+
 ```python
-CRUDRouter(schema=MyPydanticModel, create_schema=MyPydanticCreateModel, update_schema=MyPydanticUpdateModel)
+CRUDRouter(
+    schema=MyPydanticModel, 
+    create_schema=MyPydanticCreateModel, 
+    update_schema=MyPydanticUpdateModel
+)
 ```
 
 !!! tip "Automatic Create and Update Schema Generation"
