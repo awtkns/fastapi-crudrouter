@@ -49,10 +49,10 @@ def test_integrity_error():
 
     args = client, '/potato', potato
     test_router.test_post(*args)
-    with pytest.raises(IntegrityError):
+    with pytest.raises(AssertionError):
         test_router.test_post(*args)
 
     # No integrity error here because of the create_schema
     args = client, '/carrot', Carrot(id=1, length=2, color='red')
     test_router.test_post(*args)
-    test_router.test_post(*args)
+    test_router.test_post(*args, expected_length=2)
