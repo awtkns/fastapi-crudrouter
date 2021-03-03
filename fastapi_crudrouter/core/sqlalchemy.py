@@ -8,6 +8,7 @@ from . import CRUDGenerator, NOT_FOUND, utils
 try:
     from sqlalchemy.orm import Session
     from sqlalchemy.ext.declarative import DeclarativeMeta
+    from sqlalchemy.exc import IntegrityError
 except ImportError:
     sqlalchemy_installed = False
     Session = None
