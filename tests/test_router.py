@@ -16,12 +16,12 @@ def test_get(client, url: str = URL):
     assert type(data) == list and len(data) == 0
 
 
-def test_post(client, url: str = URL, model: BaseModel = basic_potato):
+def test_post(client, url: str = URL, model: BaseModel = basic_potato, expected_length: int = 1):
     res = client.post(url, json=model.dict())
     assert res.status_code == 200, res.json()
 
     data = client.get(url).json()
-    assert len(data) == 1
+    assert len(data) == expected_length
 
 
 def test_get_one(client, url: str = URL, model: BaseModel = basic_potato, id_key: str = 'id'):
