@@ -54,7 +54,14 @@ def sqlalchemy_implementation():
 
     Base.metadata.create_all(bind=engine)
     app.include_router(SQLAlchemyCRUDRouter(schema=Potato, db_model=PotatoModel, db=session, prefix='potato'))
-    app.include_router(SQLAlchemyCRUDRouter(schema=Carrot, db_model=CarrotModel, db=session, create_schema=CarrotCreate, update_schema=CarrotUpdate, prefix='carrot'))
+    app.include_router(SQLAlchemyCRUDRouter(
+        schema=Carrot,
+        db_model=CarrotModel,
+        db=session,
+        create_schema=CarrotCreate,
+        update_schema=CarrotUpdate,
+        prefix='carrot'
+    ))
 
     return app
 

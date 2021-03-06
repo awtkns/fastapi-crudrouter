@@ -34,9 +34,14 @@ class DatabasesCRUDRouter(CRUDGenerator):
         super().__init__(schema, *args, **kwargs)
 
     def _get_all(self) -> Callable:
-        async def route():
-            q = self.table.select()
-            return await self.db.fetch_all(q)
+        if self.paginate:
+            async def route(skip: int = 0, limit: int = self.paginate):
+                q = self.table.select().limit(limit).offset(skip)
+                return await self.db.fetch_all(q)
+        else:
+            async def route():
+                q = self.table.select()
+                return await self.db.fetch_all(q)
 
         return route
 

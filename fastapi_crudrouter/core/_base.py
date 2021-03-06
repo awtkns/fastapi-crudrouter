@@ -1,4 +1,4 @@
-from typing import List, Optional, Callable
+from typing import List, Optional, Callable, Union
 
 from starlette.routing import Route
 from fastapi import APIRouter, HTTPException
@@ -19,6 +19,7 @@ class CRUDGenerator(APIRouter):
         create_schema: BaseModel = None,
         update_schema: BaseModel = None,
         prefix: str = None,
+        paginate: Union[int, bool, None] = 10,
         get_all_route: bool = True,
         get_one_route: bool = True,
         create_route: bool = True,
@@ -29,6 +30,7 @@ class CRUDGenerator(APIRouter):
         **kwargs
     ):
 
+        self.paginate = paginate
         self.schema = schema
         self.create_schema = create_schema if create_schema else self.schema_factory(self.schema, name='Create')
         self.update_schema = update_schema if update_schema else self.schema_factory(self.schema, name="Update")

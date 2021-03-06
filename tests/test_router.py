@@ -8,12 +8,14 @@ basic_potato = Potato(id=0, thickness=.24, mass=1.2, color='Brown', type='Russet
 URL = '/potato'
 
 
-def test_get(client, url: str = URL):
-    res = client.get(url)
+def test_get(client, url: str = URL, params: dict = None, expected_length: int = 0):
+    res = client.get(url, params=params)
     data = res.json()
 
     assert res.status_code == 200
-    assert type(data) == list and len(data) == 0
+    assert type(data) == list and len(data) == expected_length
+
+    return data
 
 
 def test_post(client, url: str = URL, model: BaseModel = basic_potato, expected_length: int = 1):
