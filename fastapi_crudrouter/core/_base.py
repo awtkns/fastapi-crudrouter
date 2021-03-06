@@ -122,7 +122,7 @@ class CRUDGenerator(APIRouter):
         return schema
 
     @staticmethod
-    def pagination_factory(limit: int = 0) -> Callable:
+    def pagination_factory(limit: int = None) -> Callable:
         def pagination(skip: int = 0, limit: int = limit):
             if skip < 0:
                 raise HTTPException(422, "skip query parameter must be greater or equal to zero")
