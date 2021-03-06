@@ -36,12 +36,10 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
         super().__init__(schema, *args, **kwargs)
 
     def _get_all(self) -> Callable:
-        if self.paginate:
-            def route(db: Session = Depends(self.db_func), skip: int = 0, limit: int = self.paginate):
-                return db.query(self.db_model).limit(limit).offset(skip).all()
-        else:
-            def route(db: Session = Depends(self.db_func)):
-                return db.query(self.db_model).all()
+        def route(db: Session = Depends(self.db_func), pagination: dict = self.pagination):
+            skip, limit = pagination.get('skip'), pagination.get('limit')
+
+            return db.query(self.db_model).limit(limit).offset(skip).all()
 
         return route
 
@@ -90,7 +88,10 @@ class SQLAlchemyCRUDRouter(CRUDGenerator):
             db.query(self.db_model).delete()
             db.commit()
 
-            return self._get_all()(db)
+            return self._get_all()(db=db, pagination={
+                'skip': 0,
+                'limit': None
+            })
 
         return route
 

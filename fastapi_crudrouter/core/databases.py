@@ -34,14 +34,11 @@ class DatabasesCRUDRouter(CRUDGenerator):
         super().__init__(schema, *args, **kwargs)
 
     def _get_all(self) -> Callable:
-        if self.paginate:
-            async def route(skip: int = 0, limit: int = self.paginate):
-                q = self.table.select().limit(limit).offset(skip)
-                return await self.db.fetch_all(q)
-        else:
-            async def route():
-                q = self.table.select()
-                return await self.db.fetch_all(q)
+        async def route(pagination: dict = self.pagination):
+            skip, limit = pagination.get('skip'), pagination.get('limit')
+
+            q = self.table.select().limit(limit).offset(skip)
+            return await self.db.fetch_all(q)
 
         return route
 
@@ -85,7 +82,10 @@ class DatabasesCRUDRouter(CRUDGenerator):
             q = self.table.delete()
             await self.db.execute(query=q)
 
-            return await self._get_all()()
+            return await self._get_all()(pagination={
+                'skip': 0,
+                'limit': None
+            })
 
         return route
 

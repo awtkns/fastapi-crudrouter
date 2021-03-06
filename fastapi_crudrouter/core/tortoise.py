@@ -30,12 +30,14 @@ class TortoiseCRUDRouter(CRUDGenerator):
         super().__init__(schema, *args, **kwargs)
 
     def _get_all(self) -> Callable:
-        if self.paginate:
-            async def route(skip: int = 0, limit: int = self.paginate):
-                return await self.db_model.all().limit(limit).offset(skip)
-        else:
-            async def route():
-                return await self.db_model.all()
+        async def route(pagination: dict = self.pagination):
+            skip, limit = pagination.get('skip'), pagination.get('limit')
+            q = self.db_model.all().offset(skip)
+
+            if limit:
+                q = q.limit(limit)
+
+            return await q
 
         return route
 
@@ -69,7 +71,10 @@ class TortoiseCRUDRouter(CRUDGenerator):
     def _delete_all(self) -> Callable:
         async def route():
             await self.db_model.all().delete()
-            return await self._get_all()()
+            return await self._get_all()(pagination={
+                'skip': 0,
+                'limit': None
+            })
 
         return route
 

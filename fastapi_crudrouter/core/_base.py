@@ -1,7 +1,7 @@
 from typing import List, Optional, Callable, Union
 
 from starlette.routing import Route
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel, create_model
 
 models = []
@@ -19,7 +19,7 @@ class CRUDGenerator(APIRouter):
         create_schema: BaseModel = None,
         update_schema: BaseModel = None,
         prefix: str = None,
-        paginate: Union[int, bool, None] = 10,
+        paginate: int = None,
         get_all_route: bool = True,
         get_one_route: bool = True,
         create_route: bool = True,
@@ -30,8 +30,8 @@ class CRUDGenerator(APIRouter):
         **kwargs
     ):
 
-        self.paginate = paginate
         self.schema = schema
+        self.pagination = self.pagination_factory(limit=paginate)
         self.create_schema = create_schema if create_schema else self.schema_factory(self.schema, name='Create')
         self.update_schema = update_schema if update_schema else self.schema_factory(self.schema, name="Update")
 
@@ -120,3 +120,15 @@ class CRUDGenerator(APIRouter):
         name = schema_cls.__name__ + name
         schema = create_model(name, **fields)
         return schema
+
+    @staticmethod
+    def pagination_factory(limit: int = 0) -> Callable:
+        def pagination(skip: int = 0, limit: int = limit):
+            if skip < 0:
+                raise HTTPException(422, "skip query parameter must be greater or equal to zero")
+
+            if limit is not None and limit <= 0:
+                raise HTTPException(422, "limit query parameter must be greater then zero")
+
+            return {"skip": skip, "limit": limit}
+        return Depends(pagination)

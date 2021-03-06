@@ -13,12 +13,13 @@ class MemoryCRUDRouter(CRUDGenerator):
         self._id = 0
 
     def _get_all(self) -> Callable:
-        if self.paginate:
-            def route(skip: int = 0, limit: int = self.paginate):
+        def route(pagination: dict = self.pagination):
+            skip, limit = pagination.get('skip'), pagination.get('limit')
+
+            if limit:
                 return self.models[skip: skip + limit]
-        else:
-            def route():
-                return self.models
+            else:
+                return self.models[skip:]
 
         return route
 
