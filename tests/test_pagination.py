@@ -27,7 +27,7 @@ def get_expected_length(limit, offset, count: int = INSERT_COUNT):
 
 
 @pytest.mark.parametrize('offset', [0, 1, 5, 10, 20, 40])
-@pytest.mark.parametrize('limit', [1, 10, 20])
+@pytest.mark.parametrize('limit', [1, 5, 10])
 def test_pagination(client, limit, offset):
     insert_items(client)
     test_router.test_get(
@@ -45,7 +45,7 @@ def test_invalid_offset(client, offset):
     assert res.status_code == 422
 
 
-@pytest.mark.parametrize('limit', [-1, 0, 'asdas', 3.23])
+@pytest.mark.parametrize('limit', [-1, 0, 'asdas', 3.23, 21])
 def test_invalid_limit(client, limit):
     insert_items(client)
     res = client.get(PotatoUrl, params={'limit': limit})
@@ -59,7 +59,7 @@ def test_pagination_disabled(client):
     test_router.test_get(client, CarrotUrl, expected_length=INSERT_COUNT)
 
 
-@pytest.mark.parametrize('limit', [2, 10, 20])
+@pytest.mark.parametrize('limit', [2, 5, 10])
 def test_paging(client, limit):
     insert_items(client)
 

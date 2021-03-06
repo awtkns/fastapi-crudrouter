@@ -31,7 +31,7 @@ class CRUDGenerator(APIRouter):
     ):
 
         self.schema = schema
-        self.pagination = self.pagination_factory(limit=paginate)
+        self.pagination = self.pagination_factory(max_limit=paginate)
         self.create_schema = create_schema if create_schema else self.schema_factory(self.schema, name='Create')
         self.update_schema = update_schema if update_schema else self.schema_factory(self.schema, name="Update")
 
@@ -122,13 +122,16 @@ class CRUDGenerator(APIRouter):
         return schema
 
     @staticmethod
-    def pagination_factory(limit: int = None) -> Callable:
-        def pagination(skip: int = 0, limit: int = limit):
+    def pagination_factory(max_limit: int = None) -> Callable:
+        def pagination(skip: int = 0, limit: int = max_limit):
             if skip < 0:
                 raise HTTPException(422, "skip query parameter must be greater or equal to zero")
 
-            if limit is not None and limit <= 0:
-                raise HTTPException(422, "limit query parameter must be greater then zero")
+            if limit is not None:
+                if limit <= 0:
+                    raise HTTPException(422, "limit query parameter must be greater then zero")
+                elif max_limit < limit:
+                    raise HTTPException(422, f"limit query parameter must be less then {max_limit}")
 
             return {"skip": skip, "limit": limit}
         return Depends(pagination)
