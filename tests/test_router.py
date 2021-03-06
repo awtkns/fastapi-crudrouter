@@ -12,7 +12,7 @@ def test_get(client, url: str = URL, params: dict = None, expected_length: int =
     res = client.get(url, params=params)
     data = res.json()
 
-    assert res.status_code == 200
+    assert res.status_code == 200, data
     assert type(data) == list and len(data) == expected_length
 
     return data

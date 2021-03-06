@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import drop_database, create_database, database_exists
 
 from fastapi_crudrouter import SQLAlchemyCRUDRouter
-from tests import Potato, PotatoType, Carrot, CarrotCreate, CustomPotato, CarrotUpdate
+from tests import Potato, PotatoType, Carrot, CarrotCreate, CustomPotato, CarrotUpdate, PAGINATION_SIZE
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
 
@@ -53,7 +53,7 @@ def sqlalchemy_implementation():
         color = Column(String)
 
     Base.metadata.create_all(bind=engine)
-    app.include_router(SQLAlchemyCRUDRouter(schema=Potato, db_model=PotatoModel, db=session, prefix='potato'))
+    app.include_router(SQLAlchemyCRUDRouter(schema=Potato, db_model=PotatoModel, db=session, prefix='potato', paginate=PAGINATION_SIZE))
     app.include_router(SQLAlchemyCRUDRouter(
         schema=Carrot,
         db_model=CarrotModel,
