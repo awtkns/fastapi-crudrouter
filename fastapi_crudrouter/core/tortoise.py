@@ -1,7 +1,7 @@
 from typing import Callable
 from pydantic import BaseModel
 
-from . import CRUDGenerator, NOT_FOUND
+from . import CRUDGenerator, NOT_FOUND, _utils
 
 try:
     from tortoise import Tortoise
@@ -25,7 +25,7 @@ class TortoiseCRUDRouter(CRUDGenerator):
             kwargs['prefix'] = db_model.describe()['name'].replace('None.', '')
 
         if 'create_schema' not in kwargs:
-            kwargs['create_schema'] = self.schema_factory(schema, self._primary_key)
+            kwargs['create_schema'] = _utils.schema_factory(schema, self._primary_key)
 
         super().__init__(schema, *args, **kwargs)
 

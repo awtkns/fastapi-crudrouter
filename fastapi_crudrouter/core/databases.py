@@ -2,7 +2,7 @@ from typing import Callable
 from fastapi import Depends, HTTPException
 from pydantic import BaseModel
 
-from . import CRUDGenerator, NOT_FOUND, utils
+from . import CRUDGenerator, NOT_FOUND, _utils
 
 try:
     from sqlalchemy.sql.schema import Table
@@ -23,13 +23,13 @@ class DatabasesCRUDRouter(CRUDGenerator):
         self.db = database
         self._pk = table.primary_key.columns.values()[0].name
         self._pk_col = self.table.c[self._pk]
-        self._pk_type: type = utils.get_pk_type(schema, self._pk)
+        self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
         if 'prefix' not in kwargs:
             kwargs['prefix'] = table.name
 
         if 'create_schema' not in kwargs:
-            kwargs['create_schema'] = self.schema_factory(schema, self._pk)
+            kwargs['create_schema'] = _utils.schema_factory(schema, self._pk)
 
         super().__init__(schema, *args, **kwargs)
 

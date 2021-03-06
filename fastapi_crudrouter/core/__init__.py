@@ -1,4 +1,4 @@
-from . import utils
+from . import _utils
 from ._base import CRUDGenerator, NOT_FOUND
 
 from .mem import MemoryCRUDRouter
