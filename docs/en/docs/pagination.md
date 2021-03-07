@@ -42,7 +42,7 @@ Shown below is an example usage of pagination; using `skip` and `limit` to pagin
     curl -X GET -G \
     'http://localhost:5000/potatoes' \
     -d skip=50 \
-    -d limit=25 \
+    -d limit=25
     ```
 
 In the example above, 25 items on the third page are being returned from our fictitious CRUDRouter endpoint. It is the third
