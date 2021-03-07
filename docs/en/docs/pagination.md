@@ -46,7 +46,7 @@ Shown below is an example usage of pagination; using `skip` and `limit` to pagin
     ```
 
 In the example above, 25 items on the third page are being returned from our fictitious CRUDRouter endpoint. It is the third
-page because we specified a `skip` of 50 item while having a `limit` of 25 items per page. If we were to want items on the fourth 
+page because we specified a `skip` of 50 items while having a `limit` of 25 items per page. If we were to want items on the fourth 
 page we would simply have to increase the `skip` to 75.
 
 
