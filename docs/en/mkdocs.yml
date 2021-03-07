@@ -47,7 +47,9 @@ extra:
   - icon: fontawesome/brands/linkedin
     link: https://www.linkedin.com/in/adam-watkins-yvr/
   - icon: fontawesome/solid/globe
-    link: https://wtkns.dev
+    link: https://awtkns.com
+  - icon: fontawesome/brands/instagram
+    link: https://www.instagram.com/adamcwatkins/
 
 extra_css:
   - css/main.css
