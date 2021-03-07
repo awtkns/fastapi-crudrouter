@@ -52,7 +52,7 @@ app.include_router(CRUDRouter(schema=Potato))
 ```
 
 ## Advanced Usage
-fastapi-crudrouter provides a number of features that allows you to get the most out of your automatically generated CRUD
+fastapi-crudrouter provides a number of features that allow you to get the most out of your automatically generated CRUD
 routes. Listed below are some highlights.
 
 - Automatic Pagination ([docs](https://fastapi-crudrouter.awtkns.com/pagination/))

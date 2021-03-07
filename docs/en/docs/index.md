@@ -58,7 +58,7 @@ app.include_router(CRUDRouter(schema=Potato))
 ```
 
 ## Advanced Usage
-fastapi-crudrouter provides a number of features that allows you to get the most out of your automatically generated CRUD
+fastapi-crudrouter provides a number of features that allow you to get the most out of your automatically generated CRUD
 routes. Listed below are some highlights.
 
 - Automatic Pagination ([docs](https://fastapi-crudrouter.awtkns.com/pagination/))
@@ -68,7 +68,7 @@ routes. Listed below are some highlights.
 - Native Support for FastAPI Dependencies Injection ([docs](https://fastapi-crudrouter.awtkns.com/dependencies/))
 
 ## Supported Backends / ORMs
-fastapi-crudrouter currently supports a number of backends / ORMs. Listed below are the backends currently supported. This list will
+fastapi-crudrouter supports a number of backends / ORMs. Listed below are the backends currently supported. This list will
 likely grow in future releases.
 
 - In Memory ([docs](https://fastapi-crudrouter.awtkns.com/backends/memory/))

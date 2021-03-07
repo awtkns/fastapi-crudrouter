@@ -1,13 +1,13 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.4.3'
+VERSION = '0.5.0'
 
 setup(
     name='fastapi-crudrouter',
     version=VERSION,
     author='Adam Watkins',
     author_email='cadamrun@gmail.com',
-    packages=find_packages(exclude=('tests', 'tests.implementations')),
+    packages=find_packages(exclude=('tests.*', 'tests')),
     url='https://github.com/awtkns/fastapi-crudrouter',
     documentation='https://fastapi-crudrouter.awtkns.com/',
     license='MIT',
@@ -16,7 +16,7 @@ setup(
     long_description_content_type="text/markdown",
     install_requires=["fastapi"],
     python_requires='>=3.6',
-    keywords=['fastapi', 'crud', 'restful', 'routing', 'generator'],
+    keywords=['fastapi', 'crud', 'restful', 'routing', 'generator', 'crudrouter'],
     classifiers=[
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
@@ -25,6 +25,7 @@ setup(
         "Topic :: Software Development :: Libraries :: Application Frameworks",
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Code Generators",
         "Topic :: Software Development",
         "Typing :: Typed",
         "Development Status :: 4 - Beta",
