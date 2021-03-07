@@ -5,6 +5,7 @@ edit_uri: ''
 
 theme:
   name: material
+  custom_dir: overrides
   palette:
     - scheme: primary
       accent: amber
@@ -13,6 +14,7 @@ theme:
   logo: assets/bolt.svg
   favicon: assets/bolt-grad.svg
   language: en
+
 
 # Nav
 nav:
