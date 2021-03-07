@@ -18,6 +18,7 @@ theme:
 nav:
   - Overview: index.md
   - Schemas: schemas.md
+  - Pagination: pagination.md
   - Routing: routing.md
   - Backends:
       - In Memory: backends/memory.md
@@ -35,6 +36,7 @@ markdown_extensions:
   - admonition
   - pymdownx.highlight
   - pymdownx.superfences
+  - pymdownx.tabbed
 
 extra:
   social:
