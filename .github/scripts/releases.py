@@ -24,7 +24,7 @@ def generate_header(r: GitRelease, separator: bool = False):
 
 
 if __name__ == '__main__':
-    repo = gh.get_repo(REPO)
+    repo = gh.get_repo(GITHUB_REPOSITORY)
 
     content = ''
     first = False
