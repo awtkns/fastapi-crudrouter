@@ -5,7 +5,7 @@ from github import Github
 from github.GitRelease import GitRelease
 
 GITHUB_REPOSITORY = environ.get('GITHUB_REPOSITORY')
-GITHUB_TOKEN = environ.get('GITHUB_TOKEN')
+GITHUB_TOKEN = environ.get('GH_TOKEN')
 FILE_PATH = "docs/en/docs/releases.md"
 COMMIT_MESSAGE = "🤖 auto update releases.md"
 
