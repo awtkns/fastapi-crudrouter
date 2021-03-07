@@ -11,7 +11,7 @@ def get_pk_type(schema, pk_field) -> type:
         return int
 
 
-def schema_factory(schema_cls: BaseModel, pk_field_name: str = 'id', name: str = 'Create'):
+def schema_factory(schema_cls: BaseModel, pk_field_name: str = 'id', name: str = 'Create') -> BaseModel:
     """
     Is used to create a CreateSchema which does not contain pk
     """
@@ -23,7 +23,7 @@ def schema_factory(schema_cls: BaseModel, pk_field_name: str = 'id', name: str =
     return schema
 
 
-def create_query_validation_exception(field: str, msg: str):
+def create_query_validation_exception(field: str, msg: str) -> HTTPException:
     return HTTPException(
         422,
         detail={

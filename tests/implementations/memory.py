@@ -10,3 +10,8 @@ def memory_implementation():
     app.include_router(CRUDRouter(schema=Carrot, update_schema=CarrotUpdate))
 
     return app
+
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(memory_implementation(), port=5000)
