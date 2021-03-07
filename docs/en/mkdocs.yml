@@ -28,6 +28,7 @@ nav:
       - Databases (async): backends/async.md
       - Tortoise (async): backends/tortoise.md
   - Dependencies: dependencies.md
+  - Releases: releases.md
 
 google_analytics:
   - UA-186315536-1
