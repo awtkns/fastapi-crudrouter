@@ -29,12 +29,8 @@ jobs:
         grep -Eo "VERSION = '[0-9].[0-9][0-9]?.[0-9][0-9]?'" setup.py | grep -Eo "[0-9].[0-9][0-9]?.[0-9][0-9]?" > new
         cat new
         cat old
-        if [ cmp --quiet old new ]
-        then
+        if cmp --silent -- new old; then
           echo ---BUMPING VERSION---
-          cat new
-          rm old
-          rm new
           
           python -m pip install --upgrade pip
           pip install setuptools wheel twine
