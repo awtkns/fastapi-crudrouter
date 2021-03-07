@@ -26,4 +26,19 @@ header {
   }
 }
 
+a.announce:link, a.announce:visited {
+  color: #fff;
+}
+
+a.announce:hover {
+  color: var(--md-accent-fg-color);
+}
+
+h2.releases {
+    margin-bottom: 0;
+}
+
+h2.releases + p {
+    margin-top: 0;
+}
 

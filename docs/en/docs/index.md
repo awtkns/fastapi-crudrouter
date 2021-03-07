@@ -41,7 +41,7 @@ $ pip install fastapi-crudrouter
 
 ## Basic Usage
 Below is a simple example of what the CRUDRouter can do. In just ten lines of code, you can generate all 
-the crud routes you need for any model.  A full list of the routes generated can be found [here](./routing).
+the crud routes you need for any model. A full list of the routes generated can be found [here](./routing).
 
 ```python
 from pydantic import BaseModel
@@ -56,6 +56,25 @@ class Potato(BaseModel):
 app = FastAPI()
 app.include_router(CRUDRouter(schema=Potato))
 ```
+
+## Advanced Usage
+fastapi-crudrouter provides a number of features that allow you to get the most out of your automatically generated CRUD
+routes. Listed below are some highlights.
+
+- Automatic Pagination ([docs](https://fastapi-crudrouter.awtkns.com/pagination/))
+- Ability to Provide Custom Create and Update Schemas ([docs](https://fastapi-crudrouter.awtkns.com/schemas/))
+- Dynamic Generation of Create and Update Schemas ([docs](https://fastapi-crudrouter.awtkns.com/schemas/))
+- Ability to Add, Customize, or Disable Specific Routes ([docs](https://fastapi-crudrouter.awtkns.com/routing/))
+- Native Support for FastAPI Dependencies Injection ([docs](https://fastapi-crudrouter.awtkns.com/dependencies/))
+
+## Supported Backends / ORMs
+fastapi-crudrouter supports a number of backends / ORMs. Listed below are the backends currently supported. This list will
+likely grow in future releases.
+
+- In Memory ([docs](https://fastapi-crudrouter.awtkns.com/backends/memory/))
+- SQLAlchemy ([docs](https://fastapi-crudrouter.awtkns.com/backends/sqlalchemy/))
+- Databases (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/async/))
+- Tortoise ORM  (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/tortoise/))
 
 ## OpenAPI Support
 
