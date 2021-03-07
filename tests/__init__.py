@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 
+PAGINATION_SIZE = 10
+
 
 class ORMModel(BaseModel):
     id: int

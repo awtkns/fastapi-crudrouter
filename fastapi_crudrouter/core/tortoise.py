@@ -1,7 +1,7 @@
 from typing import Callable
 from pydantic import BaseModel
 
-from . import CRUDGenerator, NOT_FOUND
+from . import CRUDGenerator, NOT_FOUND, _utils
 
 try:
     from tortoise import Tortoise
@@ -25,14 +25,19 @@ class TortoiseCRUDRouter(CRUDGenerator):
             kwargs['prefix'] = db_model.describe()['name'].replace('None.', '')
 
         if 'create_schema' not in kwargs:
-            kwargs['create_schema'] = self.schema_factory(schema, self._primary_key)
+            kwargs['create_schema'] = _utils.schema_factory(schema, self._primary_key)
 
         super().__init__(schema, *args, **kwargs)
 
     def _get_all(self) -> Callable:
-        async def route():
-            models = await self.db_model.all()
-            return models
+        async def route(pagination: dict = self.pagination):
+            skip, limit = pagination.get('skip'), pagination.get('limit')
+            q = self.db_model.all().offset(skip)
+
+            if limit:
+                q = q.limit(limit)
+
+            return await q
 
         return route
 
@@ -66,7 +71,10 @@ class TortoiseCRUDRouter(CRUDGenerator):
     def _delete_all(self) -> Callable:
         async def route():
             await self.db_model.all().delete()
-            return await self._get_all()()
+            return await self._get_all()(pagination={
+                'skip': 0,
+                'limit': None
+            })
 
         return route
 
