@@ -1,6 +1,9 @@
 name: Update Release Docs
 
 on:
+  push:
+    branches:
+      - master
   release:
     types: [ published ]
 
