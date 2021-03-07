@@ -1,11 +1,36 @@
 
+## [v0.5.0 - Pagination](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.5.0) { .releases } 
+2021-03-07
+### 🎉 Highlights
+With the release of v0.5.0 all CRUDRouters  **now support pagination** . All "get all" routes now accept `skip` and `limit` query parameters allowing you to easily paginate your routes.  By default, no limit is set on the number of items returned by your routes.  Should you wish to limit the number of items that a client can request, it can be done as shown below.
+
+```python
+CRUDRouter(
+    schema=MyPydanticModel, 
+    paginate=25
+)
+```
+
+Check out the [docs](https://fastapi-crudrouter.awtkns.com/pagination/) on pagination for more information!
+
+### ✨ Features
+- Pagination Support #34 
+- Ability to set custom update schemas @andreipopovici #31 #27 
+- Better documentation of past releases #36
+
+### 🐛 Bug Fixes
+- Prefixing not available for versions of fastapi below v0.62.0 #29 #30 
+- Fixed an Import Issue SQLAlchemy and Integrity Errors @andreipopovici  #33
+
+---
+
 ## [v0.4.0 - Tortoise ORM Support](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.4.0) { .releases } 
 2021-02-02
-### Features✨
+### ✨Features
 - Full support for tortoise-orm #24
 - Dynamic pk/id types for get_one, delete_one, and update_one routes #26
 
-### Bug Fixes 🐛 
+### 🐛 Bug Fixes  
 - Fixed the summary  for the delete one route #16 
 - Fixed import errors when certain packages are not installed #21 
 - Improved SQLA type hinting 
