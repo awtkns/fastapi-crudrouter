@@ -3,9 +3,10 @@ sqlalchemy
 sqlalchemy_utils
 pytest
 requests
-async-exit-stack
-async-generator
 databases
 aiosqlite
 tortoise-orm
 asynctest
+
+async-generator; python_version=='3.6'
+async-exit-stack; python_version=='3.6'
