@@ -1,3 +1,3 @@
-All ideas and contributions are wellcome :)
 
-Please feel free to create issues and submit PRs.
+
+Pull requests and contributions are welcome. Please read the [contributions guidelines](https://fastapi-crudrouter.awtkns.com/contributing) for more details.
