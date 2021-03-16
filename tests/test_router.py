@@ -18,12 +18,14 @@ def test_get(client, url: str = URL, params: dict = None, expected_length: int =
     return data
 
 
-def test_post(client, url: str = URL, model: BaseModel = basic_potato, expected_length: int = 1):
+def test_post(client, url: str = URL, model: BaseModel = basic_potato, expected_length: int = 1) -> dict:
     res = client.post(url, json=model.dict())
     assert res.status_code == 200, res.json()
 
     data = client.get(url).json()
     assert len(data) == expected_length
+
+    return res.json()
 
 
 def test_get_one(client, url: str = URL, model: BaseModel = basic_potato, id_key: str = 'id'):
