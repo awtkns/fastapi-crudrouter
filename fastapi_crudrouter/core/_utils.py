@@ -55,7 +55,7 @@ def pagination_factory(max_limit: int = None) -> Callable:
                     msg="limit query parameter must be greater then zero"
                 )
 
-            elif max_limit < limit:
+            elif max_limit and max_limit < limit:
                 raise create_query_validation_exception(
                     field='limit',
                     msg=f"limit query parameter must be less then {max_limit}"
