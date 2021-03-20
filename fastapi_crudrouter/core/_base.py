@@ -1,7 +1,7 @@
-from typing import List, Optional, Callable
+from typing import List, Optional, Callable, Type
 
-from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel, create_model
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 from ._utils import pagination_factory, schema_factory
 
@@ -9,14 +9,14 @@ NOT_FOUND = HTTPException(404, 'Item not found')
 
 
 class CRUDGenerator(APIRouter):
-    schema: BaseModel = None
+    schema: Type[BaseModel] = None
     _base_path: str = '/'
 
     def __init__(
         self,
-        schema: BaseModel,
-        create_schema: BaseModel = None,
-        update_schema: BaseModel = None,
+        schema: Type[BaseModel],
+        create_schema: Type[BaseModel] = None,
+        update_schema: Type[BaseModel] = None,
         prefix: str = None,
         paginate: int = None,
         get_all_route: bool = True,

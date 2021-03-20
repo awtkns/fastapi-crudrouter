@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Generator, Any
 
 from fastapi import Depends, HTTPException
 from pydantic import BaseModel
@@ -19,7 +19,7 @@ else:
 
 class SQLAlchemyCRUDRouter(CRUDGenerator):
 
-    def __init__(self, schema: BaseModel, db_model: DeclarativeMeta, db: Session, *args, **kwargs):
+    def __init__(self, schema: BaseModel, db_model: DeclarativeMeta, db: Callable[..., Generator[Session, Any, None]], *args, **kwargs):
         assert sqlalchemy_installed, "SQLAlchemy must be installed to use the SQLAlchemyCRUDRouter."
 
         self.db_model = db_model

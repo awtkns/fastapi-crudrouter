@@ -1,14 +1,10 @@
-from typing import List
-
 import databases
-from sqlalchemy import MetaData, Table, Column, Integer, Float, String, create_engine
-
 from fastapi import FastAPI
-from pydantic import BaseModel
+from sqlalchemy import MetaData, Table, Column, Integer, Float, String, create_engine
 from sqlalchemy_utils import drop_database, create_database, database_exists
 
 from fastapi_crudrouter import DatabasesCRUDRouter
-from tests import Potato, PotatoCreate, CustomPotato, Carrot, CarrotCreate, PotatoType, CarrotUpdate, PAGINATION_SIZE
+from tests import Potato, CustomPotato, Carrot, CarrotCreate, PotatoType, CarrotUpdate, PAGINATION_SIZE
 
 DATABASE_URL = "sqlite:///./test.db"
 

@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Type
 
 from fastapi import HTTPException, Depends
 from pydantic import BaseModel, create_model
@@ -11,7 +11,7 @@ def get_pk_type(schema, pk_field) -> type:
         return int
 
 
-def schema_factory(schema_cls: BaseModel, pk_field_name: str = 'id', name: str = 'Create') -> BaseModel:
+def schema_factory(schema_cls: Type[BaseModel], pk_field_name: str = 'id', name: str = 'Create') -> BaseModel:
     """
     Is used to create a CreateSchema which does not contain pk
     """
