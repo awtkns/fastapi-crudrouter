@@ -3,7 +3,7 @@ your database using your [Tortoise](https://tortoise-orm.readthedocs.io/en/lates
 [pydantic](https://pydantic-docs.helpmanual.io/) schema, your Tortoise database model to it, and register Tortoise ORM with your FastAPI App.
 
 !!! warning
-    To use the `SQLAlchemyCRUDRouter`, [Tortoise ORM](https://pypi.org/project/tortoise-orm/) must be first installed.
+    To use the `TortoiseCRUDRouter`, [Tortoise ORM](https://pypi.org/project/tortoise-orm/) must be first installed.
 
 ## Simple Example
 Below is an example assuming that you have already imported and created all the required models.

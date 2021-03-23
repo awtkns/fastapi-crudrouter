@@ -1,17 +1,16 @@
 import pytest
+from fastapi import APIRouter, FastAPI
 
-from fastapi import FastAPI, APIRouter
+from fastapi_crudrouter import MemoryCRUDRouter, SQLAlchemyCRUDRouter, OrmarCRUDRouter
 from fastapi_crudrouter.core._base import CRUDGenerator
-from fastapi_crudrouter import SQLAlchemyCRUDRouter, MemoryCRUDRouter
-
-from tests import Potato, Carrot
-from .implementations import memory_implementation
+from tests import Potato
 
 
 def test_router_type():
     assert issubclass(CRUDGenerator, APIRouter)
     assert issubclass(SQLAlchemyCRUDRouter, APIRouter)
     assert issubclass(MemoryCRUDRouter, APIRouter)
+    assert issubclass(OrmarCRUDRouter, APIRouter)
 
 
 def test_get_one():
@@ -20,6 +19,7 @@ def test_get_one():
     def foo(*args, **kwargs):
         def bar():
             pass
+
         return bar
 
     foo()()
@@ -30,6 +30,6 @@ def test_get_one():
         with pytest.raises(NotImplementedError):
             app.include_router(CRUDGenerator(schema=Potato))
 
-        setattr(CRUDGenerator, f'_{m}', foo)
+        setattr(CRUDGenerator, f"_{m}", foo)
 
     app.include_router(CRUDGenerator(schema=Potato))

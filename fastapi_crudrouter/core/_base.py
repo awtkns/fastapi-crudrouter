@@ -1,22 +1,26 @@
-from typing import List, Optional, Callable
+from typing import Any, Callable, Generic, List, Optional, Type, TypeVar
 
-from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel, create_model
+from fastapi import APIRouter, HTTPException
+from fastapi.types import DecoratedCallable
+from pydantic import BaseModel
 
 from ._utils import pagination_factory, schema_factory
 
-NOT_FOUND = HTTPException(404, 'Item not found')
+NOT_FOUND = HTTPException(404, "Item not found")
+T = TypeVar("T", bound=BaseModel)
 
 
-class CRUDGenerator(APIRouter):
-    schema: BaseModel = None
-    _base_path: str = '/'
+class CRUDGenerator(Generic[T], APIRouter):
+    schema: Type[T]
+    create_schema: Type[T]
+    update_schema: Type[T]
+    _base_path: str = "/"
 
     def __init__(
         self,
-        schema: BaseModel,
-        create_schema: BaseModel = None,
-        update_schema: BaseModel = None,
+        schema: Type[T],
+        create_schema: Type[T] = None,
+        update_schema: Type[T] = None,
         prefix: str = None,
         paginate: int = None,
         get_all_route: bool = True,
@@ -25,85 +29,144 @@ class CRUDGenerator(APIRouter):
         update_route: bool = True,
         delete_one_route: bool = True,
         delete_all_route: bool = True,
-        *args,
-        **kwargs
-    ):
+        *args: Any,
+        **kwargs: Any,
+    ) -> None:
 
         self.schema = schema
         self.pagination = pagination_factory(max_limit=paginate)
-        self.create_schema = create_schema if create_schema else schema_factory(self.schema, name='Create')
-        self.update_schema = update_schema if update_schema else schema_factory(self.schema, name="Update")
+        self.create_schema = (
+            create_schema
+            if create_schema
+            else schema_factory(self.schema, name="Create")
+        )
+        self.update_schema = (
+            update_schema
+            if update_schema
+            else schema_factory(self.schema, name="Update")
+        )
 
-        prefix = self._base_path + (self.schema.__name__.lower() if not prefix else prefix).strip('/')
-        super().__init__(prefix=prefix, tags=[prefix.strip('/').capitalize()], *args, **kwargs)
+        prefix = self._base_path + (
+            self.schema.__name__.lower() if not prefix else prefix
+        ).strip("/")
+        super().__init__(
+            prefix=prefix, tags=[prefix.strip("/").capitalize()], *args, **kwargs
+        )
 
         if get_all_route:
-            super().add_api_route('', self._get_all(), methods=['GET'], response_model=Optional[List[self.schema]], summary='Get All')
+            super().add_api_route(
+                "",
+                self._get_all(),
+                methods=["GET"],
+                response_model=Optional[List[self.schema]],  # type: ignore
+                summary="Get All",
+            )
 
         if create_route:
-            super().add_api_route('', self._create(), methods=['POST'], response_model=self.schema, summary='Create One')
+            super().add_api_route(
+                "",
+                self._create(),
+                methods=["POST"],
+                response_model=self.schema,
+                summary="Create One",
+            )
 
         if delete_all_route:
-            super().add_api_route('', self._delete_all(), methods=['DELETE'], response_model=Optional[List[self.schema]], summary='Delete All')
+            super().add_api_route(
+                "",
+                self._delete_all(),
+                methods=["DELETE"],
+                response_model=Optional[List[self.schema]],  # type: ignore
+                summary="Delete All",
+            )
 
         if get_one_route:
-            super().add_api_route('/{item_id}', self._get_one(), methods=['GET'], response_model=self.schema, summary='Get One')
+            super().add_api_route(
+                "/{item_id}",
+                self._get_one(),
+                methods=["GET"],
+                response_model=self.schema,
+                summary="Get One",
+            )
 
         if update_route:
-            super().add_api_route('/{item_id}', self._update(), methods=['PUT'], response_model=self.schema, summary='Update One')
+            super().add_api_route(
+                "/{item_id}",
+                self._update(),
+                methods=["PUT"],
+                response_model=self.schema,
+                summary="Update One",
+            )
 
         if delete_one_route:
-            super().add_api_route('/{item_id}', self._delete_one(), methods=['DELETE'], response_model=self.schema, summary='Delete One')
+            super().add_api_route(
+                "/{item_id}",
+                self._delete_one(),
+                methods=["DELETE"],
+                response_model=self.schema,
+                summary="Delete One",
+            )
 
-    def api_route(self, path: str, *args, **kwargs):
+    def api_route(
+        self, path: str, *args: Any, **kwargs: Any
+    ) -> Callable[[DecoratedCallable], DecoratedCallable]:
         """ Overrides and exiting route if it exists"""
-        methods = kwargs['methods'] if 'methods' in kwargs else ['GET']
+        methods = kwargs["methods"] if "methods" in kwargs else ["GET"]
         self.remove_api_route(path, methods)
         return super().api_route(path, *args, **kwargs)
 
-    def get(self, path, *args, **kwargs):
-        self.remove_api_route(path, ['Get'])
+    def get(
+        self, path: str, *args: Any, **kwargs: Any
+    ) -> Callable[[DecoratedCallable], DecoratedCallable]:
+        self.remove_api_route(path, ["Get"])
         return super().get(path, *args, **kwargs)
 
-    def post(self, path, *args, **kwargs):
-        self.remove_api_route(path, ['POST'])
+    def post(
+        self, path: str, *args: Any, **kwargs: Any
+    ) -> Callable[[DecoratedCallable], DecoratedCallable]:
+        self.remove_api_route(path, ["POST"])
         return super().post(path, *args, **kwargs)
 
-    def put(self, path, *args, **kwargs):
-        self.remove_api_route(path, ['PUT'])
+    def put(
+        self, path: str, *args: Any, **kwargs: Any
+    ) -> Callable[[DecoratedCallable], DecoratedCallable]:
+        self.remove_api_route(path, ["PUT"])
         return super().put(path, *args, **kwargs)
 
-    def delete(self, path, *args, **kwargs):
-        self.remove_api_route(path, ['DELETE'])
+    def delete(
+        self, path: str, *args: Any, **kwargs: Any
+    ) -> Callable[[DecoratedCallable], DecoratedCallable]:
+        self.remove_api_route(path, ["DELETE"])
         return super().delete(path, *args, **kwargs)
 
-    def remove_api_route(self, path: str, methods: List[str]):
-        methods = set(methods)
+    def remove_api_route(self, path: str, methods: List[str]) -> None:
+        methods_ = set(methods)
 
-        for r in self.routes:
-            if r.path == f'{self.prefix}{path}' and r.methods == methods:
-                self.routes.remove(r)
+        for route in self.routes:
+            if (
+                route.path == f"{self.prefix}{path}"  # type: ignore
+                and route.methods == methods_  # type: ignore
+            ):
+                self.routes.remove(route)
 
-    def _get_all(self, *args, **kwargs) -> Callable:
+    def _get_all(self, *args: Any, **kwargs: Any) -> Callable:
         raise NotImplementedError
 
-    def _get_one(self, *args, **kwargs) -> Callable:
+    def _get_one(self, *args: Any, **kwargs: Any) -> Callable:
         raise NotImplementedError
 
-    def _create(self, *args, **kwargs) -> Callable:
+    def _create(self, *args: Any, **kwargs: Any) -> Callable:
         raise NotImplementedError
 
-    def _update(self, *args, **kwargs) -> Callable:
+    def _update(self, *args: Any, **kwargs: Any) -> Callable:
         raise NotImplementedError
 
-    def _delete_one(self, *args, **kwargs) -> Callable:
+    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable:
         raise NotImplementedError
 
-    def _delete_all(self, *args, **kwargs) -> Callable:
+    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable:
         raise NotImplementedError
 
     @staticmethod
     def get_routes() -> list:
-        return [
-            'get_all', 'create', 'delete_all', 'get_one', 'update', 'delete_one'
-        ]
+        return ["get_all", "create", "delete_all", "get_one", "update", "delete_one"]

@@ -1,4 +1,4 @@
-def compare_dict(d1, d2, exclude: list = ['id']) -> bool:
+def compare_dict(d1, d2, exclude: list = ["id"]) -> bool:
     assert len(d1.keys()) == len(d2.keys())
 
     for key in d1.keys():
