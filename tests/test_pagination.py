@@ -2,12 +2,12 @@ import typing
 
 import pytest
 
-from . import Carrot, PAGINATION_SIZE, Potato, test_router
+from . import PAGINATION_SIZE, test_router
 
 PotatoUrl = "/potato"
 CarrotUrl = "/carrot"
-basic_carrot = Carrot(id=0, length=1.2, color="Orange")
-basic_potato = Potato(id=0, thickness=0.24, mass=1.2, color="Brown", type="Russet")
+basic_carrot = dict(length=1.2, color="Orange")
+basic_potato = dict(thickness=0.24, mass=1.2, color="Brown", type="Russet")
 
 INSERT_COUNT = 20
 
@@ -16,9 +16,10 @@ INSERT_COUNT = 20
 def insert_items(
     client,
     url: str = PotatoUrl,
-    model: typing.Union[Carrot, Potato] = basic_potato,
+    model: typing.Dict = None,
     count: int = INSERT_COUNT,
 ):
+    model = model or basic_potato
     for i in range(count):
         test_router.test_post(
             client,
@@ -101,7 +102,7 @@ class TestPagination:
     def test_paging_no_limit(self, client, limit):
         client.delete(CarrotUrl)
         for i in range(limit):
-            res = client.post(url=CarrotUrl, json=basic_carrot.dict())
+            res = client.post(url=CarrotUrl, json=basic_carrot)
             assert res.status_code == 200, res.json()
 
         res = client.get(CarrotUrl)

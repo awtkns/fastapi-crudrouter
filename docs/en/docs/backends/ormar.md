@@ -10,9 +10,9 @@ models.
 
 ```python
 router = OrmarCRUDRouter(
-    schema=MyPydanticModel,
-    create_schema=MyPydanticCreateModel,
-    db_model=MyOrmarModel,
+    schema=MyOrmarModel,
+    create_schema=Optional[MyPydanticCreateModel],
+    update_schema=Optional[MyPydanticUpdateModel]
 )
 
 app.include_router(router)
@@ -63,18 +63,7 @@ def _setup_database():
     return engine, database
 
 
-class Potato(pydantic.BaseModel):
-    id: int
-    thickness: float
-    mass: float
-    color: str
-    type: str
-
-    class Config:
-        orm_mode = True
-
-
-class PotatoModel(ormar.Model):
+class Potato(ormar.Model):
     class Meta(BaseMeta):
         pass
 
@@ -88,7 +77,6 @@ class PotatoModel(ormar.Model):
 app.include_router(
     OrmarCRUDRouter(
         schema=Potato,
-        db_model=PotatoModel,
         prefix="potato",
     )
 )

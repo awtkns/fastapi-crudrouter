@@ -59,8 +59,8 @@ def create_app():
 def test_nested_models():
     client = TestClient(create_app())
 
-    parent = test_router.test_post(client, PARENT_URL, ParentCreate())
-    test_router.test_post(client, CHILD_URL, ChildSchema(id=0, parent_id=parent["id"]))
+    parent = test_router.test_post(client, PARENT_URL, dict())
+    test_router.test_post(client, CHILD_URL, dict(id=0, parent_id=parent["id"]))
 
     res = client.get(f'{PARENT_URL}/{parent["id"]}')
     assert res.status_code == 200, res.json()

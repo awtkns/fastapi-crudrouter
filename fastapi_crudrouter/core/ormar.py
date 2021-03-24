@@ -22,25 +22,22 @@ else:
 OR = TypeVar("OR", bound="Model")
 
 
-class OrmarCRUDRouter(CRUDGenerator[T]):
+class OrmarCRUDRouter(CRUDGenerator[OR]):
     if TYPE_CHECKING:
-        schema: Type[T]
-        create_schema: Type[T]
+        schema: Type[OR]
 
-    def __init__(
-        self, schema: Type[T], db_model: Type[OR], *args: Any, **kwargs: Any
-    ) -> None:
+    def __init__(self, schema: Type[OR], *args: Any, **kwargs: Any) -> None:
         assert ormar_installed, "Ormar must be installed to use the OrmarCRUDRouter."
 
-        self.db_model = db_model
-        self._primary_key: str = self.db_model.Meta.pkname
-        self._pk_type: type = _utils.get_pk_type(schema, self._primary_key)
+        self._pk: str = schema.Meta.pkname
+        self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
         if "prefix" not in kwargs:
-            kwargs["prefix"] = self.db_model.Meta.tablename
-
+            kwargs["prefix"] = schema.Meta.tablename
         if "create_schema" not in kwargs:
-            kwargs["create_schema"] = _utils.schema_factory(schema, self._primary_key)
+            kwargs["create_schema"] = schema
+        if "update_schema" not in kwargs:
+            kwargs["update_schema"] = schema
 
         super().__init__(schema, *args, **kwargs)
 
@@ -49,7 +46,7 @@ class OrmarCRUDRouter(CRUDGenerator[T]):
             pagination: Dict = self.pagination,  # type: ignore
         ) -> List[Optional[OR]]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
-            query = self.db_model.objects.offset(cast(int, skip))
+            query = self.schema.objects.offset(cast(int, skip))
             if limit:
                 query = query.limit(cast(int, limit))
             return await query.all()
@@ -59,8 +56,8 @@ class OrmarCRUDRouter(CRUDGenerator[T]):
     def _get_one(self, *args: Any, **kwargs: Any) -> Callable:
         async def route(item_id: self._pk_type) -> OR:  # type: ignore
             try:
-                filter_ = {self._primary_key: item_id}
-                model = await self.db_model.objects.filter(
+                filter_ = {self._pk: item_id}
+                model = await self.schema.objects.filter(
                     _exclude=False, **filter_
                 ).first()
             except ormar.NoMatch:
@@ -71,7 +68,10 @@ class OrmarCRUDRouter(CRUDGenerator[T]):
 
     def _create(self, *args: Any, **kwargs: Any) -> Callable:
         async def route(model: self.create_schema) -> OR:  # type: ignore
-            return await self.db_model.objects.create(**model.dict())
+            model_dict = model.dict()
+            if self.schema.Meta.model_fields[self._pk].autoincrement:
+                model_dict.pop(self._pk, None)
+            return await self.schema.objects.create(**model.dict())
 
         return route
 
@@ -80,8 +80,8 @@ class OrmarCRUDRouter(CRUDGenerator[T]):
             item_id: self._pk_type,  # type: ignore
             model: self.update_schema,  # type: ignore
         ) -> OR:
-            filter_ = {self._primary_key: item_id}
-            await self.db_model.objects.filter(_exclude=False, **filter_).update(
+            filter_ = {self._pk: item_id}
+            await self.schema.objects.filter(_exclude=False, **filter_).update(
                 **model.dict(exclude_unset=True)
             )
             return await self._get_one()(item_id)
@@ -90,7 +90,7 @@ class OrmarCRUDRouter(CRUDGenerator[T]):
 
     def _delete_all(self, *args: Any, **kwargs: Any) -> Callable:
         async def route() -> List[Optional[OR]]:
-            await self.db_model.objects.delete(each=True)
+            await self.schema.objects.delete(each=True)
             return await self._get_all()(pagination={"skip": 0, "limit": None})
 
         return route

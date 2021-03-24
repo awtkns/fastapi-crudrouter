@@ -7,8 +7,15 @@ import sqlalchemy
 from fastapi import FastAPI
 
 from fastapi_crudrouter import OrmarCRUDRouter
-from tests import (Carrot, CarrotCreate, CarrotUpdate, CustomPotato, PAGINATION_SIZE,
-                   Potato, PotatoType)
+from tests import (
+    Carrot,
+    CarrotCreate,
+    CarrotUpdate,
+    CustomPotato,
+    PAGINATION_SIZE,
+    Potato,
+    PotatoType,
+)
 
 DATABASE_URL = "sqlite:///./test.db"
 database = databases.Database(DATABASE_URL)
@@ -100,17 +107,14 @@ def ormar_implementation():
 
     app.include_router(
         OrmarCRUDRouter(
-            schema=Potato,
-            db_model=PotatoModel,
+            schema=PotatoModel,
             prefix="potato",
             paginate=PAGINATION_SIZE,
         )
     )
     app.include_router(
         OrmarCRUDRouter(
-            schema=Carrot,
-            db_model=CarrotModel,
-            create_schema=CarrotCreate,
+            schema=CarrotModel,
             update_schema=CarrotUpdate,
             prefix="carrot",
         )
@@ -125,8 +129,7 @@ def ormar_implementation_custom_ids():
 
     app.include_router(
         OrmarCRUDRouter(
-            schema=CustomPotato,
-            db_model=CustomPotatoModel,
+            schema=CustomPotatoModel,
             prefix="potatoes",
             paginate=PAGINATION_SIZE,
         )
@@ -140,9 +143,7 @@ def ormar_implementation_string_pk():
 
     app.include_router(
         OrmarCRUDRouter(
-            schema=PotatoType,
-            db_model=PotatoTypeModel,
-            create_schema=PotatoType,
+            schema=PotatoTypeModel,
             prefix="potato_type",
         )
     )

@@ -35,15 +35,16 @@ class CRUDGenerator(Generic[T], APIRouter):
 
         self.schema = schema
         self.pagination = pagination_factory(max_limit=paginate)
+        self._pk: str = self._pk if hasattr(self, "_pk") else "id"
         self.create_schema = (
             create_schema
             if create_schema
-            else schema_factory(self.schema, name="Create")
+            else schema_factory(self.schema, pk_field_name=self._pk, name="Create")
         )
         self.update_schema = (
             update_schema
             if update_schema
-            else schema_factory(self.schema, name="Update")
+            else schema_factory(self.schema, pk_field_name=self._pk, name="Update")
         )
 
         prefix = self._base_path + (

@@ -7,7 +7,7 @@ class MemoryCRUDRouter(CRUDGenerator[T]):
     def __init__(self, schema: Type[T], *args: Any, **kwargs: Any) -> None:
         super(MemoryCRUDRouter, self).__init__(schema, *args, **kwargs)
         self.models: List[T] = []
-        self._id = 0
+        self._id = 1
 
     def _get_all(self, *args: Any, **kwargs: Any) -> Callable:
         def route(pagination: dict = self.pagination) -> List[T]:  # type: ignore

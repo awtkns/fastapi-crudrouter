@@ -20,14 +20,14 @@ class TortoiseCRUDRouter(CRUDGenerator[T]):
         ), "Tortoise ORM must be installed to use the TortoiseCRUDRouter."
 
         self.db_model = db_model
-        self._primary_key: str = db_model.describe()["pk_field"]["db_column"]
+        self._pk: str = db_model.describe()["pk_field"]["db_column"]
 
         if "prefix" not in kwargs:
             # unsure why the name has a "None." appended but I handle it
             kwargs["prefix"] = db_model.describe()["name"].replace("None.", "")
 
         if "create_schema" not in kwargs:
-            kwargs["create_schema"] = _utils.schema_factory(schema, self._primary_key)
+            kwargs["create_schema"] = _utils.schema_factory(schema, self._pk)
 
         super().__init__(schema, *args, **kwargs)
 

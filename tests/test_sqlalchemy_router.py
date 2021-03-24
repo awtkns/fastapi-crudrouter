@@ -50,7 +50,7 @@ def get_app():
 
 def test_integrity_error():
     client = TestClient(get_app())
-    potato = Potato(id=1, thickness=2, mass=5, color="red", type="russet")
+    potato = dict(id=1, thickness=2, mass=5, color="red", type="russet")
 
     args = client, "/potato", potato
     test_router.test_post(*args)
@@ -58,6 +58,6 @@ def test_integrity_error():
         test_router.test_post(*args)
 
     # No integrity error here because of the create_schema
-    args = client, "/carrot", Carrot(id=1, length=2, color="red")
+    args = client, "/carrot", dict(id=1, length=2, color="red")
     test_router.test_post(*args)
     test_router.test_post(*args, expected_length=2)
