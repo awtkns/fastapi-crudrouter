@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.5.1'
+VERSION = '0.6.0'
 
 setup(
     name='fastapi-crudrouter',
