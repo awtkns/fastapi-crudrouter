@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 from .implementations import *
 
 
-@pytest.fixture(params=implementations, scope="session")
+@pytest.fixture(params=implementations, scope="class")
 def client(request):
     impl = request.param
 
