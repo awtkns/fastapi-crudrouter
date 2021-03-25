@@ -1,6 +1,6 @@
 When generating routes, the `OrmarCRUDRouter` will automatically tie into your database
 using your [ormar](https://collerek.github.io/ormar/) models. To use it, you must pass a
-[pydantic](https://pydantic-docs.helpmanual.io/) schema, your `ormar` database model to
+[pydantic](https://pydantic-docs.helpmanual.io/) schema and your `ormar` database model to
 it.
 
 ## Simple Example
