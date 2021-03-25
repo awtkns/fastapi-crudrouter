@@ -27,9 +27,3 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
-    - name: Check Typing with mypy
-      run: |
-        mypy fastapi_crudrouter
-    - name: Lint with flake8
-      run: |
-        flake8 fastapi_crudrouter
