@@ -1,11 +1,8 @@
 name: Update Release Docs
-
-on:
-  release:
-    types: [ published ]
+on: release
 
 jobs:
-  deploy:
+  Update:
     runs-on: ubuntu-latest
 
     steps:
