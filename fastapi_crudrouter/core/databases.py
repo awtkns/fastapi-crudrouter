@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Mapping, Optional, Type, Coroutine
+from typing import Any, Callable, List, Mapping, Type, Coroutine
 
 from fastapi import HTTPException
 

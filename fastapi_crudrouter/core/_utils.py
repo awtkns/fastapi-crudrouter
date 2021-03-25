@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Optional, Type, TypeVar, Any
+from typing import Dict, Optional, Type, TypeVar, Any
 
 from fastapi import Depends, HTTPException
 from pydantic import BaseModel, create_model
