@@ -66,7 +66,7 @@ def test_integrity_error():
 
 def test_integrity_error_update():
     client = TestClient(get_app())
-    potato1 = Potato(
+    potato1 = dict(
         id=1,
         thickness=2,
         mass=5,
@@ -74,7 +74,7 @@ def test_integrity_error_update():
         type='russet'
     )
 
-    potato2 = Potato(
+    potato2 = dict(
         id=2,
         thickness=9,
         mass=5,
@@ -86,10 +86,10 @@ def test_integrity_error_update():
     test_router.test_post(*args, potato1, expected_length=1)
     test_router.test_post(*args, potato2, expected_length=2)
 
-    potato2.color = potato1.color
-    res = client.put(f'{POTATO_URL}/{potato2.id}', json=potato2.dict())
+    potato2['color'] = potato1['color']
+    res = client.put(f'{POTATO_URL}/{potato2["id"]}', json=potato2)
     assert res.status_code == 422, res.json()
 
-    potato2.color = 'green'
-    res = client.put(f'{POTATO_URL}/{potato2.id}', json=potato2.dict())
+    potato2['color'] = 'green'
+    res = client.put(f'{POTATO_URL}/{potato2["id"]}', json=potato2)
     assert res.status_code == 200, res.json()
