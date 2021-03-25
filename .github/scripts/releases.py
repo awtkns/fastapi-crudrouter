@@ -1,11 +1,10 @@
 from os import environ
-from pathlib import Path
 
 from github import Github
 from github.GitRelease import GitRelease
 
-GITHUB_REPOSITORY = environ.get('GITHUB_REPOSITORY')
-GITHUB_TOKEN = environ.get('GH_TOKEN')
+GITHUB_REPOSITORY = environ.get('GITHUB_REPOSITORY', 'awtkns/fastapi-crudrouter')
+GITHUB_TOKEN = environ.get('GITHUB_TOKEN') or environ.get('GH_TOKEN')
 FILE_PATH = "docs/en/docs/releases.md"
 COMMIT_MESSAGE = "🤖 auto update releases.md"
 
@@ -26,18 +25,25 @@ def generate_header(r: GitRelease, separator: bool = False):
 if __name__ == '__main__':
     repo = gh.get_repo(GITHUB_REPOSITORY)
 
-    content = ''
+    new_content = ''
     first = False
     for r in repo.get_releases():
         if not r.draft:
-            content += generate_header(r, first)
-            content += r.body
+            new_content += generate_header(r, first)
+            new_content += r.body
             first = True
 
-    contents = repo.get_contents(FILE_PATH)
-    repo.update_file(
-        contents.path,
-        message=COMMIT_MESSAGE,
-        content=content,
-        sha=contents.sha
-    )
+    file = repo.get_contents(FILE_PATH)
+    old_content = file.decoded_content.decode()
+
+    if new_content == old_content:
+        print("No new release information, Skipping.")
+    else:
+        print("Uploading new release documentation")
+
+        repo.update_file(
+            file.path,
+            message=COMMIT_MESSAGE,
+            content=new_content,
+            sha=file.sha,
+        )
