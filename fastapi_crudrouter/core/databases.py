@@ -39,7 +39,9 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         super().__init__(schema, *args, **kwargs)
 
-    def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, List[Mapping[Any, Any]]]]:
+    def _get_all(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, List[Mapping[Any, Any]]]]:
         async def route(
             pagination: dict = self.pagination,  # type: ignore
         ) -> List[Mapping[Any, Any]]:
@@ -50,7 +52,9 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
+    def _get_one(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
         async def route(item_id: self._pk_type) -> Mapping:  # type: ignore
             query = self.table.select().where(self._pk_col == item_id)
             model = await self.db.fetch_one(query)
@@ -62,7 +66,9 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _create(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
+    def _create(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
         async def route(
             schema: self.create_schema,  # type: ignore
         ) -> Mapping[Any, Any]:
@@ -75,7 +81,9 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _update(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
+    def _update(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
         async def route(
             item_id: self._pk_type, schema: self.update_schema  # type: ignore
         ) -> Mapping[Any, Any]:
@@ -91,7 +99,9 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, List[Mapping[Any, Any]]]]:
+    def _delete_all(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, List[Mapping[Any, Any]]]]:
         async def route() -> List[Mapping[Any, Any]]:
             query = self.table.delete()
             await self.db.execute(query=query)
@@ -100,7 +110,9 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
+    def _delete_one(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
         async def route(item_id: self._pk_type) -> Mapping[Any, Any]:  # type: ignore
             query = self.table.delete().where(self._pk_col == item_id)
 

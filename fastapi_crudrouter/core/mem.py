@@ -14,7 +14,7 @@ class MemoryCRUDRouter(CRUDGenerator[T]):
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
             if limit:
-                return self.models[skip: skip + limit]
+                return self.models[skip : skip + limit]
             else:
                 return self.models[skip:]
 

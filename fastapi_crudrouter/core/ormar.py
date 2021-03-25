@@ -8,7 +8,7 @@ from typing import (
     Type,
     TypeVar,
     cast,
-    Coroutine
+    Coroutine,
 )
 
 from . import CRUDGenerator, NOT_FOUND, _utils
@@ -42,7 +42,9 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
 
         super().__init__(schema, *args, **kwargs)
 
-    def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, List[Optional[OR]]]]:
+    def _get_all(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, List[Optional[OR]]]]:
         async def route(
             pagination: Dict = self.pagination,  # type: ignore
         ) -> List[Optional[OR]]:
@@ -54,7 +56,9 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
 
         return route
 
-    def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, OR]]:
+    def _get_one(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, OR]]:
         async def route(item_id: self._pk_type) -> OR:  # type: ignore
             try:
                 filter_ = {self._pk: item_id}
@@ -67,7 +71,9 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
 
         return route
 
-    def _create(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, OR]]:
+    def _create(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, OR]]:
         async def route(model: self.create_schema) -> OR:  # type: ignore
             model_dict = model.dict()
             if self.schema.Meta.model_fields[self._pk].autoincrement:
@@ -76,7 +82,9 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
 
         return route
 
-    def _update(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, OR]]:
+    def _update(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, OR]]:
         async def route(
             item_id: self._pk_type,  # type: ignore
             model: self.update_schema,  # type: ignore
@@ -89,14 +97,18 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
 
         return route
 
-    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, List[Optional[OR]]]]:
+    def _delete_all(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, List[Optional[OR]]]]:
         async def route() -> List[Optional[OR]]:
             await self.schema.objects.delete(each=True)
             return await self._get_all()(pagination={"skip": 0, "limit": None})
 
         return route
 
-    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, OR]]:
+    def _delete_one(
+        self, *args: Any, **kwargs: Any
+    ) -> Callable[..., Coroutine[Any, Any, OR]]:
         async def route(item_id: self._pk_type) -> OR:  # type: ignore
             model = await self._get_one()(item_id)
             await model.delete()
