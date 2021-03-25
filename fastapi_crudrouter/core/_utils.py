@@ -1,4 +1,4 @@
-from typing import Callable, Dict, Optional, Type, TypeVar
+from typing import Callable, Dict, Optional, Type, TypeVar, Any
 
 from fastapi import Depends, HTTPException
 from pydantic import BaseModel, create_model
@@ -6,7 +6,7 @@ from pydantic import BaseModel, create_model
 T = TypeVar("T", bound=BaseModel)
 
 
-def get_pk_type(schema: Type[T], pk_field: str) -> type:
+def get_pk_type(schema: Type[T], pk_field: str) -> Any:
     try:
         return schema.__fields__[pk_field].type_
     except KeyError:
@@ -42,7 +42,7 @@ def create_query_validation_exception(field: str, msg: str) -> HTTPException:
     )
 
 
-def pagination_factory(max_limit: int = None) -> Callable:
+def pagination_factory(max_limit: Optional[int] = None) -> Any:
     """
     Created the pagination dependency to be used in the router
     """

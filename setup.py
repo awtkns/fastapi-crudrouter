@@ -1,22 +1,22 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.6.0'
+VERSION = "0.6.0"
 
 setup(
-    name='fastapi-crudrouter',
+    name="fastapi-crudrouter",
     version=VERSION,
-    author='Adam Watkins',
-    author_email='cadamrun@gmail.com',
-    packages=find_packages(exclude=('tests.*', 'tests')),
-    url='https://github.com/awtkns/fastapi-crudrouter',
-    documentation='https://fastapi-crudrouter.awtkns.com/',
-    license='MIT',
-    description='A dynamic FastAPI router that automatically creates CRUD routes for your models',
-    long_description=open('README.md').read(),
+    author="Adam Watkins",
+    author_email="cadamrun@gmail.com",
+    packages=find_packages(exclude=("tests.*", "tests")),
+    url="https://github.com/awtkns/fastapi-crudrouter",
+    documentation="https://fastapi-crudrouter.awtkns.com/",
+    license="MIT",
+    description="A dynamic FastAPI router that automatically creates CRUD routes for your models",
+    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     install_requires=["fastapi"],
-    python_requires='>=3.6',
-    keywords=['fastapi', 'crud', 'restful', 'routing', 'generator', 'crudrouter'],
+    python_requires=">=3.6",
+    keywords=["fastapi", "crud", "restful", "routing", "generator", "crudrouter"],
     classifiers=[
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
@@ -41,6 +41,5 @@ setup(
         "Programming Language :: Python :: 3.8",
         "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
         "Topic :: Internet :: WWW/HTTP",
-    ]
+    ],
 )
-

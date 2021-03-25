@@ -41,22 +41,25 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[T]):
 
         super().__init__(schema, *args, **kwargs)
 
-    def _get_all(self, *args: Any, **kwargs: Any) -> Callable:
+    def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[TM]]:
         def route(
             db: Session = Depends(self.db_func),
             pagination: dict = self.pagination,  # type: ignore
         ) -> List[TM]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
-            return db.query(self.db_model).limit(limit).offset(skip).all()
+            db_models: List[TM] = (
+                db.query(self.db_model).limit(limit).offset(skip).all()
+            )
+            return db_models
 
         return route
 
-    def _get_one(self, *args: Any, **kwargs: Any) -> Callable:
+    def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., TM]:
         def route(
             item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
         ) -> TM:
-            model = db.query(self.db_model).get(item_id)
+            model: TM = db.query(self.db_model).get(item_id)
 
             if model:
                 return model
@@ -65,13 +68,13 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _create(self, *args: Any, **kwargs: Any) -> Callable:
+    def _create(self, *args: Any, **kwargs: Any) -> Callable[..., TM]:
         def route(
             model: self.create_schema,  # type: ignore
             db: Session = Depends(self.db_func),
         ) -> TM:
             try:
-                db_model = self.db_model(**model.dict())
+                db_model: TM = self.db_model(**model.dict())
                 db.add(db_model)
                 db.commit()
                 db.refresh(db_model)
@@ -82,14 +85,14 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _update(self, *args: Any, **kwargs: Any) -> Callable:
+    def _update(self, *args: Any, **kwargs: Any) -> Callable[..., TM]:
         def route(
             item_id: self._pk_type,  # type: ignore
             model: self.update_schema,  # type: ignore
             db: Session = Depends(self.db_func),
         ) -> TM:
             try:
-                db_model = self._get_one()(item_id, db)
+                db_model: TM = self._get_one()(item_id, db)
 
                 for key, value in model.dict(exclude={self._pk}).items():
                     if hasattr(db_model, key):
@@ -105,7 +108,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable:
+    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[TM]]:
         def route(db: Session = Depends(self.db_func)) -> List[TM]:
             db.query(self.db_model).delete()
             db.commit()
@@ -114,11 +117,11 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable:
+    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., TM]:
         def route(
             item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
         ) -> TM:
-            db_model = self._get_one()(item_id, db)
+            db_model: TM = self._get_one()(item_id, db)
             db.delete(db_model)
             db.commit()
 

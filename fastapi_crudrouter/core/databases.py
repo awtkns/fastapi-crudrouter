@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Mapping, Optional, Type
+from typing import Any, Callable, List, Mapping, Optional, Type, Coroutine
 
 from fastapi import HTTPException
 
@@ -39,10 +39,10 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         super().__init__(schema, *args, **kwargs)
 
-    def _get_all(self, *args: Any, **kwargs: Any) -> Callable:
+    def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, List[Mapping[Any, Any]]]]:
         async def route(
             pagination: dict = self.pagination,  # type: ignore
-        ) -> List[Mapping]:
+        ) -> List[Mapping[Any, Any]]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
             query = self.table.select().limit(limit).offset(skip)
@@ -50,8 +50,8 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _get_one(self, *args: Any, **kwargs: Any) -> Callable:
-        async def route(item_id: self._pk_type) -> Optional[Mapping]:  # type: ignore
+    def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
+        async def route(item_id: self._pk_type) -> Mapping:  # type: ignore
             query = self.table.select().where(self._pk_col == item_id)
             model = await self.db.fetch_one(query)
 
@@ -62,10 +62,10 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _create(self, *args: Any, **kwargs: Any) -> Callable:
+    def _create(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
         async def route(
             schema: self.create_schema,  # type: ignore
-        ) -> Optional[Mapping]:
+        ) -> Mapping[Any, Any]:
             try:
                 query = self.table.insert()
                 rid = await self.db.execute(query=query, values=schema.dict())
@@ -75,10 +75,10 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _update(self, *args: Any, **kwargs: Any) -> Callable:
+    def _update(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
         async def route(
             item_id: self._pk_type, schema: self.update_schema  # type: ignore
-        ) -> Optional[Mapping]:
+        ) -> Mapping[Any, Any]:
             query = self.table.update().where(self._pk_col == item_id)
             rid = await self.db.execute(
                 query=query, values=schema.dict(exclude={self._pk})
@@ -91,8 +91,8 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable:
-        async def route() -> List[Optional[Mapping]]:
+    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, List[Mapping[Any, Any]]]]:
+        async def route() -> List[Mapping[Any, Any]]:
             query = self.table.delete()
             await self.db.execute(query=query)
 
@@ -100,8 +100,8 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable:
-        async def route(item_id: self._pk_type) -> Optional[Mapping]:  # type: ignore
+    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
+        async def route(item_id: self._pk_type) -> Mapping[Any, Any]:  # type: ignore
             query = self.table.delete().where(self._pk_col == item_id)
 
             row = await self._get_one()(item_id)

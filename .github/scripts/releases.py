@@ -4,8 +4,8 @@ from pathlib import Path
 from github import Github
 from github.GitRelease import GitRelease
 
-GITHUB_REPOSITORY = environ.get('GITHUB_REPOSITORY')
-GITHUB_TOKEN = environ.get('GH_TOKEN')
+GITHUB_REPOSITORY = environ.get("GITHUB_REPOSITORY")
+GITHUB_TOKEN = environ.get("GH_TOKEN")
 FILE_PATH = "docs/en/docs/releases.md"
 COMMIT_MESSAGE = "🤖 auto update releases.md"
 
@@ -13,20 +13,23 @@ gh = Github(GITHUB_TOKEN)
 
 
 def generate_header(r: GitRelease, separator: bool = False):
-    header = ''
+    header = ""
     if separator:
         header += "\n\n---\n"
 
-    return header + f"""
+    return (
+        header
+        + f"""
 ## [{r.title}]({r.html_url}){" { .releases } "}
 {r.created_at.date()}
 """
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     repo = gh.get_repo(GITHUB_REPOSITORY)
 
-    content = ''
+    content = ""
     first = False
     for r in repo.get_releases():
         if not r.draft:
@@ -36,8 +39,5 @@ if __name__ == '__main__':
 
     contents = repo.get_contents(FILE_PATH)
     repo.update_file(
-        contents.path,
-        message=COMMIT_MESSAGE,
-        content=content,
-        sha=contents.sha
+        contents.path, message=COMMIT_MESSAGE, content=content, sha=contents.sha
     )

@@ -19,10 +19,10 @@ class CRUDGenerator(Generic[T], APIRouter):
     def __init__(
         self,
         schema: Type[T],
-        create_schema: Type[T] = None,
-        update_schema: Type[T] = None,
-        prefix: str = None,
-        paginate: int = None,
+        create_schema: Optional[Type[T]] = None,
+        update_schema: Optional[Type[T]] = None,
+        prefix: Optional[str] = None,
+        paginate: Optional[int] = None,
         get_all_route: bool = True,
         get_one_route: bool = True,
         create_route: bool = True,
@@ -150,24 +150,24 @@ class CRUDGenerator(Generic[T], APIRouter):
             ):
                 self.routes.remove(route)
 
-    def _get_all(self, *args: Any, **kwargs: Any) -> Callable:
+    def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
-    def _get_one(self, *args: Any, **kwargs: Any) -> Callable:
+    def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
-    def _create(self, *args: Any, **kwargs: Any) -> Callable:
+    def _create(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
-    def _update(self, *args: Any, **kwargs: Any) -> Callable:
+    def _update(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
-    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable:
+    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
-    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable:
+    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
     @staticmethod
-    def get_routes() -> list:
+    def get_routes() -> List[str]:
         return ["get_all", "create", "delete_all", "get_one", "update", "delete_one"]
