@@ -88,16 +88,20 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[T]):
             model: self.update_schema,  # type: ignore
             db: Session = Depends(self.db_func),
         ) -> TM:
-            db_model = self._get_one()(item_id, db)
+            try:
+                db_model = self._get_one()(item_id, db)
 
-            for key, value in model.dict(exclude={self._pk}).items():
-                if hasattr(db_model, key):
-                    setattr(db_model, key, value)
+                for key, value in model.dict(exclude={self._pk}).items():
+                    if hasattr(db_model, key):
+                        setattr(db_model, key, value)
 
-            db.commit()
-            db.refresh(db_model)
+                db.commit()
+                db.refresh(db_model)
 
-            return db_model
+                return db_model
+            except IntegrityError as e:
+                db.rollback()
+                raise HTTPException(422, ", ".join(e.args))
 
         return route
 
