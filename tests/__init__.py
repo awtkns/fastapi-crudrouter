@@ -30,7 +30,7 @@ class CustomPotato(PotatoCreate):
 
 class CarrotCreate(BaseModel):
     length: float
-    color: str = 'Orange'
+    color: str = "Orange"
 
 
 class CarrotUpdate(BaseModel):

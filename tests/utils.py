@@ -1,8 +1,5 @@
-def compare_dict(d1, d2, exclude: list = ['id']) -> bool:
-    assert len(d1.keys()) == len(d2.keys())
-
-    for key in d1.keys():
-        if key not in exclude and d1[key] != d2[key]:
-            return False
-
-    return True
+def compare_dict(d1, d2, exclude: list) -> bool:
+    exclude = exclude or ["id"]
+    d1 = {k: v for k, v in d1.items() if k not in exclude}
+    d2 = {k: v for k, v in d2.items() if k not in exclude}
+    return d1 == d2

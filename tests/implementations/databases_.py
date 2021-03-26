@@ -1,14 +1,18 @@
-from typing import List
-
 import databases
-from sqlalchemy import MetaData, Table, Column, Integer, Float, String, create_engine
-
 from fastapi import FastAPI
-from pydantic import BaseModel
-from sqlalchemy_utils import drop_database, create_database, database_exists
+from sqlalchemy import Column, Float, Integer, MetaData, String, Table, create_engine
+from sqlalchemy_utils import create_database, database_exists, drop_database
 
 from fastapi_crudrouter import DatabasesCRUDRouter
-from tests import Potato, PotatoCreate, CustomPotato, Carrot, CarrotCreate, PotatoType, CarrotUpdate, PAGINATION_SIZE
+from tests import (
+    Carrot,
+    CarrotCreate,
+    CarrotUpdate,
+    CustomPotato,
+    PAGINATION_SIZE,
+    Potato,
+    PotatoType,
+)
 
 DATABASE_URL = "sqlite:///./test.db"
 
@@ -56,8 +60,21 @@ def databases_implementation():
     async def shutdown():
         await database.disconnect()
 
-    potato_router = DatabasesCRUDRouter(database=database, table=potatoes, schema=Potato, prefix='potato', paginate=PAGINATION_SIZE)
-    carrot_router = DatabasesCRUDRouter(database=database, table=carrots, schema=Carrot, create_schema=CarrotCreate, update_schema=CarrotUpdate, prefix='carrot')
+    potato_router = DatabasesCRUDRouter(
+        database=database,
+        table=potatoes,
+        schema=Potato,
+        prefix="potato",
+        paginate=PAGINATION_SIZE,
+    )
+    carrot_router = DatabasesCRUDRouter(
+        database=database,
+        table=carrots,
+        schema=Carrot,
+        create_schema=CarrotCreate,
+        update_schema=CarrotUpdate,
+        prefix="carrot",
+    )
     app.include_router(potato_router)
     app.include_router(carrot_router)
 
@@ -90,7 +107,9 @@ def databases_implementation_custom_ids():
     async def shutdown():
         await database.disconnect()
 
-    potato_router = DatabasesCRUDRouter(database=database, table=potatoes, schema=CustomPotato)
+    potato_router = DatabasesCRUDRouter(
+        database=database, table=potatoes, schema=CustomPotato
+    )
     app.include_router(potato_router)
 
     return app
@@ -119,7 +138,12 @@ def databases_implementation_string_pk():
     async def shutdown():
         await database.disconnect()
 
-    potato_router = DatabasesCRUDRouter(database=database, table=potato_types, schema=PotatoType, create_schema=PotatoType)
+    potato_router = DatabasesCRUDRouter(
+        database=database,
+        table=potato_types,
+        schema=PotatoType,
+        create_schema=PotatoType,
+    )
     app.include_router(potato_router)
 
     return app

@@ -1,13 +1,13 @@
 import pytest
 
-from . import Potato, Carrot, test_router
+from . import test_router
 from .utils import compare_dict
 
-basic_potato = Potato(id=0, thickness=.24, mass=1.2, color='Brown', type='Russet')
-basic_carrot = Carrot(id=0, length=1.2, color='Orange')
+basic_potato = dict(thickness=0.24, mass=1.2, color="Brown", type="Russet")
+basic_carrot = dict(length=1.2, color="Orange")
 
-PotatoUrl = '/potato'
-CarrotUrl = '/carrot'
+PotatoUrl = "/potato"
+CarrotUrl = "/carrot"
 
 
 def test_get(client):
@@ -31,25 +31,25 @@ def test_update(client):
     with pytest.raises(AssertionError):
         test_router.test_update(client, CarrotUrl, basic_carrot)
 
-    res = client.post(CarrotUrl, json=basic_carrot.dict())
+    res = client.post(CarrotUrl, json=basic_carrot)
     data = res.json()
     assert res.status_code == 200
 
-    carrot = basic_carrot.copy()
-    carrot.color = 'Red'
-    carrot.length = 54
+    carrot = {k: v for k, v in basic_carrot.items()}
+    carrot["color"] = "Red"
+    carrot["length"] = 54.0
 
-    res = client.put(f'{CarrotUrl}/{data["id"]}', json=carrot.dict())
+    res = client.put(f'{CarrotUrl}/{data["id"]}', json=carrot)
     assert res.status_code == 200
-    assert not compare_dict(res.json(), carrot.dict(), exclude=['id'])
-    assert not compare_dict(res.json(), basic_carrot.dict(), exclude=['id'])
-    assert compare_dict(res.json(), carrot.dict(), exclude=['id', 'color'])
+    assert not compare_dict(res.json(), carrot, exclude=["id"])
+    assert not compare_dict(res.json(), basic_carrot, exclude=["id"])
+    assert compare_dict(res.json(), carrot, exclude=["id", "color"])
 
     res = client.get(f'{CarrotUrl}/{data["id"]}')
     assert res.status_code == 200
-    assert not compare_dict(res.json(), carrot.dict(), exclude=['id'])
-    assert not compare_dict(res.json(), basic_carrot.dict(), exclude=['id'])
-    assert compare_dict(res.json(), carrot.dict(), exclude=['id', 'color'])
+    assert not compare_dict(res.json(), carrot, exclude=["id"])
+    assert not compare_dict(res.json(), basic_carrot, exclude=["id"])
+    assert compare_dict(res.json(), carrot, exclude=["id", "color"])
 
 
 def test_delete_one(client):
@@ -62,7 +62,7 @@ def test_delete_all(client):
     test_router.test_delete_all(client, CarrotUrl, basic_carrot, basic_carrot)
 
 
-@pytest.mark.parametrize('id_', [-1, 0, 4, '14'])
+@pytest.mark.parametrize("id_", [-1, 0, 4, "14"])
 def test_not_found(client, id_):
     test_router.test_not_found(client, id_, PotatoUrl, basic_potato)
     test_router.test_not_found(client, id_, CarrotUrl, basic_carrot)

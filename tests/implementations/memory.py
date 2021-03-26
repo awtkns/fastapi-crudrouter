@@ -12,6 +12,7 @@ def memory_implementation():
     return app
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(memory_implementation(), port=5000)

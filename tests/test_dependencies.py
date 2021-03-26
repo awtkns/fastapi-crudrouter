@@ -1,14 +1,11 @@
-import random
-import pytest
-
-from fastapi import FastAPI, testclient, Depends
+from fastapi import Depends, FastAPI, HTTPException, testclient
 from fastapi.security import OAuth2PasswordBearer
-from fastapi_crudrouter import MemoryCRUDRouter
 
+from fastapi_crudrouter import MemoryCRUDRouter
 from tests import Potato
 
-URL = '/potato'
-AUTH = {'Authorization': 'Bearer my_token'}
+URL = "/potato"
+AUTH = {"Authorization": "Bearer my_token"}
 
 
 def get_client():
@@ -41,6 +38,6 @@ def test_authorization_fail():
     assert client.post(URL).status_code == 401
 
     for id_ in [-1, 1, 0, 14]:
-        assert client.get(f'{URL}/{id_}').status_code == 401
-        assert client.put(f'{URL}/{id_}').status_code == 401
-        assert client.delete(f'{URL}/{id_}').status_code == 401
+        assert client.get(f"{URL}/{id_}").status_code == 401
+        assert client.put(f"{URL}/{id_}").status_code == 401
+        assert client.delete(f"{URL}/{id_}").status_code == 401
