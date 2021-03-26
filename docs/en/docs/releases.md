@@ -1,8 +1,34 @@
 
+## [v0.6.0 - Ormar Backend](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.6.0) { .releases } 
+2021-03-26
+### 🎉 Highlights
+With the release of v0.6.0  fastapi-crudrouter **now supports [ormar](https://github.com/collerek/ormar)** as an async backend! When generating routes, the OrmarCRUDRouter will automatically tie into your database using your ormar models. To use it, simply pass your ormar database model as the schema.
+
+```python
+OrmarCRUDRouter(
+    schema=MyPydanticModel, 
+    paginate=25
+)
+```
+
+Check out the [docs](https://fastapi-crudrouter.awtkns.com/backends/ormar/) for more details on how to use the `OrmarCRUDRouter`.
+
+### ✨ Features
+- Full Ormar Support @collerek #46
+- Better handling of database errors in the update route @sorXCode #48 
+- Improved typing #46 #43
+- Black, Flake8 and Mypy linting #46 
+- Additional Tests for nested models #40 
+
+### 🐛 Bug Fixes
+- Pagination issues when max limit was set to null @ethanhaid #42 
+
+---
+
 ## [v0.5.0 - Pagination](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.5.0) { .releases } 
 2021-03-07
 ### 🎉 Highlights
-With the release of v0.5.0 all CRUDRouters  **now supports pagination** . All "get all" routes now accept `skip` and `limit` query parameters allowing you to easily paginate your routes.  By default, no limit is set on the number of items returned by your routes.  Should you wish to limit the number of items that a client can request, it can be done as shown below.
+With the release of v0.5.0 all CRUDRouters  **now supports pagination**. All "get all" routes now accept `skip` and `limit` query parameters allowing you to easily paginate your routes.  By default, no limit is set on the number of items returned by your routes.  Should you wish to limit the number of items that a client can request, it can be done as shown below.
 
 ```python
 CRUDRouter(
