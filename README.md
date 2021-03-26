@@ -68,6 +68,7 @@ likely grow in future releases.
 - In Memory ([docs](https://fastapi-crudrouter.awtkns.com/backends/memory/))
 - SQLAlchemy ([docs](https://fastapi-crudrouter.awtkns.com/backends/sqlalchemy/))
 - Databases (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/async/))
+- Ormar (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/ormar/))
 - Tortoise ORM  (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/tortoise/))
 
 ## OpenAPI Support

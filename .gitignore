@@ -48,6 +48,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+p38venv/
 
 # Databases
 *.db

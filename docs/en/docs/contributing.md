@@ -40,6 +40,28 @@ $ pytest
 
 </div>
 
+### Linting, formatting and type testing
+
+With `dev.requirements.txt` installed above you also install tools to lint, format and static type check the project.
+
+To format the project run: 
+
+```
+black fastapi_crudrouter tests
+```
+
+To check styles, imports, annotations, pep8 etc. run:
+
+```
+flake8 fastapi_crudrouter
+```
+
+To check static types annotations run: 
+
+```
+mypy fastapi_crudrouter tests
+```
+
 ### Documentation
 Crudrouter's documentation was built using [mkdocs-material](https://squidfunk.github.io/mkdocs-material/). To start the development
 documentation server, please first install mkdocs-material and then run the server as shown below.
