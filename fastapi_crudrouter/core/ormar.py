@@ -82,7 +82,7 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
                 model_dict.pop(self._pk, None)
             try:
                 return await self.schema.objects.create(**model_dict)
-            except self._get_exception() as exc:
+            except self._get_exception():
                 raise HTTPException(422, "Key already exists")
 
         return route
@@ -130,7 +130,7 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
         if backend == "sqlite":
             from sqlite3 import IntegrityError
         elif backend == "postgresql":
-            from asyncpg import (  #  type: ignore
+            from asyncpg import (  # type: ignore
                 IntegrityConstraintViolationError as IntegrityError,
             )
         else:
