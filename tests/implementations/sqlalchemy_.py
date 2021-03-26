@@ -125,3 +125,43 @@ def sqlalchemy_implementation_string_pk():
     )
 
     return app
+
+
+def sqlalchemy_implementation_integrity_errors():
+    app, engine, Base, session = _setup_base_app()
+
+    class PotatoModel(Base):
+        __tablename__ = "potatoes"
+        id = Column(Integer, primary_key=True, index=True)
+        thickness = Column(Float)
+        mass = Column(Float)
+        color = Column(String, unique=True)
+        type = Column(String)
+
+    class CarrotModel(Base):
+        __tablename__ = "carrots"
+        id = Column(Integer, primary_key=True, index=True)
+        length = Column(Float)
+        color = Column(String)
+
+    Base.metadata.create_all(bind=engine)
+    app.include_router(
+        SQLAlchemyCRUDRouter(
+            schema=Potato,
+            db_model=PotatoModel,
+            db=session,
+            create_schema=Potato,
+            prefix="potatoes",
+        )
+    )
+    app.include_router(
+        SQLAlchemyCRUDRouter(
+            schema=Carrot,
+            db_model=CarrotModel,
+            db=session,
+            update_schema=CarrotUpdate,
+            prefix="carrots",
+        )
+    )
+
+    return app

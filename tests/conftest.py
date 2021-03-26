@@ -17,7 +17,8 @@ def client(request):
         finalizer()
 
     else:
-        yield TestClient(impl())
+        with TestClient(impl()) as c:
+            yield c
 
 
 @pytest.fixture(
@@ -28,7 +29,8 @@ def client(request):
     ]
 )
 def custom_id_client(request):
-    yield TestClient(request.param())
+    with TestClient(request.param()) as c:
+        yield c
 
 
 @pytest.fixture
@@ -45,4 +47,17 @@ def overloaded_client():
     scope="function",
 )
 def string_pk_client(request):
-    yield TestClient(request.param())
+    with TestClient(request.param()) as c:
+        yield c
+
+
+@pytest.fixture(
+    params=[
+        sqlalchemy_implementation_integrity_errors,
+        ormar_implementation_integrity_errors,
+    ],
+    scope="function",
+)
+def integrity_errors_client(request):
+    with TestClient(request.param()) as c:
+        yield c

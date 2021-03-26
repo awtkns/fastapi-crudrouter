@@ -11,6 +11,8 @@ from typing import (
     Coroutine,
 )
 
+from fastapi import HTTPException
+
 from . import CRUDGenerator, NOT_FOUND, _utils
 
 try:
@@ -78,7 +80,10 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
             model_dict = model.dict()
             if self.schema.Meta.model_fields[self._pk].autoincrement:
                 model_dict.pop(self._pk, None)
-            return await self.schema.objects.create(**model.dict())
+            try:
+                return await self.schema.objects.create(**model_dict)
+            except self._get_exception() as exc:
+                raise HTTPException(422, "Key already exists")
 
         return route
 
@@ -90,9 +95,12 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
             model: self.update_schema,  # type: ignore
         ) -> OR:
             filter_ = {self._pk: item_id}
-            await self.schema.objects.filter(_exclude=False, **filter_).update(
-                **model.dict(exclude_unset=True)
-            )
+            try:
+                await self.schema.objects.filter(_exclude=False, **filter_).update(
+                    **model.dict(exclude_unset=True)
+                )
+            except self._get_exception():
+                raise HTTPException(422, "Key already exists")
             return await self._get_one()(item_id)
 
         return route
@@ -115,3 +123,16 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
             return model
 
         return route
+
+    def _get_exception(self) -> Type[Exception]:
+        # import Integrity exception based on backend use
+        backend = self.schema.db_backend_name()
+        if backend == "sqlite":
+            from sqlite3 import IntegrityError
+        elif backend == "postgresql":
+            from asyncpg import (  #  type: ignore
+                IntegrityConstraintViolationError as IntegrityError,
+            )
+        else:
+            from pymysql import IntegrityError  # type: ignore
+        return IntegrityError

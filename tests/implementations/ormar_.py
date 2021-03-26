@@ -8,13 +8,9 @@ from fastapi import FastAPI
 
 from fastapi_crudrouter import OrmarCRUDRouter
 from tests import (
-    Carrot,
     CarrotCreate,
     CarrotUpdate,
-    CustomPotato,
     PAGINATION_SIZE,
-    Potato,
-    PotatoType,
 )
 
 DATABASE_URL = "sqlite:///./test.db"
@@ -77,6 +73,17 @@ class CustomPotatoModel(ormar.Model):
     thickness = ormar.Float()
     mass = ormar.Float()
     color = ormar.String(max_length=255)
+    type = ormar.String(max_length=255)
+
+
+class UniquePotatoModel(ormar.Model):
+    class Meta(BaseMeta):
+        pass
+
+    id = ormar.Integer(primary_key=True)
+    thickness = ormar.Float()
+    mass = ormar.Float()
+    color = ormar.String(max_length=255, unique=True)
     type = ormar.String(max_length=255)
 
 
@@ -145,6 +152,28 @@ def ormar_implementation_string_pk():
         OrmarCRUDRouter(
             schema=PotatoTypeModel,
             prefix="potato_type",
+        )
+    )
+
+    return app
+
+
+def ormar_implementation_integrity_errors():
+    app = get_app()
+
+    app.include_router(
+        OrmarCRUDRouter(
+            schema=UniquePotatoModel,
+            prefix="potatoes",
+            paginate=PAGINATION_SIZE,
+        )
+    )
+    app.include_router(
+        OrmarCRUDRouter(
+            schema=CarrotModel,
+            create_schema=CarrotCreate,
+            update_schema=CarrotUpdate,
+            prefix="carrots",
         )
     )
 
