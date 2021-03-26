@@ -44,6 +44,8 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
 
         super().__init__(schema, *args, **kwargs)
 
+        self._INTEGRITY_ERROR = self._get_integrity_error_type()
+
     def _get_all(
         self, *args: Any, **kwargs: Any
     ) -> Callable[..., Coroutine[Any, Any, List[Optional[OR]]]]:
@@ -82,7 +84,7 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
                 model_dict.pop(self._pk, None)
             try:
                 return await self.schema.objects.create(**model_dict)
-            except self._get_exception():
+            except self._INTEGRITY_ERROR:
                 raise HTTPException(422, "Key already exists")
 
         return route
@@ -99,8 +101,8 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
                 await self.schema.objects.filter(_exclude=False, **filter_).update(
                     **model.dict(exclude_unset=True)
                 )
-            except self._get_exception():
-                raise HTTPException(422, "Key already exists")
+            except self._INTEGRITY_ERROR as e:
+                raise HTTPException(422, ", ".join(e.args))
             return await self._get_one()(item_id)
 
         return route
@@ -124,15 +126,19 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
 
         return route
 
-    def _get_exception(self) -> Type[Exception]:
-        # import Integrity exception based on backend use
+    def _get_integrity_error_type(self) -> Type[Exception]:
+        """ Imports the Integrity exception based on the used backend """
         backend = self.schema.db_backend_name()
-        if backend == "sqlite":
-            from sqlite3 import IntegrityError
-        elif backend == "postgresql":
-            from asyncpg import (  # type: ignore
-                IntegrityConstraintViolationError as IntegrityError,
-            )
-        else:
-            from pymysql import IntegrityError  # type: ignore
-        return IntegrityError
+
+        try:
+            if backend == "sqlite":
+                from sqlite3 import IntegrityError
+            elif backend == "postgresql":
+                from asyncpg import (  # type: ignore
+                    IntegrityConstraintViolationError as IntegrityError,
+                )
+            else:
+                from pymysql import IntegrityError  # type: ignore
+            return IntegrityError
+        except ImportError:
+            return Exception
