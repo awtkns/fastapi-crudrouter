@@ -45,8 +45,5 @@ if __name__ == "__main__":
         print("Uploading new release documentation")
 
         repo.update_file(
-            file.path,
-            message=COMMIT_MESSAGE,
-            content=new_content,
-            sha=file.sha
+            file.path, message=COMMIT_MESSAGE, content=new_content, sha=file.sha
         )
