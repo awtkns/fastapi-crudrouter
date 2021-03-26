@@ -2,7 +2,7 @@
 ## [v0.5.0 - Pagination](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.5.0) { .releases } 
 2021-03-07
 ### 🎉 Highlights
-With the release of v0.5.0 all CRUDRouters  **now support pagination** . All "get all" routes now accept `skip` and `limit` query parameters allowing you to easily paginate your routes.  By default, no limit is set on the number of items returned by your routes.  Should you wish to limit the number of items that a client can request, it can be done as shown below.
+With the release of v0.5.0 all CRUDRouters  **now supports pagination** . All "get all" routes now accept `skip` and `limit` query parameters allowing you to easily paginate your routes.  By default, no limit is set on the number of items returned by your routes.  Should you wish to limit the number of items that a client can request, it can be done as shown below.
 
 ```python
 CRUDRouter(
@@ -81,10 +81,3 @@ app.include_router(CRUDRouter(model=Potato))
 - Support for both async and non-async relational databases using SQLAlchemy ([Docs](https://fastapi-crudrouter.awtkns.com/backends/sqlalchemy/)) 
 - Extensive documentation.
 - And much more 😎
-
-### Future Plans
-- Pagination Support
-- MongoDB / non-relational database support
-- Community requested features
-
-**Note:** Pre-release versions of this package are incompatible with this release due to the renaming of arguments for package consistency 

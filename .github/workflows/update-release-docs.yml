@@ -1,24 +1,21 @@
 name: Update Release Docs
-
-on:
-  release:
-    types: [ published ]
+on: release
 
 jobs:
-  deploy:
+  Update:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
-      with:
-        python-version: '3.6'
-    - name: Updating Releases Documentation
-      env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+    - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pygithub
-
+    - name: Updating Releases Documentation
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
         python .github/scripts/releases.py
