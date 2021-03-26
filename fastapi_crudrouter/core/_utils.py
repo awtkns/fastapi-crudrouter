@@ -1,7 +1,9 @@
-from typing import Dict, Optional, Type, TypeVar, Any
+from typing import Optional, Type, TypeVar, Any
 
 from fastapi import Depends, HTTPException
 from pydantic import BaseModel, create_model
+
+from ._types import PAGINATION
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -47,9 +49,7 @@ def pagination_factory(max_limit: Optional[int] = None) -> Any:
     Created the pagination dependency to be used in the router
     """
 
-    def pagination(
-        skip: int = 0, limit: Optional[int] = max_limit
-    ) -> Dict[str, Optional[int]]:
+    def pagination(skip: int = 0, limit: Optional[int] = max_limit) -> PAGINATION:
         if skip < 0:
             raise create_query_validation_exception(
                 field="skip",

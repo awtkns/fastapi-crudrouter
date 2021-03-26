@@ -40,7 +40,7 @@ $ pytest
 
 </div>
 
-### Linting, formatting and type testing
+### Linting, Formatting and Typing
 
 With `dev.requirements.txt` installed above you also install tools to lint, format and static type check the project.
 

@@ -1,7 +1,6 @@
 from typing import (
     Any,
     Callable,
-    Dict,
     List,
     Optional,
     TYPE_CHECKING,
@@ -14,6 +13,7 @@ from typing import (
 from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
+from ._types import PAGINATION
 
 try:
     import ormar
@@ -50,12 +50,12 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
         self, *args: Any, **kwargs: Any
     ) -> Callable[..., Coroutine[Any, Any, List[Optional[OR]]]]:
         async def route(
-            pagination: Dict = self.pagination,  # type: ignore
+            pagination: PAGINATION = self.pagination,
         ) -> List[Optional[OR]]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             query = self.schema.objects.offset(cast(int, skip))
             if limit:
-                query = query.limit(cast(int, limit))
+                query = query.limit(limit)
             return await query.all()
 
         return route

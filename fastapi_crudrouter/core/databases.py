@@ -3,6 +3,7 @@ from typing import Any, Callable, List, Mapping, Type, Coroutine
 from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, T, _utils
+from ._types import PAGINATION
 
 try:
     from sqlalchemy.sql.schema import Table
@@ -43,7 +44,7 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
         self, *args: Any, **kwargs: Any
     ) -> Callable[..., Coroutine[Any, Any, List[Mapping[Any, Any]]]]:
         async def route(
-            pagination: dict = self.pagination,  # type: ignore
+            pagination: PAGINATION = self.pagination,
         ) -> List[Mapping[Any, Any]]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 

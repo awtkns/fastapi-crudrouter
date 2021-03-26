@@ -1,6 +1,7 @@
 from typing import Any, Callable, List, Type, TypeVar, cast, Coroutine
 
 from . import CRUDGenerator, NOT_FOUND, T, _utils
+from ._types import PAGINATION
 
 try:
     from tortoise.models import Model
@@ -34,11 +35,11 @@ class TortoiseCRUDRouter(CRUDGenerator[T]):
     def _get_all(
         self, *args: Any, **kwargs: Any
     ) -> Callable[..., Coroutine[Any, Any, List[TM]]]:
-        async def route(pagination: dict = self.pagination) -> List[TM]:  # type: ignore
+        async def route(pagination: PAGINATION = self.pagination) -> List[TM]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             query = self.db_model.all().offset(cast(int, skip))
             if limit:
-                query = query.limit(cast(int, limit))
+                query = query.limit(limit)
             return await query
 
         return route

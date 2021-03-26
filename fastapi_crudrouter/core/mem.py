@@ -1,6 +1,7 @@
-from typing import Any, Callable, List, Type
+from typing import Any, Callable, List, Type, cast
 
 from . import CRUDGenerator, NOT_FOUND, T
+from ._types import PAGINATION
 
 
 class MemoryCRUDRouter(CRUDGenerator[T]):
@@ -10,13 +11,15 @@ class MemoryCRUDRouter(CRUDGenerator[T]):
         self._id = 1
 
     def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[T]]:
-        def route(pagination: dict = self.pagination) -> List[T]:  # type: ignore
+        def route(pagination: PAGINATION = self.pagination) -> List[T]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
+            skip = cast(int, skip)
 
-            if limit:
-                return self.models[skip : skip + limit]
-            else:
-                return self.models[skip:]
+            return (
+                self.models[skip:]
+                if limit is None
+                else self.models[skip : skip + limit]
+            )
 
         return route
 

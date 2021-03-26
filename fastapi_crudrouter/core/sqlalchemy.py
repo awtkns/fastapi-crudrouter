@@ -3,6 +3,7 @@ from typing import Any, Callable, List, Type, TypeVar
 from fastapi import Depends, HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, T, _utils
+from ._types import PAGINATION
 
 try:
     from sqlalchemy.orm import Session
@@ -44,7 +45,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[T]):
     def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[TM]]:
         def route(
             db: Session = Depends(self.db_func),
-            pagination: dict = self.pagination,  # type: ignore
+            pagination: PAGINATION = self.pagination,
         ) -> List[TM]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
