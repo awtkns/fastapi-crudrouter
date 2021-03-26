@@ -1,14 +1,14 @@
 from typing import Optional, Type, TypeVar, Any
 
 from fastapi import Depends, HTTPException
-from pydantic import BaseModel, create_model
+from pydantic import create_model
 
-from ._types import PAGINATION
+from ._types import PAGINATION, PYDANTIC_SCHEMA
 
-T = TypeVar("T", bound=BaseModel)
+T = TypeVar("T", bound=PYDANTIC_SCHEMA)
 
 
-def get_pk_type(schema: Type[T], pk_field: str) -> Any:
+def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
     try:
         return schema.__fields__[pk_field].type_
     except KeyError:

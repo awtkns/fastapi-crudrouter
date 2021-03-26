@@ -1,9 +1,9 @@
-from typing import Any, Callable, List, Type, TypeVar
+from typing import Any, Callable, List, Type, TypeVar, Generator
 
 from fastapi import Depends, HTTPException
 
-from . import CRUDGenerator, NOT_FOUND, T, _utils
-from ._types import PAGINATION
+from . import CRUDGenerator, NOT_FOUND, _utils
+from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 
 try:
     from sqlalchemy.orm import Session
@@ -13,14 +13,15 @@ except ImportError:
     sqlalchemy_installed = False
 else:
     sqlalchemy_installed = True
-TM = TypeVar("TM", bound="DeclarativeMeta")
+    Session = Callable[..., Generator[Session, Any, None]]
+    TM = TypeVar("TM", bound=DeclarativeMeta)
 
 
-class SQLAlchemyCRUDRouter(CRUDGenerator[T]):
+class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
     def __init__(
         self,
-        schema: Type[T],
-        db_model: Type[TM],
+        schema: Type[SCHEMA],
+        db_model: DeclarativeMeta,
         db: "Session",
         *args: Any,
         **kwargs: Any

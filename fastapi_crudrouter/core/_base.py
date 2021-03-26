@@ -1,13 +1,12 @@
-from typing import Any, Callable, Generic, List, Optional, Type, TypeVar
+from typing import Any, Callable, Generic, List, Optional, Type
 
 from fastapi import APIRouter, HTTPException
 from fastapi.types import DecoratedCallable
-from pydantic import BaseModel
 
+from ._types import T
 from ._utils import pagination_factory, schema_factory
 
 NOT_FOUND = HTTPException(404, "Item not found")
-T = TypeVar("T", bound=BaseModel)
 
 
 class CRUDGenerator(Generic[T], APIRouter):

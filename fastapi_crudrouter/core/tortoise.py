@@ -1,7 +1,7 @@
 from typing import Any, Callable, List, Type, TypeVar, cast, Coroutine
 
-from . import CRUDGenerator, NOT_FOUND, T, _utils
-from ._types import PAGINATION
+from . import CRUDGenerator, NOT_FOUND,_utils
+from ._types import PAGINATION, T
 
 try:
     from tortoise.models import Model

@@ -2,8 +2,8 @@ from typing import Any, Callable, List, Mapping, Type, Coroutine
 
 from fastapi import HTTPException
 
-from . import CRUDGenerator, NOT_FOUND, T, _utils
-from ._types import PAGINATION
+from . import CRUDGenerator, NOT_FOUND, _utils
+from ._types import PAGINATION, T
 
 try:
     from sqlalchemy.sql.schema import Table
