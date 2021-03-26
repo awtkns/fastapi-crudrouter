@@ -3,8 +3,8 @@ from os import environ
 from github import Github
 from github.GitRelease import GitRelease
 
-GITHUB_REPOSITORY = environ.get('GITHUB_REPOSITORY', 'awtkns/fastapi-crudrouter')
-GITHUB_TOKEN = environ.get('GITHUB_TOKEN') or environ.get('GH_TOKEN')
+GITHUB_REPOSITORY = environ.get("GITHUB_REPOSITORY", "awtkns/fastapi-crudrouter")
+GITHUB_TOKEN = environ.get("GITHUB_TOKEN") or environ.get("GH_TOKEN")
 FILE_PATH = "docs/en/docs/releases.md"
 COMMIT_MESSAGE = "🤖 auto update releases.md"
 
@@ -12,20 +12,23 @@ gh = Github(GITHUB_TOKEN)
 
 
 def generate_header(r: GitRelease, separator: bool = False):
-    header = ''
+    header = ""
     if separator:
         header += "\n\n---\n"
 
-    return header + f"""
+    return (
+        header
+        + f"""
 ## [{r.title}]({r.html_url}){" { .releases } "}
 {r.created_at.date()}
 """
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     repo = gh.get_repo(GITHUB_REPOSITORY)
 
-    new_content = ''
+    new_content = ""
     first = False
     for r in repo.get_releases():
         if not r.draft:
