@@ -4,7 +4,7 @@ from github import Github
 from github.GitRelease import GitRelease
 
 GITHUB_REPOSITORY = environ.get("GITHUB_REPOSITORY", "awtkns/fastapi-crudrouter")
-GITHUB_TOKEN = environ.get("GITHUB_TOKEN") or environ.get("GH_TOKEN")
+GITHUB_TOKEN = environ.get("GH_TOKEN") or environ.get("GITHUB_TOKEN")
 FILE_PATH = "docs/en/docs/releases.md"
 COMMIT_MESSAGE = "🤖 auto update releases.md"
 
@@ -48,5 +48,5 @@ if __name__ == "__main__":
             file.path,
             message=COMMIT_MESSAGE,
             content=new_content,
-            sha=file.sha,
+            sha=file.sha
         )
