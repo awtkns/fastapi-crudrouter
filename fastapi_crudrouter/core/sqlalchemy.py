@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Type, Generator
+from typing import Any, Callable, List, Type, Generator, Optional
 
 from fastapi import Depends, HTTPException
 
@@ -23,6 +23,16 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         schema: Type[SCHEMA],
         db_model: Model,
         db: "Session",
+        create_schema: Optional[Type[SCHEMA]] = None,
+        update_schema: Optional[Type[SCHEMA]] = None,
+        prefix: Optional[str] = None,
+        paginate: Optional[int] = None,
+        get_all_route: bool = True,
+        get_one_route: bool = True,
+        create_route: bool = True,
+        update_route: bool = True,
+        delete_one_route: bool = True,
+        delete_all_route: bool = True,
         *args: Any,
         **kwargs: Any
     ) -> None:
@@ -35,13 +45,21 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         self._pk: str = db_model.__table__.primary_key.columns.keys()[0]
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
-        if "prefix" not in kwargs:
-            kwargs["prefix"] = db_model.__tablename__
-
-        if "create_schema" not in kwargs:
-            kwargs["create_schema"] = _utils.schema_factory(schema, self._pk)
-
-        super().__init__(schema, *args, **kwargs)
+        super().__init__(
+            schema,
+            create_schema or _utils.schema_factory(schema, self._pk),
+            update_schema,
+            prefix or db_model.__tablename__,
+            paginate,
+            get_all_route,
+            get_one_route,
+            create_route,
+            update_route,
+            delete_one_route,
+            delete_all_route,
+            *args,
+            **kwargs
+        )
 
     def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[Model]]:
         def route(

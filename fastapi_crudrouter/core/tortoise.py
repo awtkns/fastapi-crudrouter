@@ -1,7 +1,7 @@
-from typing import Any, Callable, List, Type, cast, Coroutine
+from typing import Any, Callable, List, Type, cast, Coroutine, Optional
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA, T
 
 try:
     from tortoise.models import Model
@@ -18,7 +18,21 @@ CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List[Model]]]
 
 class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
     def __init__(
-        self, schema: Type[SCHEMA], db_model: Type[Model], *args: Any, **kwargs: Any
+        self,
+        schema: Type[SCHEMA],
+        db_model: Type[Model],
+        create_schema: Optional[Type[T]] = None,
+        update_schema: Optional[Type[T]] = None,
+        prefix: Optional[str] = None,
+        paginate: Optional[int] = None,
+        get_all_route: bool = True,
+        get_one_route: bool = True,
+        create_route: bool = True,
+        update_route: bool = True,
+        delete_one_route: bool = True,
+        delete_all_route: bool = True,
+        *args: Any,
+        **kwargs: Any
     ) -> None:
         assert (
             tortoise_installed
@@ -27,14 +41,21 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         self.db_model = db_model
         self._pk: str = db_model.describe()["pk_field"]["db_column"]
 
-        if "prefix" not in kwargs:
-            # unsure why the name has a "None." appended but I handle it
-            kwargs["prefix"] = db_model.describe()["name"].replace("None.", "")
-
-        if "create_schema" not in kwargs:
-            kwargs["create_schema"] = _utils.schema_factory(schema, self._pk)
-
-        super().__init__(schema, *args, **kwargs)
+        super().__init__(
+            schema,
+            create_schema or _utils.schema_factory(schema, self._pk),
+            update_schema,
+            prefix or db_model.describe()["name"].replace("None.", ""),
+            paginate,
+            get_all_route,
+            get_one_route,
+            create_route,
+            update_route,
+            delete_one_route,
+            delete_all_route,
+            *args,
+            **kwargs
+        )
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route(pagination: PAGINATION = self.pagination) -> List[Model]:

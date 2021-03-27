@@ -11,7 +11,7 @@ from typing import (
 from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import PAGINATION
+from ._types import PAGINATION, T
 
 try:
     from ormar import Model, NoMatch
@@ -26,20 +26,42 @@ CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List[Optional[Model]]]]
 
 
 class OrmarCRUDRouter(CRUDGenerator[Model]):
-    def __init__(self, schema: Type[Model], *args: Any, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        schema: Type[Model],
+        create_schema: Optional[Type[Model]] = None,
+        update_schema: Optional[Type[Model]] = None,
+        prefix: Optional[str] = None,
+        paginate: Optional[int] = None,
+        get_all_route: bool = True,
+        get_one_route: bool = True,
+        create_route: bool = True,
+        update_route: bool = True,
+        delete_one_route: bool = True,
+        delete_all_route: bool = True,
+        *args: Any,
+        **kwargs: Any
+    ) -> None:
         assert ormar_installed, "Ormar must be installed to use the OrmarCRUDRouter."
 
         self._pk: str = schema.Meta.pkname
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
-        if "prefix" not in kwargs:
-            kwargs["prefix"] = schema.Meta.tablename
-        if "create_schema" not in kwargs:
-            kwargs["create_schema"] = schema
-        if "update_schema" not in kwargs:
-            kwargs["update_schema"] = schema
-
-        super().__init__(schema, *args, **kwargs)
+        super().__init__(
+            schema,
+            create_schema or schema,
+            update_schema or schema,
+            prefix or schema.Meta.tablename,
+            paginate,
+            get_all_route,
+            get_one_route,
+            create_route,
+            update_route,
+            delete_one_route,
+            delete_all_route,
+            *args,
+            **kwargs
+        )
 
         self._INTEGRITY_ERROR = self._get_integrity_error_type()
 

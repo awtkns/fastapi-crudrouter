@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Mapping, Type, Coroutine
+from typing import Any, Callable, List, Mapping, Type, Coroutine, Optional
 
 from fastapi import HTTPException
 
@@ -24,25 +24,44 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         schema: Type[PYDANTIC_SCHEMA],
         table: "Table",
         database: "Database",
+        create_schema: Optional[Type[PYDANTIC_SCHEMA]] = None,
+        update_schema: Optional[Type[PYDANTIC_SCHEMA]] = None,
+        prefix: Optional[str] = None,
+        paginate: Optional[int] = None,
+        get_all_route: bool = True,
+        get_one_route: bool = True,
+        create_route: bool = True,
+        update_route: bool = True,
+        delete_one_route: bool = True,
+        delete_all_route: bool = True,
         *args: Any,
         **kwargs: Any
     ) -> None:
         assert (
             databases_installed
         ), "Databases and SQLAlchemy must be installed to use the DatabasesCRUDRouter."
+
         self.table = table
         self.db = database
         self._pk = table.primary_key.columns.values()[0].name
         self._pk_col = self.table.c[self._pk]
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
-        if "prefix" not in kwargs:
-            kwargs["prefix"] = table.name
-
-        if "create_schema" not in kwargs:
-            kwargs["create_schema"] = _utils.schema_factory(schema, self._pk)
-
-        super().__init__(schema, *args, **kwargs)
+        super().__init__(
+            schema,
+            create_schema or _utils.schema_factory(schema, self._pk),
+            update_schema,
+            prefix or table.name,
+            paginate,
+            get_all_route,
+            get_one_route,
+            create_route,
+            update_route,
+            delete_one_route,
+            delete_all_route,
+            *args,
+            **kwargs
+        )
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route(

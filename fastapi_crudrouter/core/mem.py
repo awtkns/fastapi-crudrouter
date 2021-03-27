@@ -1,18 +1,47 @@
-from typing import Any, Callable, List, Type, cast
-from pydantic import BaseModel
+from typing import Any, Callable, List, Type, cast, Optional
 
 from . import CRUDGenerator, NOT_FOUND
-from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA, T
+
+CALLABLE = Callable[..., SCHEMA]
+CALLABLE_LIST = Callable[..., List[SCHEMA]]
 
 
 class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
-    def __init__(self, schema: Type[SCHEMA], *args: Any, **kwargs: Any) -> None:
-        super(MemoryCRUDRouter, self).__init__(schema, *args, **kwargs)
-        self.models: List[BaseModel] = []
-        self._id = 1
+    def __init__(
+        self,
+        schema: Type[SCHEMA],
+        create_schema: Optional[Type[SCHEMA]] = None,
+        update_schema: Optional[Type[SCHEMA]] = None,
+        prefix: Optional[str] = None,
+        paginate: Optional[int] = None,
+        get_all_route: bool = True,
+        get_one_route: bool = True,
+        create_route: bool = True,
+        update_route: bool = True,
+        delete_one_route: bool = True,
+        delete_all_route: bool = True,
+        *args: Any,
+        **kwargs: Any
+    ) -> None:
+        super().__init__(
+            schema,
+            create_schema,
+            update_schema,
+            prefix,
+            paginate,
+            get_all_route,
+            get_one_route,
+            create_route,
+            update_route,
+            delete_one_route,
+            delete_all_route,
+            *args,
+            **kwargs
+        )
 
-    CALLABLE = Callable[..., SCHEMA]
-    CALLABLE_LIST = Callable[..., List[SCHEMA]]
+        self.models: List[SCHEMA] = []
+        self._id = 1
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         def route(pagination: PAGINATION = self.pagination) -> List[SCHEMA]:
