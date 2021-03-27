@@ -1,12 +1,12 @@
 from typing import Any, Callable, List, Type, cast, Coroutine, Optional
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA, T
+from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 
 try:
     from tortoise.models import Model
 except ImportError:
-    Model: Any  # type: ignore
+    Model: Any = None  # type: ignore
     tortoise_installed = False
 else:
     tortoise_installed = True
@@ -21,8 +21,8 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         self,
         schema: Type[SCHEMA],
         db_model: Type[Model],
-        create_schema: Optional[Type[T]] = None,
-        update_schema: Optional[Type[T]] = None,
+        create_schema: Optional[Type[SCHEMA]] = None,
+        update_schema: Optional[Type[SCHEMA]] = None,
         prefix: Optional[str] = None,
         paginate: Optional[int] = None,
         get_all_route: bool = True,

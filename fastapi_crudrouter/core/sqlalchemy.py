@@ -10,7 +10,7 @@ try:
     from sqlalchemy.ext.declarative import DeclarativeMeta as Model
     from sqlalchemy.exc import IntegrityError
 except ImportError:
-    Model: Any  # type: ignore
+    Model: Any = None  # type: ignore
     sqlalchemy_installed = False
 else:
     sqlalchemy_installed = True

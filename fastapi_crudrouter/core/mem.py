@@ -1,7 +1,7 @@
 from typing import Any, Callable, List, Type, cast, Optional
 
 from . import CRUDGenerator, NOT_FOUND
-from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA, T
+from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 
 CALLABLE = Callable[..., SCHEMA]
 CALLABLE_LIST = Callable[..., List[SCHEMA]]

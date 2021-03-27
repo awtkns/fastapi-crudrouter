@@ -11,12 +11,12 @@ from typing import (
 from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import PAGINATION, T
+from ._types import PAGINATION
 
 try:
     from ormar import Model, NoMatch
 except ImportError:
-    Model: Any  # type: ignore
+    Model: Any = None  # type: ignore
     ormar_installed = False
 else:
     ormar_installed = True
