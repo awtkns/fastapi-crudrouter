@@ -1,8 +1,9 @@
-from typing import Any, Callable, List, Mapping, Type, Coroutine
+from typing import Any, Callable, List, Mapping, Type, Coroutine, Optional
 
 from fastapi import HTTPException
 
-from . import CRUDGenerator, NOT_FOUND, T, _utils
+from . import CRUDGenerator, NOT_FOUND, _utils
+from ._types import PAGINATION, PYDANTIC_SCHEMA
 
 try:
     from sqlalchemy.sql.schema import Table
@@ -12,39 +13,60 @@ except ImportError:
 else:
     databases_installed = True
 
+Model = Mapping[Any, Any]
+CALLABLE = Callable[..., Coroutine[Any, Any, Model]]
+CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List[Model]]]
 
-class DatabasesCRUDRouter(CRUDGenerator[T]):
+
+class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
     def __init__(
         self,
-        schema: Type[T],
+        schema: Type[PYDANTIC_SCHEMA],
         table: "Table",
         database: "Database",
+        create_schema: Optional[Type[PYDANTIC_SCHEMA]] = None,
+        update_schema: Optional[Type[PYDANTIC_SCHEMA]] = None,
+        prefix: Optional[str] = None,
+        paginate: Optional[int] = None,
+        get_all_route: bool = True,
+        get_one_route: bool = True,
+        create_route: bool = True,
+        update_route: bool = True,
+        delete_one_route: bool = True,
+        delete_all_route: bool = True,
         *args: Any,
         **kwargs: Any
     ) -> None:
         assert (
             databases_installed
         ), "Databases and SQLAlchemy must be installed to use the DatabasesCRUDRouter."
+
         self.table = table
         self.db = database
         self._pk = table.primary_key.columns.values()[0].name
         self._pk_col = self.table.c[self._pk]
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
-        if "prefix" not in kwargs:
-            kwargs["prefix"] = table.name
+        super().__init__(
+            schema,
+            create_schema or _utils.schema_factory(schema, self._pk),
+            update_schema,
+            prefix or table.name,
+            paginate,
+            get_all_route,
+            get_one_route,
+            create_route,
+            update_route,
+            delete_one_route,
+            delete_all_route,
+            *args,
+            **kwargs
+        )
 
-        if "create_schema" not in kwargs:
-            kwargs["create_schema"] = _utils.schema_factory(schema, self._pk)
-
-        super().__init__(schema, *args, **kwargs)
-
-    def _get_all(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, List[Mapping[Any, Any]]]]:
+    def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route(
-            pagination: dict = self.pagination,  # type: ignore
-        ) -> List[Mapping[Any, Any]]:
+            pagination: PAGINATION = self.pagination,
+        ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
             query = self.table.select().limit(limit).offset(skip)
@@ -52,10 +74,8 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _get_one(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
-        async def route(item_id: self._pk_type) -> Mapping:  # type: ignore
+    def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        async def route(item_id: self._pk_type) -> Model:  # type: ignore
             query = self.table.select().where(self._pk_col == item_id)
             model = await self.db.fetch_one(query)
 
@@ -66,12 +86,10 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _create(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
+    def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(
             schema: self.create_schema,  # type: ignore
-        ) -> Mapping[Any, Any]:
+        ) -> Model:
             try:
                 query = self.table.insert()
                 rid = await self.db.execute(query=query, values=schema.dict())
@@ -81,12 +99,10 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _update(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
+    def _update(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(
             item_id: self._pk_type, schema: self.update_schema  # type: ignore
-        ) -> Mapping[Any, Any]:
+        ) -> Model:
             query = self.table.update().where(self._pk_col == item_id)
             rid = await self.db.execute(
                 query=query, values=schema.dict(exclude={self._pk})
@@ -99,10 +115,8 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _delete_all(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, List[Mapping[Any, Any]]]]:
-        async def route() -> List[Mapping[Any, Any]]:
+    def _delete_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
+        async def route() -> List[Model]:
             query = self.table.delete()
             await self.db.execute(query=query)
 
@@ -110,10 +124,8 @@ class DatabasesCRUDRouter(CRUDGenerator[T]):
 
         return route
 
-    def _delete_one(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, Mapping[Any, Any]]]:
-        async def route(item_id: self._pk_type) -> Mapping[Any, Any]:  # type: ignore
+    def _delete_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        async def route(item_id: self._pk_type) -> Model:  # type: ignore
             query = self.table.delete().where(self._pk_col == item_id)
 
             row = await self._get_one()(item_id)

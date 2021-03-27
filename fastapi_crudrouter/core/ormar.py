@@ -1,12 +1,9 @@
 from typing import (
     Any,
     Callable,
-    Dict,
     List,
     Optional,
-    TYPE_CHECKING,
     Type,
-    TypeVar,
     cast,
     Coroutine,
 )
@@ -14,71 +11,87 @@ from typing import (
 from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
+from ._types import PAGINATION
 
 try:
-    import ormar
-    from ormar import Model
+    from ormar import Model, NoMatch
 except ImportError:
+    Model: Any = None  # type: ignore
     ormar_installed = False
 else:
     ormar_installed = True
-OR = TypeVar("OR", bound="Model")
+
+CALLABLE = Callable[..., Coroutine[Any, Any, Model]]
+CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List[Optional[Model]]]]
 
 
-class OrmarCRUDRouter(CRUDGenerator[OR]):
-    if TYPE_CHECKING:
-        schema: Type[OR]
-
-    def __init__(self, schema: Type[OR], *args: Any, **kwargs: Any) -> None:
+class OrmarCRUDRouter(CRUDGenerator[Model]):
+    def __init__(
+        self,
+        schema: Type[Model],
+        create_schema: Optional[Type[Model]] = None,
+        update_schema: Optional[Type[Model]] = None,
+        prefix: Optional[str] = None,
+        paginate: Optional[int] = None,
+        get_all_route: bool = True,
+        get_one_route: bool = True,
+        create_route: bool = True,
+        update_route: bool = True,
+        delete_one_route: bool = True,
+        delete_all_route: bool = True,
+        *args: Any,
+        **kwargs: Any
+    ) -> None:
         assert ormar_installed, "Ormar must be installed to use the OrmarCRUDRouter."
 
         self._pk: str = schema.Meta.pkname
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
-        if "prefix" not in kwargs:
-            kwargs["prefix"] = schema.Meta.tablename
-        if "create_schema" not in kwargs:
-            kwargs["create_schema"] = schema
-        if "update_schema" not in kwargs:
-            kwargs["update_schema"] = schema
-
-        super().__init__(schema, *args, **kwargs)
+        super().__init__(
+            schema,
+            create_schema or schema,
+            update_schema or schema,
+            prefix or schema.Meta.tablename,
+            paginate,
+            get_all_route,
+            get_one_route,
+            create_route,
+            update_route,
+            delete_one_route,
+            delete_all_route,
+            *args,
+            **kwargs
+        )
 
         self._INTEGRITY_ERROR = self._get_integrity_error_type()
 
-    def _get_all(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, List[Optional[OR]]]]:
+    def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route(
-            pagination: Dict = self.pagination,  # type: ignore
-        ) -> List[Optional[OR]]:
+            pagination: PAGINATION = self.pagination,
+        ) -> List[Optional[Model]]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             query = self.schema.objects.offset(cast(int, skip))
             if limit:
-                query = query.limit(cast(int, limit))
+                query = query.limit(limit)
             return await query.all()
 
         return route
 
-    def _get_one(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, OR]]:
-        async def route(item_id: self._pk_type) -> OR:  # type: ignore
+    def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        async def route(item_id: self._pk_type) -> Model:  # type: ignore
             try:
                 filter_ = {self._pk: item_id}
                 model = await self.schema.objects.filter(
                     _exclude=False, **filter_
                 ).first()
-            except ormar.NoMatch:
+            except NoMatch:
                 raise NOT_FOUND
             return model
 
         return route
 
-    def _create(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, OR]]:
-        async def route(model: self.create_schema) -> OR:  # type: ignore
+    def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        async def route(model: self.create_schema) -> Model:  # type: ignore
             model_dict = model.dict()
             if self.schema.Meta.model_fields[self._pk].autoincrement:
                 model_dict.pop(self._pk, None)
@@ -89,13 +102,11 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
 
         return route
 
-    def _update(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, OR]]:
+    def _update(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(
             item_id: self._pk_type,  # type: ignore
             model: self.update_schema,  # type: ignore
-        ) -> OR:
+        ) -> Model:
             filter_ = {self._pk: item_id}
             try:
                 await self.schema.objects.filter(_exclude=False, **filter_).update(
@@ -107,19 +118,15 @@ class OrmarCRUDRouter(CRUDGenerator[OR]):
 
         return route
 
-    def _delete_all(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, List[Optional[OR]]]]:
-        async def route() -> List[Optional[OR]]:
+    def _delete_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
+        async def route() -> List[Optional[Model]]:
             await self.schema.objects.delete(each=True)
             return await self._get_all()(pagination={"skip": 0, "limit": None})
 
         return route
 
-    def _delete_one(
-        self, *args: Any, **kwargs: Any
-    ) -> Callable[..., Coroutine[Any, Any, OR]]:
-        async def route(item_id: self._pk_type) -> OR:  # type: ignore
+    def _delete_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        async def route(item_id: self._pk_type) -> Model:  # type: ignore
             model = await self._get_one()(item_id)
             await model.delete()
             return model
