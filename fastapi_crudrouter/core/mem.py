@@ -11,7 +11,10 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         self.models: List[BaseModel] = []
         self._id = 1
 
-    def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[SCHEMA]]:
+    CALLABLE = Callable[..., SCHEMA]
+    CALLABLE_LIST = Callable[..., List[SCHEMA]]
+
+    def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         def route(pagination: PAGINATION = self.pagination) -> List[SCHEMA]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             skip = cast(int, skip)
@@ -24,7 +27,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., SCHEMA]:
+    def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(item_id: int) -> SCHEMA:
             for model in self.models:
                 if model.id == item_id:  # type: ignore
@@ -34,7 +37,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _create(self, *args: Any, **kwargs: Any) -> Callable[..., SCHEMA]:
+    def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(model: self.create_schema) -> SCHEMA:  # type: ignore
             model_dict = model.dict()
             model_dict["id"] = self._get_next_id()
@@ -44,7 +47,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _update(self, *args: Any, **kwargs: Any) -> Callable[..., SCHEMA]:
+    def _update(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(item_id: int, model: self.update_schema) -> SCHEMA:  # type: ignore
             for ind, model_ in enumerate(self.models):
                 if model_.id == item_id:  # type: ignore
@@ -57,14 +60,14 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[SCHEMA]]:
+    def _delete_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         def route() -> List[SCHEMA]:
             self.models = []
             return self.models
 
         return route
 
-    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., SCHEMA]:
+    def _delete_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(item_id: int) -> SCHEMA:
             for ind, model in enumerate(self.models):
                 if model.id == item_id:  # type: ignore
