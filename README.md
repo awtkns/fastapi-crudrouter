@@ -11,6 +11,7 @@
   <a href="https://pypi.org/project/fastapi-crudrouter" target="_blank">
     <img src="https://img.shields.io/pypi/v/fastapi-crudrouter?color=%2334D058&label=pypi%20package" alt="Package version">
 </a>
+  <img alt="License" src="https://img.shields.io/github/license/awtkns/fastapi-crudrouter?color=%2334D058" />
 </p>
 
 ---
