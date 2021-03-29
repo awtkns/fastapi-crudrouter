@@ -6,10 +6,10 @@ from tests import Potato, Carrot, CarrotUpdate, PAGINATION_SIZE
 
 def memory_implementation():
     app = FastAPI()
-    app.include_router(CRUDRouter(schema=Potato, paginate=PAGINATION_SIZE))
-    app.include_router(CRUDRouter(schema=Carrot, update_schema=CarrotUpdate))
+    potato_router = CRUDRouter(schema=Potato, paginate=PAGINATION_SIZE)
+    carrot_router = CRUDRouter(schema=Carrot, update_schema=CarrotUpdate)
 
-    return app
+    return app, [potato_router, carrot_router]
 
 
 if __name__ == "__main__":

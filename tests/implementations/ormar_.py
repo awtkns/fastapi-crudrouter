@@ -112,22 +112,18 @@ def get_app():
 def ormar_implementation():
     app = get_app()
 
-    app.include_router(
-        OrmarCRUDRouter(
-            schema=PotatoModel,
-            prefix="potato",
-            paginate=PAGINATION_SIZE,
-        )
+    potato_router = OrmarCRUDRouter(
+        schema=PotatoModel,
+        prefix="potato",
+        paginate=PAGINATION_SIZE,
     )
-    app.include_router(
-        OrmarCRUDRouter(
-            schema=CarrotModel,
-            update_schema=CarrotUpdate,
-            prefix="carrot",
-        )
+    carrot_router = OrmarCRUDRouter(
+        schema=CarrotModel,
+        update_schema=CarrotUpdate,
+        prefix="carrot",
     )
 
-    return app
+    return app, [potato_router, carrot_router]
 
 
 # noinspection DuplicatedCode

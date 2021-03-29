@@ -75,10 +75,8 @@ def databases_implementation():
         update_schema=CarrotUpdate,
         prefix="carrot",
     )
-    app.include_router(potato_router)
-    app.include_router(carrot_router)
 
-    return app
+    return app, [potato_router, carrot_router]
 
 
 def databases_implementation_custom_ids():

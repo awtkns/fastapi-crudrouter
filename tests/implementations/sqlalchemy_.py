@@ -62,27 +62,23 @@ def sqlalchemy_implementation():
         color = Column(String)
 
     Base.metadata.create_all(bind=engine)
-    app.include_router(
-        SQLAlchemyCRUDRouter(
-            schema=Potato,
-            db_model=PotatoModel,
-            db=session,
-            prefix="potato",
-            paginate=PAGINATION_SIZE,
-        )
+    potato_router = SQLAlchemyCRUDRouter(
+        schema=Potato,
+        db_model=PotatoModel,
+        db=session,
+        prefix="potato",
+        paginate=PAGINATION_SIZE,
     )
-    app.include_router(
-        SQLAlchemyCRUDRouter(
-            schema=Carrot,
-            db_model=CarrotModel,
-            db=session,
-            create_schema=CarrotCreate,
-            update_schema=CarrotUpdate,
-            prefix="carrot",
-        )
+    carrot_router = SQLAlchemyCRUDRouter(
+        schema=Carrot,
+        db_model=CarrotModel,
+        db=session,
+        create_schema=CarrotCreate,
+        update_schema=CarrotUpdate,
+        prefix="carrot",
     )
 
-    return app
+    return app, [potato_router, carrot_router]
 
 
 # noinspection DuplicatedCode
