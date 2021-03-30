@@ -4,7 +4,14 @@ from fastapi import FastAPI
 from tortoise import Model, Tortoise, fields
 
 from fastapi_crudrouter import TortoiseCRUDRouter
-from tests import Carrot, CarrotCreate, CarrotUpdate, PAGINATION_SIZE, Potato
+from tests import (
+    Carrot,
+    CarrotCreate,
+    CarrotUpdate,
+    PAGINATION_SIZE,
+    Potato,
+    CUSTOM_TAGS,
+)
 
 
 class PotatoModel(Model):
@@ -61,6 +68,7 @@ def tortoise_implementation():
             create_schema=CarrotCreate,
             update_schema=CarrotUpdate,
             prefix="carrot",
+            tags=CUSTOM_TAGS,
         )
     )
 

@@ -50,7 +50,7 @@ class CRUDGenerator(Generic[T], APIRouter):
         prefix = self._base_path + prefix.strip("/")
         tags = tags or [prefix.strip("/").capitalize()]
 
-        super().__init__(prefix=prefix, tags=tags, *args, **kwargs)
+        super().__init__(prefix=prefix, tags=tags, **kwargs)
 
         if get_all_route:
             super().add_api_route(

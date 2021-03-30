@@ -50,6 +50,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             create_schema=create_schema,
             update_schema=update_schema,
             prefix=prefix or db_model.__tablename__,
+            tags=tags,
             paginate=paginate,
             get_all_route=get_all_route,
             get_one_route=get_one_route,

@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 PAGINATION_SIZE = 10
+CUSTOM_TAGS = ["Tag1", "Tag2"]
 
 
 class ORMModel(BaseModel):

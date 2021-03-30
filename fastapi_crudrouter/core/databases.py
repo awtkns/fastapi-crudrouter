@@ -45,6 +45,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         self.db = database
         self._pk = table.primary_key.columns.values()[0].name
         self._pk_col = self.table.c[self._pk]
+        self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
         super().__init__(
             schema=schema,

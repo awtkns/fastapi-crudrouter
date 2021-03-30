@@ -7,11 +7,7 @@ import sqlalchemy
 from fastapi import FastAPI
 
 from fastapi_crudrouter import OrmarCRUDRouter
-from tests import (
-    CarrotCreate,
-    CarrotUpdate,
-    PAGINATION_SIZE,
-)
+from tests import CarrotCreate, CarrotUpdate, PAGINATION_SIZE, CUSTOM_TAGS
 
 DATABASE_URL = "sqlite:///./test.db"
 database = databases.Database(DATABASE_URL)
@@ -124,6 +120,7 @@ def ormar_implementation():
             schema=CarrotModel,
             update_schema=CarrotUpdate,
             prefix="carrot",
+            tags=CUSTOM_TAGS,
         )
     )
 
