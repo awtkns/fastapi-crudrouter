@@ -149,8 +149,3 @@ def databases_implementation_string_pk():
     app.include_router(potato_router)
 
     return app
-
-
-if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(databases_implementation())
