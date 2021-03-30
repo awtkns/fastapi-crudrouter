@@ -7,8 +7,23 @@ theme:
   name: material
 #   custom_dir: overrides
   palette:
-    - scheme: primary
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
       accent: amber
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: amber
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
   icon:
     repo: fontawesome/brands/github-alt
   logo: assets/bolt.svg
