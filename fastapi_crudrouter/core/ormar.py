@@ -32,6 +32,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
         create_schema: Optional[Type[Model]] = None,
         update_schema: Optional[Type[Model]] = None,
         prefix: Optional[str] = None,
+        tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
         get_all_route: bool = True,
         get_one_route: bool = True,
@@ -39,7 +40,6 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
         update_route: bool = True,
         delete_one_route: bool = True,
         delete_all_route: bool = True,
-        *args: Any,
         **kwargs: Any
     ) -> None:
         assert ormar_installed, "Ormar must be installed to use the OrmarCRUDRouter."
@@ -48,18 +48,18 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
         super().__init__(
-            schema,
-            create_schema or schema,
-            update_schema or schema,
-            prefix or schema.Meta.tablename,
-            paginate,
-            get_all_route,
-            get_one_route,
-            create_route,
-            update_route,
-            delete_one_route,
-            delete_all_route,
-            *args,
+            schema=schema,
+            create_schema=create_schema or schema,
+            update_schema=update_schema or schema,
+            prefix=prefix or schema.Meta.tablename,
+            tags=tags,
+            paginate=paginate,
+            get_all_route=get_all_route,
+            get_one_route=get_one_route,
+            create_route=create_route,
+            update_route=update_route,
+            delete_one_route=delete_one_route,
+            delete_all_route=delete_all_route,
             **kwargs
         )
 

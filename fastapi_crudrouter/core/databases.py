@@ -27,6 +27,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         create_schema: Optional[Type[PYDANTIC_SCHEMA]] = None,
         update_schema: Optional[Type[PYDANTIC_SCHEMA]] = None,
         prefix: Optional[str] = None,
+        tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
         get_all_route: bool = True,
         get_one_route: bool = True,
@@ -34,7 +35,6 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         update_route: bool = True,
         delete_one_route: bool = True,
         delete_all_route: bool = True,
-        *args: Any,
         **kwargs: Any
     ) -> None:
         assert (
@@ -48,18 +48,18 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
         super().__init__(
-            schema,
-            create_schema or _utils.schema_factory(schema, self._pk),
-            update_schema,
-            prefix or table.name,
-            paginate,
-            get_all_route,
-            get_one_route,
-            create_route,
-            update_route,
-            delete_one_route,
-            delete_all_route,
-            *args,
+            schema=schema,
+            create_schema=create_schema,
+            update_schema=update_schema,
+            prefix=prefix or table.name,
+            tags=tags,
+            paginate=paginate,
+            get_all_route=get_all_route,
+            get_one_route=get_one_route,
+            create_route=create_route,
+            update_route=update_route,
+            delete_one_route=delete_one_route,
+            delete_all_route=delete_all_route,
             **kwargs
         )
 

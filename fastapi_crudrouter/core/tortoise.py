@@ -1,6 +1,6 @@
 from typing import Any, Callable, List, Type, cast, Coroutine, Optional
 
-from . import CRUDGenerator, NOT_FOUND, _utils
+from . import CRUDGenerator, NOT_FOUND
 from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 
 try:
@@ -24,6 +24,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         create_schema: Optional[Type[SCHEMA]] = None,
         update_schema: Optional[Type[SCHEMA]] = None,
         prefix: Optional[str] = None,
+        tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
         get_all_route: bool = True,
         get_one_route: bool = True,
@@ -42,18 +43,18 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         self._pk: str = db_model.describe()["pk_field"]["db_column"]
 
         super().__init__(
-            schema,
-            create_schema or _utils.schema_factory(schema, self._pk),
-            update_schema,
-            prefix or db_model.describe()["name"].replace("None.", ""),
-            paginate,
-            get_all_route,
-            get_one_route,
-            create_route,
-            update_route,
-            delete_one_route,
-            delete_all_route,
-            *args,
+            schema=schema,
+            create_schema=create_schema,
+            update_schema=update_schema,
+            prefix=prefix or db_model.describe()["name"].replace("None.", ""),
+            tags=tags,
+            paginate=paginate,
+            get_all_route=get_all_route,
+            get_one_route=get_one_route,
+            create_route=create_route,
+            update_route=update_route,
+            delete_one_route=delete_one_route,
+            delete_all_route=delete_all_route,
             **kwargs
         )
 
