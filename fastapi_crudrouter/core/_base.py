@@ -48,9 +48,10 @@ class CRUDGenerator(Generic[T], APIRouter):
 
         prefix = str(self.schema.__name__.lower() if not prefix else prefix)
         prefix = self._base_path + prefix.strip("/")
-        super().__init__(
-            prefix=prefix, tags=[prefix.strip("/").capitalize()], *args, **kwargs
+        tags = (
+            [prefix.strip("/").capitalize()] if "tags" not in kwargs else kwargs["tags"]
         )
+        super().__init__(prefix=prefix, tags=tags, *args, **kwargs)
 
         if get_all_route:
             super().add_api_route(
