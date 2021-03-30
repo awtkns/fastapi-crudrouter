@@ -1,10 +1,4 @@
-import pytest
-
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from fastapi_crudrouter import MemoryCRUDRouter
-
-from tests import Potato, Carrot, CUSTOM_TAGS
+from tests import CUSTOM_TAGS
 
 POTATO_TAGS = ["Potato"]
 PATH_TAGS = {

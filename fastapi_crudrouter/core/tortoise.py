@@ -1,6 +1,6 @@
 from typing import Any, Callable, List, Type, cast, Coroutine, Optional
 
-from . import CRUDGenerator, NOT_FOUND, _utils
+from . import CRUDGenerator, NOT_FOUND
 from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 
 try:
