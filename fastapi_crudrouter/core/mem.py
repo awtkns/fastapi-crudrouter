@@ -14,6 +14,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         create_schema: Optional[Type[SCHEMA]] = None,
         update_schema: Optional[Type[SCHEMA]] = None,
         prefix: Optional[str] = None,
+        tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
         get_all_route: bool = True,
         get_one_route: bool = True,
@@ -21,22 +22,21 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         update_route: bool = True,
         delete_one_route: bool = True,
         delete_all_route: bool = True,
-        *args: Any,
         **kwargs: Any
     ) -> None:
         super().__init__(
-            schema,
-            create_schema,
-            update_schema,
-            prefix,
-            paginate,
-            get_all_route,
-            get_one_route,
-            create_route,
-            update_route,
-            delete_one_route,
-            delete_all_route,
-            *args,
+            schema=schema,
+            create_schema=create_schema,
+            update_schema=update_schema,
+            prefix=prefix,
+            tags=tags,
+            paginate=paginate,
+            get_all_route=get_all_route,
+            get_one_route=get_one_route,
+            create_route=create_route,
+            update_route=update_route,
+            delete_one_route=delete_one_route,
+            delete_all_route=delete_all_route,
             **kwargs
         )
 
