@@ -34,6 +34,12 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         update_route: bool = True,
         delete_one_route: bool = True,
         delete_all_route: bool = True,
+        get_all_dependency: Callable = None,
+        get_one_dependency: Callable = None,
+        create_dependency: Callable = None,
+        update_dependency: Callable = None,
+        delete_one_dependency: Callable = None,
+        delete_all_dependency: Callable = None,
         **kwargs: Any
     ) -> None:
         assert (
@@ -44,6 +50,12 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         self.db_func = db
         self._pk: str = db_model.__table__.primary_key.columns.keys()[0]
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
+        self.get_all_dependency = get_all_dependency
+        self.get_one_dependency = get_one_dependency
+        self.create_dependency = create_dependency
+        self.update_dependency = update_dependency
+        self.delete_one_dependency = delete_one_dependency
+        self.delete_all_dependency = delete_all_dependency
 
         super().__init__(
             schema=schema,
@@ -65,6 +77,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         def route(
             db: Session = Depends(self.db_func),
             pagination: PAGINATION = self.pagination,
+            dependency: Any = Depends(self.get_all_dependency),
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
@@ -77,7 +90,9 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Model]:
         def route(
-            item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
+            item_id: self._pk_type,
+            db: Session = Depends(self.db_func),  # type: ignore
+            dependency: Any = Depends(self.get_one_dependency),
         ) -> Model:
             model: Model = db.query(self.db_model).get(item_id)
 
@@ -92,6 +107,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         def route(
             model: self.create_schema,  # type: ignore
             db: Session = Depends(self.db_func),
+            dependency: Any = Depends(self.create_dependency),
         ) -> Model:
             try:
                 db_model: Model = self.db_model(**model.dict())
@@ -110,6 +126,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             item_id: self._pk_type,  # type: ignore
             model: self.update_schema,  # type: ignore
             db: Session = Depends(self.db_func),
+            dependency: Any = Depends(self.update_dependency),
         ) -> Model:
             try:
                 db_model: Model = self._get_one()(item_id, db)
@@ -129,7 +146,10 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         return route
 
     def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[Model]]:
-        def route(db: Session = Depends(self.db_func)) -> List[Model]:
+        def route(
+            db: Session = Depends(self.db_func),
+            dependency: Any = Depends(self.delete_all_dependency),
+        ) -> List[Model]:
             db.query(self.db_model).delete()
             db.commit()
 
@@ -139,7 +159,9 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Model]:
         def route(
-            item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
+            item_id: self._pk_type,
+            db: Session = Depends(self.db_func),  # type: ignore
+            dependency: Any = Depends(self.delete_one_dependency),
         ) -> Model:
             db_model: Model = self._get_one()(item_id, db)
             db.delete(db_model)
