@@ -34,12 +34,12 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         update_route: bool = True,
         delete_one_route: bool = True,
         delete_all_route: bool = True,
-        get_all_dependency: Callable = None,
-        get_one_dependency: Callable = None,
-        create_dependency: Callable = None,
-        update_dependency: Callable = None,
-        delete_one_dependency: Callable = None,
-        delete_all_dependency: Callable = None,
+        get_all_dependency: Callable[..., Any] = None,
+        get_one_dependency: Callable[..., Any] = None,
+        create_dependency: Callable[..., Any] = None,
+        update_dependency: Callable[..., Any] = None,
+        delete_one_dependency: Callable[..., Any] = None,
+        delete_all_dependency: Callable[..., Any] = None,
         **kwargs: Any
     ) -> None:
         assert (
