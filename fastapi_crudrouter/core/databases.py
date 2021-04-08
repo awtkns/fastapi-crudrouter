@@ -74,7 +74,9 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         )
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
-        async def route(pagination: PAGINATION = self.pagination,) -> List[Model]:
+        async def route(
+            pagination: PAGINATION = self.pagination,
+        ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
             query = self.table.select().limit(limit).offset(skip)
