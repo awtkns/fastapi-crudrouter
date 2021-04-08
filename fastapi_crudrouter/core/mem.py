@@ -1,5 +1,6 @@
-from typing import Any, Callable, List, Type, cast, Optional
+from typing import Any, Callable, List, Type, cast, Optional, Sequence, Union
 
+from fastapi import params
 from . import CRUDGenerator, NOT_FOUND
 from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 
@@ -16,12 +17,12 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         prefix: Optional[str] = None,
         tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
-        get_all_route: bool = True,
-        get_one_route: bool = True,
-        create_route: bool = True,
-        update_route: bool = True,
-        delete_one_route: bool = True,
-        delete_all_route: bool = True,
+        get_all_route: Union[bool, Sequence[params.Depends]] = True,
+        get_one_route: Union[bool, Sequence[params.Depends]] = True,
+        create_route: Union[bool, Sequence[params.Depends]] = True,
+        update_route: Union[bool, Sequence[params.Depends]] = True,
+        delete_one_route: Union[bool, Sequence[params.Depends]] = True,
+        delete_all_route: Union[bool, Sequence[params.Depends]] = True,
         **kwargs: Any
     ) -> None:
         super().__init__(

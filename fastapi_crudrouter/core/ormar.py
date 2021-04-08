@@ -6,9 +6,11 @@ from typing import (
     Type,
     cast,
     Coroutine,
+    Sequence,
+    Union,
 )
 
-from fastapi import HTTPException
+from fastapi import HTTPException, params
 
 from . import CRUDGenerator, NOT_FOUND, _utils
 from ._types import PAGINATION
@@ -34,12 +36,12 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
         prefix: Optional[str] = None,
         tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
-        get_all_route: bool = True,
-        get_one_route: bool = True,
-        create_route: bool = True,
-        update_route: bool = True,
-        delete_one_route: bool = True,
-        delete_all_route: bool = True,
+        get_all_route: Union[bool, Sequence[params.Depends]] = True,
+        get_one_route: Union[bool, Sequence[params.Depends]] = True,
+        create_route: Union[bool, Sequence[params.Depends]] = True,
+        update_route: Union[bool, Sequence[params.Depends]] = True,
+        delete_one_route: Union[bool, Sequence[params.Depends]] = True,
+        delete_all_route: Union[bool, Sequence[params.Depends]] = True,
         **kwargs: Any
     ) -> None:
         assert ormar_installed, "Ormar must be installed to use the OrmarCRUDRouter."

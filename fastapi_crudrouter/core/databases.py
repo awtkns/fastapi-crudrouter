@@ -1,6 +1,16 @@
-from typing import Any, Callable, List, Mapping, Type, Coroutine, Optional
+from typing import (
+    Any,
+    Callable,
+    List,
+    Mapping,
+    Type,
+    Coroutine,
+    Optional,
+    Sequence,
+    Union,
+)
 
-from fastapi import HTTPException
+from fastapi import HTTPException, params
 
 from . import CRUDGenerator, NOT_FOUND, _utils
 from ._types import PAGINATION, PYDANTIC_SCHEMA
@@ -29,12 +39,12 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         prefix: Optional[str] = None,
         tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
-        get_all_route: bool = True,
-        get_one_route: bool = True,
-        create_route: bool = True,
-        update_route: bool = True,
-        delete_one_route: bool = True,
-        delete_all_route: bool = True,
+        get_all_route: Union[bool, Sequence[params.Depends]] = True,
+        get_one_route: Union[bool, Sequence[params.Depends]] = True,
+        create_route: Union[bool, Sequence[params.Depends]] = True,
+        update_route: Union[bool, Sequence[params.Depends]] = True,
+        delete_one_route: Union[bool, Sequence[params.Depends]] = True,
+        delete_all_route: Union[bool, Sequence[params.Depends]] = True,
         **kwargs: Any
     ) -> None:
         assert (
@@ -64,9 +74,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         )
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
-        async def route(
-            pagination: PAGINATION = self.pagination,
-        ) -> List[Model]:
+        async def route(pagination: PAGINATION = self.pagination,) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
             query = self.table.select().limit(limit).offset(skip)
