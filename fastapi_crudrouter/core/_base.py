@@ -1,9 +1,9 @@
-from typing import Any, Callable, Generic, List, Optional, Sequence, Type, Union
+from typing import Any, Callable, Generic, List, Optional, Type, Union
 
-from fastapi import APIRouter, HTTPException, params
+from fastapi import APIRouter, HTTPException
 from fastapi.types import DecoratedCallable
 
-from ._types import T
+from ._types import T, DEPENDENCIES
 from ._utils import pagination_factory, schema_factory
 
 NOT_FOUND = HTTPException(404, "Item not found")
@@ -23,12 +23,12 @@ class CRUDGenerator(Generic[T], APIRouter):
         prefix: Optional[str] = None,
         tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
-        get_all_route: Union[bool, Sequence[params.Depends]] = True,
-        get_one_route: Union[bool, Sequence[params.Depends]] = True,
-        create_route: Union[bool, Sequence[params.Depends]] = True,
-        update_route: Union[bool, Sequence[params.Depends]] = True,
-        delete_one_route: Union[bool, Sequence[params.Depends]] = True,
-        delete_all_route: Union[bool, Sequence[params.Depends]] = True,
+        get_all_route: Union[bool, DEPENDENCIES] = True,
+        get_one_route: Union[bool, DEPENDENCIES] = True,
+        create_route: Union[bool, DEPENDENCIES] = True,
+        update_route: Union[bool, DEPENDENCIES] = True,
+        delete_one_route: Union[bool, DEPENDENCIES] = True,
+        delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any,
     ) -> None:
 
@@ -53,88 +53,74 @@ class CRUDGenerator(Generic[T], APIRouter):
         super().__init__(prefix=prefix, tags=tags, **kwargs)
 
         if get_all_route:
-            if isinstance(get_all_route, bool):
-                dependencies = None
-            else:
-                dependencies = get_all_route
-            super().add_api_route(
+            self._add_api_route(
                 "",
                 self._get_all(),
                 methods=["GET"],
                 response_model=Optional[List[self.schema]],  # type: ignore
                 summary="Get All",
-                dependencies=dependencies,
+                dependencies=get_one_route,
             )
 
         if create_route:
-            if isinstance(create_route, bool):
-                dependencies = None
-            else:
-                dependencies = create_route
-            super().add_api_route(
+            self._add_api_route(
                 "",
                 self._create(),
                 methods=["POST"],
                 response_model=self.schema,
                 summary="Create One",
-                dependencies=dependencies,
+                dependencies=create_route,
             )
 
         if delete_all_route:
-            if isinstance(delete_all_route, bool):
-                dependencies = None
-            else:
-                dependencies = delete_all_route
-            super().add_api_route(
+            self._add_api_route(
                 "",
                 self._delete_all(),
                 methods=["DELETE"],
                 response_model=Optional[List[self.schema]],  # type: ignore
                 summary="Delete All",
-                dependencies=dependencies,
+                dependencies=delete_all_route,
             )
 
         if get_one_route:
-            if isinstance(get_one_route, bool):
-                dependencies = None
-            else:
-                dependencies = get_one_route
-            super().add_api_route(
+            self._add_api_route(
                 "/{item_id}",
                 self._get_one(),
                 methods=["GET"],
                 response_model=self.schema,
                 summary="Get One",
-                dependencies=dependencies,
+                dependencies=get_one_route,
             )
 
         if update_route:
-            if isinstance(update_route, bool):
-                dependencies = None
-            else:
-                dependencies = update_route
-            super().add_api_route(
+            self._add_api_route(
                 "/{item_id}",
                 self._update(),
                 methods=["PUT"],
                 response_model=self.schema,
                 summary="Update One",
-                dependencies=dependencies,
+                dependencies=update_route,
             )
 
         if delete_one_route:
-            if isinstance(delete_one_route, bool):
-                dependencies = None
-            else:
-                dependencies = delete_one_route
-            super().add_api_route(
+            self._add_api_route(
                 "/{item_id}",
                 self._delete_one(),
                 methods=["DELETE"],
                 response_model=self.schema,
                 summary="Delete One",
-                dependencies=dependencies,
+                dependencies=delete_one_route,
             )
+
+    def _add_api_route(
+        self,
+        path: str,
+        endpoint: Callable[..., Any],
+        dependencies: Union[bool, DEPENDENCIES],
+        **kwargs: Any,
+    ) -> None:
+        dependencies = [] if isinstance(dependencies, bool) else dependencies
+        super().add_api_route(path, endpoint, dependencies=dependencies, **kwargs)
 
     def api_route(
         self, path: str, *args: Any, **kwargs: Any
