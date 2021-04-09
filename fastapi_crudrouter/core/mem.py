@@ -1,8 +1,7 @@
-from typing import Any, Callable, List, Type, cast, Optional, Sequence, Union
+from typing import Any, Callable, List, Type, cast, Optional, Union
 
-from fastapi import params
 from . import CRUDGenerator, NOT_FOUND
-from ._types import PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 
 CALLABLE = Callable[..., SCHEMA]
 CALLABLE_LIST = Callable[..., List[SCHEMA]]
@@ -17,12 +16,12 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         prefix: Optional[str] = None,
         tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
-        get_all_route: Union[bool, Sequence[params.Depends]] = True,
-        get_one_route: Union[bool, Sequence[params.Depends]] = True,
-        create_route: Union[bool, Sequence[params.Depends]] = True,
-        update_route: Union[bool, Sequence[params.Depends]] = True,
-        delete_one_route: Union[bool, Sequence[params.Depends]] = True,
-        delete_all_route: Union[bool, Sequence[params.Depends]] = True,
+        get_all_route: Union[bool, DEPENDENCIES] = True,
+        get_one_route: Union[bool, DEPENDENCIES] = True,
+        create_route: Union[bool, DEPENDENCIES] = True,
+        update_route: Union[bool, DEPENDENCIES] = True,
+        delete_one_route: Union[bool, DEPENDENCIES] = True,
+        delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any
     ) -> None:
         super().__init__(

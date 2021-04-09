@@ -6,14 +6,13 @@ from typing import (
     Type,
     Coroutine,
     Optional,
-    Sequence,
     Union,
 )
 
-from fastapi import HTTPException, params
+from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import PAGINATION, PYDANTIC_SCHEMA
+from ._types import PAGINATION, PYDANTIC_SCHEMA, DEPENDENCIES
 
 try:
     from sqlalchemy.sql.schema import Table
@@ -39,12 +38,12 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         prefix: Optional[str] = None,
         tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
-        get_all_route: Union[bool, Sequence[params.Depends]] = True,
-        get_one_route: Union[bool, Sequence[params.Depends]] = True,
-        create_route: Union[bool, Sequence[params.Depends]] = True,
-        update_route: Union[bool, Sequence[params.Depends]] = True,
-        delete_one_route: Union[bool, Sequence[params.Depends]] = True,
-        delete_all_route: Union[bool, Sequence[params.Depends]] = True,
+        get_all_route: Union[bool, DEPENDENCIES] = True,
+        get_one_route: Union[bool, DEPENDENCIES] = True,
+        create_route: Union[bool, DEPENDENCIES] = True,
+        update_route: Union[bool, DEPENDENCIES] = True,
+        delete_one_route: Union[bool, DEPENDENCIES] = True,
+        delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any
     ) -> None:
         assert (
