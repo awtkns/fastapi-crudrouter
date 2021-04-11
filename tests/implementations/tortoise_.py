@@ -66,7 +66,7 @@ def tortoise_implementation():
         create_schema=CarrotCreate,
         update_schema=CarrotUpdate,
         prefix="carrot",
-        tags=CUSTOM_TAGS
+        tags=CUSTOM_TAGS,
     )
 
     return app, [potato_router, carrot_router]
