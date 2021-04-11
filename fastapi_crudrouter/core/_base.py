@@ -21,6 +21,7 @@ class CRUDGenerator(Generic[T], APIRouter):
         create_schema: Optional[Type[T]] = None,
         update_schema: Optional[Type[T]] = None,
         prefix: Optional[str] = None,
+        tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
         get_all_route: bool = True,
         get_one_route: bool = True,
@@ -28,7 +29,6 @@ class CRUDGenerator(Generic[T], APIRouter):
         update_route: bool = True,
         delete_one_route: bool = True,
         delete_all_route: bool = True,
-        *args: Any,
         **kwargs: Any,
     ) -> None:
 
@@ -46,11 +46,11 @@ class CRUDGenerator(Generic[T], APIRouter):
             else schema_factory(self.schema, pk_field_name=self._pk, name="Update")
         )
 
-        prefix = str(self.schema.__name__.lower() if not prefix else prefix)
+        prefix = str(prefix if prefix else self.schema.__name__.lower())
         prefix = self._base_path + prefix.strip("/")
-        super().__init__(
-            prefix=prefix, tags=[prefix.strip("/").capitalize()], *args, **kwargs
-        )
+        tags = tags or [prefix.strip("/").capitalize()]
+
+        super().__init__(prefix=prefix, tags=tags, **kwargs)
 
         if get_all_route:
             super().add_api_route(

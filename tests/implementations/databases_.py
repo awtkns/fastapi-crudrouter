@@ -12,6 +12,7 @@ from tests import (
     PAGINATION_SIZE,
     Potato,
     PotatoType,
+    CUSTOM_TAGS,
 )
 
 DATABASE_URL = "sqlite:///./test.db"
@@ -74,6 +75,7 @@ def databases_implementation():
         create_schema=CarrotCreate,
         update_schema=CarrotUpdate,
         prefix="carrot",
+        tags=CUSTOM_TAGS,
     )
 
     return app, [potato_router, carrot_router]
