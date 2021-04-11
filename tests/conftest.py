@@ -4,21 +4,27 @@ from fastapi.testclient import TestClient
 from .implementations import *
 
 
-@pytest.fixture(params=implementations, scope="class")
-def client(request):
-    impl = request.param
-
+def yield_test_client(app, impl):
     if impl.__name__ == "tortoise_implementation":
         from tortoise.contrib.test import initializer, finalizer
 
         initializer(["tests.implementations.tortoise_"])
-        with TestClient(impl()) as c:
+        with TestClient(app) as c:
             yield c
         finalizer()
 
     else:
-        with TestClient(impl()) as c:
+        with TestClient(app) as c:
             yield c
+
+
+@pytest.fixture(params=implementations, scope="class")
+def client(request):
+    impl = request.param
+
+    app, routers = impl()
+    [app.include_router(r) for r in routers]
+    yield from yield_test_client(app, impl)
 
 
 @pytest.fixture(
@@ -29,13 +35,7 @@ def client(request):
     ]
 )
 def custom_id_client(request):
-    with TestClient(request.param()) as c:
-        yield c
-
-
-@pytest.fixture
-def overloaded_client():
-    yield TestClient(overloaded_app())
+    yield from yield_test_client(request.param(), request.param)
 
 
 @pytest.fixture(
@@ -47,8 +47,7 @@ def overloaded_client():
     scope="function",
 )
 def string_pk_client(request):
-    with TestClient(request.param()) as c:
-        yield c
+    yield from yield_test_client(request.param(), request.param)
 
 
 @pytest.fixture(
@@ -59,5 +58,4 @@ def string_pk_client(request):
     scope="function",
 )
 def integrity_errors_client(request):
-    with TestClient(request.param()) as c:
-        yield c
+    yield from yield_test_client(request.param(), request.param)
