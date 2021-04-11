@@ -46,6 +46,9 @@ As an example, the *delete all* route can be disabled by doing the following:
 router = MemmoryCRUDRouter(schema=MyModel, deleta_all_route=False)
 ```
 
+!!! tip "Custom Dependencies"
+    Instead to passing a bool to the arguments listed about, you can also pass a sequence of custom dependencies to be 
+    applied to each route. See the docs on [dependencies](dependencies.md) for more details.
 
 ## Overriding Routes
 Should you need to add custom functionality to any of your routes any of the included routers allows you to do so. 
