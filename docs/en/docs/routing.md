@@ -50,6 +50,7 @@ router = MemmoryCRUDRouter(schema=MyModel, deleta_all_route=False)
     Instead to passing a bool to the arguments listed about, you can also pass a sequence of custom dependencies to be 
     applied to each route. See the docs on [dependencies](dependencies.md) for more details.
 
+
 ## Overriding Routes
 Should you need to add custom functionality to any of your routes any of the included routers allows you to do so. 
 Should you wish to disable a route from being generated, it can be done [here](../routing/#disabling-routes).
@@ -67,7 +68,7 @@ Routes in the CRUDRouter can be overridden by using the standard fastapi route d
     meaning that they can be customized to your heart's content.
 
 ### Overriding Example
-Below is an example where we are overriding the route `/potato/{item_id}` while using the MemoryCRUDRouter.
+Below is an example where we are overriding the routes `/potato/{item_id}` and `/potato` while using the MemoryCRUDRouter.
 
 ```python
 from pydantic import BaseModel
@@ -82,8 +83,11 @@ class Potato(BaseModel):
 app = FastAPI()
 router = CRUDRouter(model=mymodel)
 
-@router.get('/{item_id}')
+@router.get('')
 def overloaded_get_all():
-    return 'My overloaded route'
-```
+    return 'My overloaded route that returns all the items'
 
+@router.get('/{item_id}')
+def overloaded_get_one():
+    return 'My overloaded route that returns one item'
+```
