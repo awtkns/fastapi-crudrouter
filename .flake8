@@ -1,5 +1,0 @@
-[flake8]
-max-line-length = 88
-select = C,E,F,W,B,B9
-ignore = B008, E203, W503, CFQ001, CFQ002
-import-order-style = pycharm
