@@ -61,24 +61,26 @@ def databases_implementation():
     async def shutdown():
         await database.disconnect()
 
-    potato_router = DatabasesCRUDRouter(
-        database=database,
-        table=potatoes,
-        schema=Potato,
-        prefix="potato",
-        paginate=PAGINATION_SIZE,
-    )
-    carrot_router = DatabasesCRUDRouter(
-        database=database,
-        table=carrots,
-        schema=Carrot,
-        create_schema=CarrotCreate,
-        update_schema=CarrotUpdate,
-        prefix="carrot",
-        tags=CUSTOM_TAGS,
-    )
+    router_settings = [
+        dict(
+            database=database,
+            table=potatoes,
+            schema=Potato,
+            prefix="potato",
+            paginate=PAGINATION_SIZE,
+        ),
+        dict(
+            database=database,
+            table=carrots,
+            schema=Carrot,
+            create_schema=CarrotCreate,
+            update_schema=CarrotUpdate,
+            prefix="carrot",
+            tags=CUSTOM_TAGS,
+        ),
+    ]
 
-    return app, [potato_router, carrot_router]
+    return app, DatabasesCRUDRouter, router_settings
 
 
 def databases_implementation_custom_ids():

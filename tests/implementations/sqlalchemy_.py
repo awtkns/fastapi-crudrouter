@@ -63,24 +63,26 @@ def sqlalchemy_implementation():
         color = Column(String)
 
     Base.metadata.create_all(bind=engine)
-    potato_router = SQLAlchemyCRUDRouter(
-        schema=Potato,
-        db_model=PotatoModel,
-        db=session,
-        prefix="potato",
-        paginate=PAGINATION_SIZE,
-    )
-    carrot_router = SQLAlchemyCRUDRouter(
-        schema=Carrot,
-        db_model=CarrotModel,
-        db=session,
-        create_schema=CarrotCreate,
-        update_schema=CarrotUpdate,
-        prefix="carrot",
-        tags=CUSTOM_TAGS,
-    )
+    router_settings = [
+        dict(
+            schema=Potato,
+            db_model=PotatoModel,
+            db=session,
+            prefix="potato",
+            paginate=PAGINATION_SIZE,
+        ),
+        dict(
+            schema=Carrot,
+            db_model=CarrotModel,
+            db=session,
+            create_schema=CarrotCreate,
+            update_schema=CarrotUpdate,
+            prefix="carrot",
+            tags=CUSTOM_TAGS,
+        ),
+    ]
 
-    return app, [potato_router, carrot_router]
+    return app, SQLAlchemyCRUDRouter, router_settings
 
 
 # noinspection DuplicatedCode

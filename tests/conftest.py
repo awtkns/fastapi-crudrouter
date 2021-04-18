@@ -22,8 +22,8 @@ def yield_test_client(app, impl):
 def client(request):
     impl = request.param
 
-    app, routers = impl()
-    [app.include_router(r) for r in routers]
+    app, router, settings = impl()
+    [app.include_router(router(**kwargs)) for kwargs in settings]
     yield from yield_test_client(app, impl)
 
 
