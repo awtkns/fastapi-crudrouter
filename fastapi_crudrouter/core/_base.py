@@ -59,7 +59,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 methods=["GET"],
                 response_model=Optional[List[self.schema]],  # type: ignore
                 summary="Get All",
-                dependencies=get_one_route,
+                dependencies=get_all_route,
             )
 
         if create_route:
