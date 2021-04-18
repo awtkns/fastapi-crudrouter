@@ -108,19 +108,25 @@ def get_app():
 def ormar_implementation():
     app = get_app()
 
-    potato_router = OrmarCRUDRouter(
-        schema=PotatoModel,
-        prefix="potato",
-        paginate=PAGINATION_SIZE,
-    )
-    carrot_router = OrmarCRUDRouter(
-        schema=CarrotModel,
-        update_schema=CarrotUpdate,
-        prefix="carrot",
-        tags=CUSTOM_TAGS,
-    )
+    router_settings = [
+        dict(
+            schema=PotatoModel,
+            prefix="potato",
+            paginate=PAGINATION_SIZE,
+        ),
+        dict(
+            schema=CarrotModel,
+            update_schema=CarrotUpdate,
+            prefix="carrot",
+            tags=CUSTOM_TAGS,
+        ),
+    ]
 
-    return app, [potato_router, carrot_router]
+    return (
+        app,
+        OrmarCRUDRouter,
+        router_settings,
+    )
 
 
 # noinspection DuplicatedCode

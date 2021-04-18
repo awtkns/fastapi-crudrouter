@@ -53,20 +53,21 @@ def tortoise_implementation():
     Tortoise.init(config=TORTOISE_ORM)
     Tortoise.generate_schemas()
 
-    potato_router = TortoiseCRUDRouter(
-        schema=Potato,
-        db_model=PotatoModel,
-        prefix="potato",
-        paginate=PAGINATION_SIZE,
-    )
+    router_settings = [
+        dict(
+            schema=Potato,
+            db_model=PotatoModel,
+            prefix="potato",
+            paginate=PAGINATION_SIZE,
+        ),
+        dict(
+            schema=Carrot,
+            db_model=CarrotModel,
+            create_schema=CarrotCreate,
+            update_schema=CarrotUpdate,
+            prefix="carrot",
+            tags=CUSTOM_TAGS,
+        ),
+    ]
 
-    carrot_router = TortoiseCRUDRouter(
-        schema=Carrot,
-        db_model=CarrotModel,
-        create_schema=CarrotCreate,
-        update_schema=CarrotUpdate,
-        prefix="carrot",
-        tags=CUSTOM_TAGS,
-    )
-
-    return app, [potato_router, carrot_router]
+    return app, TortoiseCRUDRouter, router_settings

@@ -20,7 +20,9 @@ DELETE_ALL = "Overloaded Delete All"
 def overloaded_client(request):
     impl = request.param
 
-    app, routers = impl()
+    app, router, settings = impl()
+    routers = [router(**s) for s in settings]
+
     for r in routers:
         r: APIRouter
 

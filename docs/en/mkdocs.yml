@@ -35,14 +35,14 @@ theme:
 nav:
   - Overview: index.md
   - Schemas: schemas.md
-  - Pagination: pagination.md
-  - Routing: routing.md
   - Backends:
       - In Memory: backends/memory.md
       - SQLAlchemy: backends/sqlalchemy.md
       - Databases (async): backends/async.md
       - Ormar (async): backends/ormar.md
       - Tortoise (async): backends/tortoise.md
+  - Routing: routing.md
+  - Pagination: pagination.md
   - Dependencies: dependencies.md
   - Contributing: contributing.md
   - Releases: releases.md
