@@ -1,4 +1,27 @@
 
+## [v0.7.0 - Advanced Dependencies ](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.7.0) { .releases } 
+2021-04-18
+🎉 Highlights
+With the release of v0.7.0 fastapi-crudrouter now provides the ability to set custom dependencies one a per route basis; a much requested feature. Prior to this release, it was only possible to set dependencies for all the routes in the CRUDRouter. Shown below is a brief example on how limiting each route to specific access rights would work using this new feature.
+
+```python
+MemoryCRUDRouter(
+    schema=MySchema,
+    create_route=[Depends(user)],
+    delete_all_route=[Depends(admin)]
+)
+```
+
+Check out the [docs](https://fastapi-crudrouter.awtkns.com/dependencies/) for more details.
+
+✨ Features
+- Custom Dependencies Per Route #37 #59 #60 @DorskFR @jm-moreau 
+- Ability to Provide a List of Custom Tags for OpenAPI #57 @jm-moreau 
+- Improved Documentation #52 
+- Dark Mode for Documentation
+
+---
+
 ## [v0.6.0 - Ormar Backend](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.6.0) { .releases } 
 2021-03-26
 ### 🎉 Highlights
