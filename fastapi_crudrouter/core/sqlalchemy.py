@@ -1,6 +1,9 @@
-from typing import Any, Callable, List, Type, Generator, Optional, Union
+import typing
+from datetime import datetime
+from typing import Any, Callable, Dict, Generator, List
+from typing import Optional, Type, Union, get_type_hints
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
 
 from . import CRUDGenerator, NOT_FOUND, _utils
 from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
@@ -16,11 +19,41 @@ else:
     sqlalchemy_installed = True
     Session = Callable[..., Generator[Session, Any, None]]
 
+FILTER = Dict[str, Optional[Union[int, str, datetime, None]]]
+
+
+def schemas_args_factory(schema: Optional[Type[SCHEMA]]) -> Any:
+    """
+    Created the schema dependency to be used in the router
+    """
+    schema_typing = get_type_hints(schema)
+    _str = "{}: Optional[{}] = None"
+    args = (
+        _str.format(k, v.__name__)
+        for k, v in schema_typing.items()
+        if v.__module__ != "typing"
+    )
+    args_str: str = ",".join(args)
+    return_str = ", ".join(
+        [
+            "{}={}".format(k, k)
+            for k, v in schema_typing.items()
+            if v.__module__ != "typing"
+        ]
+    )
+
+    func_code = "def tmp_function({0}) -> FILTER:return dict({1})"
+    func_code = func_code.format(args_str, return_str)
+    local_var = {"datetime": datetime, "FILTER": FILTER, "typing": typing}
+    exec(func_code, globals(), local_var)
+    tmp_function = local_var["tmp_function"]
+    return tmp_function
+
 
 class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
     def __init__(
         self,
-        schema: Type[SCHEMA],
+        schema: Optional[Type[SCHEMA]],
         db_model: Model,
         db: "Session",
         create_schema: Optional[Type[SCHEMA]] = None,
@@ -39,7 +72,14 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         assert (
             sqlalchemy_installed
         ), "SQLAlchemy must be installed to use the SQLAlchemyCRUDRouter."
-
+        if schema is None:
+            try:
+                from pydantic_sqlalchemy import sqlalchemy_to_pydantic
+            except ImportError:
+                raise ValueError(
+                    "Schema should not be None,or installed pydantic_sqlalchemy"
+                )
+            schema = sqlalchemy_to_pydantic(db_model)
         self.db_model = db_model
         self.db_func = db
         self._pk: str = db_model.__table__.primary_key.columns.keys()[0]
@@ -65,21 +105,33 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         def route(
             db: Session = Depends(self.db_func),
             pagination: PAGINATION = self.pagination,
+            condition: FILTER = Depends(schemas_args_factory(self.schema)),
+            request: Request = Request(scope={"type": "http"}),
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
+            effective_filter = {
+                k: v for k, v in condition.items() if k in request.query_params.keys()
+            }
 
-            db_models: List[Model] = (
-                db.query(self.db_model).limit(limit).offset(skip).all()
-            )
+            query = db.query(self.db_model).filter_by(**effective_filter)
+            db_models: List[Model] = query.limit(limit).offset(skip).all()
             return db_models
 
         return route
 
     def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Model]:
         def route(
-            item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
+            item_id: Optional[self._pk_type] = None,  # type: ignore
+            db: Session = Depends(self.db_func),
+            condition: FILTER = Depends(schemas_args_factory(self.schema)),
+            request: Request = Request(scope={"type": "http"}),
         ) -> Model:
-            model: Model = db.query(self.db_model).get(item_id)
+            effective_filter = {
+                k: v for k, v in condition.items() if k in request.query_params.keys()
+            }
+            if item_id:
+                effective_filter[self._pk] = item_id
+            model: Model = db.query(self.db_model).filter_by(**effective_filter).first()
 
             if model:
                 return model
@@ -112,7 +164,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             db: Session = Depends(self.db_func),
         ) -> Model:
             try:
-                db_model: Model = self._get_one()(item_id, db)
+                db_model: Model = self._get_one()(item_id, db, {})
 
                 for key, value in model.dict(exclude={self._pk}).items():
                     if hasattr(db_model, key):
@@ -133,7 +185,9 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             db.query(self.db_model).delete()
             db.commit()
 
-            return self._get_all()(db=db, pagination={"skip": 0, "limit": None})
+            return self._get_all()(
+                db=db, pagination={"skip": 0, "limit": None}, condition={}
+            )
 
         return route
 
@@ -141,7 +195,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         def route(
             item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
         ) -> Model:
-            db_model: Model = self._get_one()(item_id, db)
+            db_model: Model = self._get_one()(item_id, db, {})
             db.delete(db_model)
             db.commit()
 
