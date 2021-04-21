@@ -1,11 +1,10 @@
-from datetime import datetime
-from typing import Any, Callable, Dict, Generator, List
+from typing import Any, Callable, Generator, List
 from typing import Optional, Type, Union
 
 from fastapi import Depends, HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER
 
 try:
     from sqlalchemy.orm import Session
@@ -17,8 +16,6 @@ except ImportError:
 else:
     sqlalchemy_installed = True
     Session = Callable[..., Generator[Session, Any, None]]
-
-FILTER = Dict[str, Optional[Union[int, str, datetime, None]]]
 
 
 class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):

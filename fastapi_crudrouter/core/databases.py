@@ -12,7 +12,7 @@ from typing import (
 from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import PAGINATION, PYDANTIC_SCHEMA, DEPENDENCIES
+from ._types import PAGINATION, PYDANTIC_SCHEMA, DEPENDENCIES, FILTER
 
 try:
     from sqlalchemy.sql.schema import Table
@@ -75,10 +75,14 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route(
             pagination: PAGINATION = self.pagination,
+            filter_: FILTER = self.filter,
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
             query = self.table.select().limit(limit).offset(skip)
+            for col, val in filter_.items():
+                query = query.where(self.table.c[col] == val)
+
             return await self.db.fetch_all(query)
 
         return route
