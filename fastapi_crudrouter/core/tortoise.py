@@ -1,7 +1,7 @@
 from typing import Any, Callable, List, Type, cast, Coroutine, Optional, Union
 
 from . import CRUDGenerator, NOT_FOUND
-from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER
 
 try:
     from tortoise.models import Model
@@ -10,7 +10,6 @@ except ImportError:
     tortoise_installed = False
 else:
     tortoise_installed = True
-
 
 CALLABLE = Callable[..., Coroutine[Any, Any, Model]]
 CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List[Model]]]
@@ -58,9 +57,11 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         )
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
-        async def route(pagination: PAGINATION = self.pagination) -> List[Model]:
+        async def route(
+            pagination: PAGINATION = self.pagination, filter_: FILTER = self.filter
+        ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
-            query = self.db_model.all().offset(cast(int, skip))
+            query = self.db_model.filter(**filter_).offset(cast(int, skip))
             if limit:
                 query = query.limit(limit)
             return await query
@@ -101,7 +102,9 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
     def _delete_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route() -> List[Model]:
             await self.db_model.all().delete()
-            return await self._get_all()(pagination={"skip": 0, "limit": None})
+            return await self._get_all()(
+                pagination={"skip": 0, "limit": None}, filter_={}
+            )
 
         return route
 

@@ -133,7 +133,9 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
             query = self.table.delete()
             await self.db.execute(query=query)
 
-            return await self._get_all()(pagination={"skip": 0, "limit": None})
+            return await self._get_all()(
+                pagination={"skip": 0, "limit": None}, filter_={}
+            )
 
         return route
 

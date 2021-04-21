@@ -1,6 +1,6 @@
-from typing import Optional, Type, TypeVar, Any
+from typing import Optional, Type, TypeVar, Any, List  # noqa: F401
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Query  # noqa: F401
 from pydantic import create_model
 
 from core._types import PAGINATION, PYDANTIC_SCHEMA
@@ -77,7 +77,7 @@ def pagination_factory(max_limit: Optional[int] = None) -> Any:
 def query_factory(schema: Type[T]) -> Any:
     field_names = schema.__fields__.keys()
 
-    _str = "{}: Optional[{}] = None"
+    _str = "{}: Optional[{}] = Query(None)"
     args_str = ", ".join(
         [
             _str.format(name, field.type_.__name__)
