@@ -3,9 +3,10 @@ from typing import Optional, Type, TypeVar, Any
 from fastapi import Depends, HTTPException
 from pydantic import create_model
 
-from ._types import PAGINATION, PYDANTIC_SCHEMA
+from core._types import PAGINATION, PYDANTIC_SCHEMA
 
 T = TypeVar("T", bound=PYDANTIC_SCHEMA)
+FILTER_TYPES = [int, float, bool, str]
 
 
 def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
@@ -71,3 +72,34 @@ def pagination_factory(max_limit: Optional[int] = None) -> Any:
         return {"skip": skip, "limit": limit}
 
     return Depends(pagination)
+
+
+def query_factory(schema: Type[T]) -> Any:
+    field_names = schema.__fields__.keys()
+
+    _str = "{}: Optional[{}] = None"
+    args_str = ", ".join(
+        [
+            _str.format(name, field.type_.__name__)
+            for name, field in schema.__fields__.items()
+            if field.type_ in FILTER_TYPES
+        ]
+    )
+
+    _str = "{}={}"
+    return_str = ", ".join(
+        [
+            _str.format(name, field.name)
+            for name, field in schema.__fields__.items()
+            if field.type_ in FILTER_TYPES
+        ]
+    )
+
+    filter_func_src = f"""
+def filter_func({args_str}):
+    ret = dict({return_str})
+    return {{k:v for k, v in ret.items() if v is not None}}
+"""
+
+    exec(filter_func_src, globals(), locals())
+    return Depends(locals().get("filter_func"))
