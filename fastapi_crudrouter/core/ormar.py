@@ -71,9 +71,9 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             pagination: PAGINATION = self.pagination, filter_: FILTER = self.filter
         ) -> List[Optional[Model]]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
-            query = self.schema.objects.filter(**filter_).offset(
+            query = self.schema.objects.filter(**filter_).offset(  # type: ignore
                 cast(int, skip)
-            )  # type: ignore
+            )
 
             if limit:
                 query = query.limit(limit)
