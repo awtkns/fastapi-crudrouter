@@ -3,10 +3,16 @@ from typing import Optional, Type, TypeVar, Any, List  # noqa: F401
 from fastapi import Depends, HTTPException, Query  # noqa: F401
 from pydantic import create_model
 
-from core._types import PAGINATION, PYDANTIC_SCHEMA
+from ._types import PAGINATION, PYDANTIC_SCHEMA
 
 T = TypeVar("T", bound=PYDANTIC_SCHEMA)
-FILTER_TYPES = [int, float, bool, str]
+FILTER_MAPPING = {
+    "int": int,
+    "float": float,
+    "bool": bool,
+    "str": str,
+    "ConstrainedStrValue": str,
+}
 
 
 def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
@@ -75,14 +81,16 @@ def pagination_factory(max_limit: Optional[int] = None) -> Any:
 
 
 def query_factory(schema: Type[T]) -> Any:
-    field_names = schema.__fields__.keys()
+    """
+    Dynamically builds a Fastapi query dependency based on all available field in the
+    """
 
     _str = "{}: Optional[{}] = Query(None)"
     args_str = ", ".join(
         [
-            _str.format(name, field.type_.__name__)
+            _str.format(name, FILTER_MAPPING[field.type_.__name__].__name__)
             for name, field in schema.__fields__.items()
-            if field.type_ in FILTER_TYPES
+            if field.type_.__name__ in FILTER_MAPPING
         ]
     )
 
@@ -91,7 +99,7 @@ def query_factory(schema: Type[T]) -> Any:
         [
             _str.format(name, field.name)
             for name, field in schema.__fields__.items()
-            if field.type_ in FILTER_TYPES
+            if field.type_.__name__ in FILTER_MAPPING
         ]
     )
 
@@ -102,4 +110,5 @@ def filter_func({args_str}):
 """
 
     exec(filter_func_src, globals(), locals())
+    print(filter_func_src)
     return Depends(locals().get("filter_func"))
