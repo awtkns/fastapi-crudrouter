@@ -1,7 +1,7 @@
 from typing import Any, Callable, List, Type, cast, Optional, Union
 
 from . import CRUDGenerator, NOT_FOUND
-from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER
 
 CALLABLE = Callable[..., SCHEMA]
 CALLABLE_LIST = Callable[..., List[SCHEMA]]
@@ -44,15 +44,14 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         self._id = 1
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
-        def route(pagination: PAGINATION = self.pagination) -> List[SCHEMA]:
+        def route(
+            pagination: PAGINATION = self.pagination, filter_: FILTER = self.filter
+        ) -> List[SCHEMA]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             skip = cast(int, skip)
 
-            return (
-                self.models[skip:]
-                if limit is None
-                else self.models[skip : skip + limit]
-            )
+            models = self._get_filtered_list(self.models, filter_)
+            return models[skip:] if limit is None else models[skip : skip + limit]
 
         return route
 
@@ -112,3 +111,21 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         self._id += 1
 
         return id_
+
+    @staticmethod
+    def _get_filtered_list(models: List[SCHEMA], filters_: FILTER) -> List[SCHEMA]:
+        if not filters_:
+            return models
+
+        return [
+            model
+            for model in models
+            if MemoryCRUDRouter._check_filters(model, filters_)
+        ]
+
+    @staticmethod
+    def _check_filters(model: SCHEMA, filters_: FILTER) -> bool:
+        for k, v in filters_.items():
+            if getattr(model, k) != v:
+                return False
+        return True
