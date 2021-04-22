@@ -110,5 +110,4 @@ def filter_func({args_str}):
 """
 
     exec(filter_func_src, globals(), locals())
-    print(filter_func_src)
     return Depends(locals().get("filter_func"))
