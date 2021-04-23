@@ -46,7 +46,7 @@ class CRUDGenerator(Generic[T], APIRouter):
             else schema_factory(self.schema, pk_field_name=self._pk, name="Update")
         )
 
-        prefix = str(prefix if prefix else self.schema.__name__.lower())
+        prefix = str(prefix if prefix else self.schema.__name__).lower()
         prefix = self._base_path + prefix.strip("/")
         tags = tags or [prefix.strip("/").capitalize()]
 

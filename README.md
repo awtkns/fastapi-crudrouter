@@ -21,7 +21,7 @@
 **Source Code**: <a href="https://github.com/awtkns/fastapi-crudrouter" target="_blank">https://github.com/awtkns/fastapi-crudrouter</a>
 
 ---
-Tired of rewriting the same generic CRUD routes? Need to rapidly prototype a feature for a presentation
+Tired of rewriting generic CRUD routes? Need to rapidly prototype a feature for a presentation
 or a hackathon? Thankfully, [fastapi-crudrouter](https://github.com/awtkns/fastapi-crudrouter) has your back. As an 
 extension to the APIRouter included with [FastAPI](https://fastapi.tiangolo.com/), the FastAPI CRUDRouter will automatically
 generate and document your CRUD routes for you, all you have to do is pass your model and maybe your database connection.
@@ -36,7 +36,7 @@ pip install fastapi-crudrouter
 
 ## Basic Usage
 Below is a simple example of what the CRUDRouter can do. In just ten lines of code, you can generate all 
-the crud routes you need for any model.  A full list of the routes generated can be found [here](./routing).
+the crud routes you need for any model. A full list of the routes generated can be found [here](./routing).
 
 ```python
 from pydantic import BaseModel
@@ -60,7 +60,7 @@ routes. Listed below are some highlights.
 - Ability to Provide Custom Create and Update Schemas ([docs](https://fastapi-crudrouter.awtkns.com/schemas/))
 - Dynamic Generation of Create and Update Schemas ([docs](https://fastapi-crudrouter.awtkns.com/schemas/))
 - Ability to Add, Customize, or Disable Specific Routes ([docs](https://fastapi-crudrouter.awtkns.com/routing/))
-- Native Support for FastAPI Dependencies Injection ([docs](https://fastapi-crudrouter.awtkns.com/dependencies/))
+- Native Support for FastAPI Dependency Injection ([docs](https://fastapi-crudrouter.awtkns.com/dependencies/))
 
 ## Supported Backends / ORMs
 fastapi-crudrouter currently supports a number of backends / ORMs. Listed below are the backends currently supported. This list will
