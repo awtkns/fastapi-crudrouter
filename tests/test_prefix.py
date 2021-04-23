@@ -16,5 +16,5 @@ def router(request):
 
 def test_prefix_lowercase(router):
     assert type(router.prefix) is str
-    assert router.prefix != ''
+    assert router.prefix != ""
     assert router.prefix == router.prefix.lower()
