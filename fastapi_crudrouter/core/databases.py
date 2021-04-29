@@ -12,7 +12,7 @@ from typing import (
 from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import PAGINATION, PYDANTIC_SCHEMA, DEPENDENCIES, FILTER
+from ._types import PAGINATION, PYDANTIC_SCHEMA, DEPENDENCIES, FILTER, SORT
 
 try:
     from sqlalchemy.sql.schema import Table
@@ -76,6 +76,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         async def route(
             pagination: PAGINATION = self.pagination,
             filter_: FILTER = self.filter,
+            sort_: SORT = self.sort,
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 

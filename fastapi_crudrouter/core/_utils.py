@@ -3,7 +3,7 @@ from typing import Optional, Type, TypeVar, Any, List  # noqa: F401
 from fastapi import Depends, HTTPException, Query  # noqa: F401
 from pydantic import create_model
 
-from ._types import PAGINATION, PYDANTIC_SCHEMA
+from ._types import PAGINATION, PYDANTIC_SCHEMA, SORT, FILTER  # noqa: F401
 
 T = TypeVar("T", bound=PYDANTIC_SCHEMA)
 FILTER_MAPPING = {
@@ -104,10 +104,22 @@ def query_factory(schema: Type[T]) -> Any:
     )
 
     filter_func_src = f"""
-def filter_func({args_str}):
+def filter_func({args_str}) -> FILTER:
     ret = dict({return_str})
     return {{k:v for k, v in ret.items() if v is not None}}
 """
 
     exec(filter_func_src, globals(), locals())
     return Depends(locals().get("filter_func"))
+
+
+def sort_factory(schema: Type[T]) -> Any:
+    fields = [field.name for field in schema.__fields__.values()]
+
+    def sort_func(
+        sort_: str = Query(None, alias="sort", enum=fields),
+        direction: str = Query(None, enum=["asc", "desc"]),
+    ) -> SORT:
+        return {"sort": sort_, "direction": direction}
+
+    return Depends(sort_func)

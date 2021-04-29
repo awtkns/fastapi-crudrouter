@@ -4,7 +4,7 @@ from typing import Optional, Type, Union
 from fastapi import Depends, HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER, SORT
 
 try:
     from sqlalchemy.orm import Session
@@ -67,6 +67,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             db: Session = Depends(self.db_func),
             pagination: PAGINATION = self.pagination,
             filter_: FILTER = self.filter,
+            sort_: SORT = self.sort,
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             query = db.query(self.db_model).filter_by(**filter_)

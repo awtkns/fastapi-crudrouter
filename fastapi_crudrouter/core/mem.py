@@ -1,7 +1,7 @@
 from typing import Any, Callable, List, Type, cast, Optional, Union
 
 from . import CRUDGenerator, NOT_FOUND
-from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER, SORT
 
 CALLABLE = Callable[..., SCHEMA]
 CALLABLE_LIST = Callable[..., List[SCHEMA]]
@@ -45,7 +45,9 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         def route(
-            pagination: PAGINATION = self.pagination, filter_: FILTER = self.filter
+            pagination: PAGINATION = self.pagination,
+            filter_: FILTER = self.filter,
+            sort_: SORT = self.sort,
         ) -> List[SCHEMA]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             skip = cast(int, skip)

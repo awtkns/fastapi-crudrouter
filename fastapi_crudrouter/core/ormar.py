@@ -12,7 +12,7 @@ from typing import (
 from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import DEPENDENCIES, PAGINATION, FILTER
+from ._types import DEPENDENCIES, PAGINATION, FILTER, SORT
 
 try:
     from ormar import Model, NoMatch
@@ -68,7 +68,9 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route(
-            pagination: PAGINATION = self.pagination, filter_: FILTER = self.filter
+            pagination: PAGINATION = self.pagination,
+            filter_: FILTER = self.filter,
+            sort_: SORT = self.sort,
         ) -> List[Optional[Model]]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             query = self.schema.objects.filter(**filter_).offset(  # type: ignore

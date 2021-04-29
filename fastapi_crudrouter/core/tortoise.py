@@ -1,7 +1,7 @@
 from typing import Any, Callable, List, Type, cast, Coroutine, Optional, Union
 
 from . import CRUDGenerator, NOT_FOUND
-from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER, SORT
 
 try:
     from tortoise.models import Model
@@ -58,7 +58,9 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route(
-            pagination: PAGINATION = self.pagination, filter_: FILTER = self.filter
+            pagination: PAGINATION = self.pagination,
+            filter_: FILTER = self.filter,
+            sort_: SORT = self.sort,
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             query = self.db_model.filter(**filter_).offset(cast(int, skip))

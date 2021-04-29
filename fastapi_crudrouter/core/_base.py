@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.types import DecoratedCallable
 
 from ._types import T, DEPENDENCIES
-from ._utils import pagination_factory, schema_factory, query_factory
+from ._utils import pagination_factory, schema_factory, query_factory, sort_factory
 
 NOT_FOUND = HTTPException(404, "Item not found")
 
@@ -35,6 +35,7 @@ class CRUDGenerator(Generic[T], APIRouter):
         self.schema = schema
         self.pagination = pagination_factory(max_limit=paginate)
         self.filter = query_factory(self.schema)
+        self.sort = sort_factory(self.schema)
 
         self._pk: str = self._pk if hasattr(self, "_pk") else "id"
         self.create_schema = (
