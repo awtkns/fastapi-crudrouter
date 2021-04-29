@@ -71,6 +71,12 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
             query = db.query(self.db_model).filter_by(**filter_)
+
+            if sort_:
+                field = getattr(self.db_model, sort_.get("sort", self._pk))
+                order = field.desc() if sort_.get("reverse", False) else field
+                query = query.order_by(order)
+
             db_models: List[Model] = query.limit(limit).offset(skip).all()
             return db_models
 

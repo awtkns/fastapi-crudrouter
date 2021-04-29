@@ -120,6 +120,7 @@ def sort_factory(schema: Type[T]) -> Any:
         sort_: str = Query(None, alias="sort", enum=fields),
         direction: str = Query(None, enum=["asc", "desc"]),
     ) -> SORT:
-        return {"sort": sort_, "direction": direction}
+        ret = {"sort": sort_, "reverse": direction == "desc"}
+        return {k: v for k, v in ret.items() if v}  # type: ignore
 
     return Depends(sort_func)
