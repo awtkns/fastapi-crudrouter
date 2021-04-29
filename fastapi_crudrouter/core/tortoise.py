@@ -1,7 +1,7 @@
 from typing import Any, Callable, List, Type, cast, Coroutine, Optional, Union
 
 from . import CRUDGenerator, NOT_FOUND
-from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA
 
 try:
     from tortoise.models import Model
@@ -11,18 +11,21 @@ except ImportError:
 else:
     tortoise_installed = True
 
+from tortoise.contrib.pydantic.base import PydanticModel as TORTOISE_SCHEMA
 
 CALLABLE = Callable[..., Coroutine[Any, Any, Model]]
 CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List[Model]]]
 
+# TODO: Change TORTOISE_SCHEMA to include both TORTOISE_ORM and PYDANTIC schemas
 
-class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
+
+class TortoiseCRUDRouter(CRUDGenerator[TORTOISE_SCHEMA]):
     def __init__(
         self,
-        schema: Type[SCHEMA],
+        schema: Type[TORTOISE_SCHEMA],
         db_model: Type[Model],
-        create_schema: Optional[Type[SCHEMA]] = None,
-        update_schema: Optional[Type[SCHEMA]] = None,
+        create_schema: Optional[Type[TORTOISE_SCHEMA]] = None,
+        update_schema: Optional[Type[TORTOISE_SCHEMA]] = None,
         prefix: Optional[str] = None,
         tags: Optional[List[str]] = None,
         paginate: Optional[int] = None,
@@ -63,6 +66,8 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
             query = self.db_model.all().offset(cast(int, skip))
             if limit:
                 query = query.limit(limit)
+            if issubclass(self.schema, TORTOISE_SCHEMA):
+                return await self.schema.from_queryset(query)
             return await query
 
         return route
@@ -71,10 +76,12 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         async def route(item_id: int) -> Model:
             model = await self.db_model.filter(id=item_id).first()
 
-            if model:
-                return model
-            else:
+            if not model:
                 raise NOT_FOUND
+
+            if issubclass(self.schema, TORTOISE_SCHEMA):
+                return await self.schema.from_tortoise_orm(model)
+            return model
 
         return route
 
@@ -83,6 +90,8 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
             db_model = self.db_model(**model.dict())
             await db_model.save()
 
+            if issubclass(self.schema, TORTOISE_SCHEMA):
+                return await self.schema.from_tortoise_orm(db_model)
             return db_model
 
         return route
