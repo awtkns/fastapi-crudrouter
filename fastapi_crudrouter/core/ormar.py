@@ -135,7 +135,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
         return route
 
     def _get_integrity_error_type(self) -> Type[Exception]:
-        """ Imports the Integrity exception based on the used backend """
+        """Imports the Integrity exception based on the used backend"""
         backend = self.schema.db_backend_name()
 
         try:

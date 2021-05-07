@@ -125,7 +125,7 @@ class CRUDGenerator(Generic[T], APIRouter):
     def api_route(
         self, path: str, *args: Any, **kwargs: Any
     ) -> Callable[[DecoratedCallable], DecoratedCallable]:
-        """ Overrides and exiting route if it exists"""
+        """Overrides and exiting route if it exists"""
         methods = kwargs["methods"] if "methods" in kwargs else ["GET"]
         self.remove_api_route(path, methods)
         return super().api_route(path, *args, **kwargs)
