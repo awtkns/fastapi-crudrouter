@@ -1,9 +1,10 @@
-from typing import Any, Callable, List, Type, Generator, Optional, Union
+from typing import Any, Callable, Generator, List
+from typing import Optional, Type, Union
 
 from fastapi import Depends, HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA, FILTER, SORT
 
 try:
     from sqlalchemy.orm import Session
@@ -65,19 +66,26 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         def route(
             db: Session = Depends(self.db_func),
             pagination: PAGINATION = self.pagination,
+            filter_: FILTER = self.filter,
+            sort_: SORT = self.sort,
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
+            query = db.query(self.db_model).filter_by(**filter_)
 
-            db_models: List[Model] = (
-                db.query(self.db_model).limit(limit).offset(skip).all()
-            )
+            if sort_:
+                field = getattr(self.db_model, sort_.get("sort", self._pk))
+                order = field.desc() if sort_.get("reverse", False) else field
+                query = query.order_by(order)
+
+            db_models: List[Model] = query.limit(limit).offset(skip).all()
             return db_models
 
         return route
 
     def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Model]:
         def route(
-            item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
+            item_id: Optional[self._pk_type] = None,  # type: ignore
+            db: Session = Depends(self.db_func),
         ) -> Model:
             model: Model = db.query(self.db_model).get(item_id)
 
@@ -133,7 +141,9 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             db.query(self.db_model).delete()
             db.commit()
 
-            return self._get_all()(db=db, pagination={"skip": 0, "limit": None})
+            return self._get_all()(
+                db=db, pagination={"skip": 0, "limit": None}, filter_={}, sort_={}
+            )
 
         return route
 

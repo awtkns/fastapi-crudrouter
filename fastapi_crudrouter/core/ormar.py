@@ -12,7 +12,7 @@ from typing import (
 from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
-from ._types import DEPENDENCIES, PAGINATION
+from ._types import DEPENDENCIES, PAGINATION, FILTER, SORT
 
 try:
     from ormar import Model, NoMatch
@@ -41,7 +41,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
         update_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         assert ormar_installed, "Ormar must be installed to use the OrmarCRUDRouter."
 
@@ -61,7 +61,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             update_route=update_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
-            **kwargs
+            **kwargs,
         )
 
         self._INTEGRITY_ERROR = self._get_integrity_error_type()
@@ -69,11 +69,19 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route(
             pagination: PAGINATION = self.pagination,
+            filter_: FILTER = self.filter,
+            sort_: SORT = self.sort,
         ) -> List[Optional[Model]]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
-            query = self.schema.objects.offset(cast(int, skip))
-            if limit:
-                query = query.limit(limit)
+            query = self.schema.objects.filter(**filter_)  # type: ignore
+
+            if sort_:
+                field = sort_.get("sort", self._pk)
+                order = f"-{field}" if sort_.get("reverse", False) else field
+                query = query.order_by(order)
+
+            query = query.limit(limit).offset(cast(int, skip))  # type: ignore
+
             return await query.all()
 
         return route
@@ -122,7 +130,9 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
     def _delete_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route() -> List[Optional[Model]]:
             await self.schema.objects.delete(each=True)
-            return await self._get_all()(pagination={"skip": 0, "limit": None})
+            return await self._get_all()(
+                pagination={"skip": 0, "limit": None}, filter_={}, sort_={}
+            )
 
         return route
 
