@@ -105,7 +105,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         async def route() -> List[Model]:
             await self.db_model.all().delete()
             return await self._get_all()(
-                pagination={"skip": 0, "limit": None}, filter_={}
+                pagination={"skip": 0, "limit": None}, filter_={}, sort_={}
             )
 
         return route

@@ -142,7 +142,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             db.commit()
 
             return self._get_all()(
-                db=db, pagination={"skip": 0, "limit": None}, filter_={}
+                db=db, pagination={"skip": 0, "limit": None}, filter_={}, sort_={}
             )
 
         return route

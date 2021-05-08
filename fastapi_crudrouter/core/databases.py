@@ -135,7 +135,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
             await self.db.execute(query=query)
 
             return await self._get_all()(
-                pagination={"skip": 0, "limit": None}, filter_={}
+                pagination={"skip": 0, "limit": None}, filter_={}, sort_={}
             )
 
         return route
