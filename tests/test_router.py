@@ -21,7 +21,8 @@ def test_get(client, url: str = URL, params: dict = None, expected_length: int =
 def test_post(
     client, url: str = URL, model: Dict = None, expected_length: int = 1
 ) -> dict:
-    model = model or basic_potato
+    if model is None:
+        model = basic_potato
     res = client.post(url, json=model)
     assert res.status_code == 200, res.json()
 
