@@ -36,7 +36,7 @@ pip install fastapi-crudrouter
 
 ## Basic Usage
 Below is a simple example of what the CRUDRouter can do. In just ten lines of code, you can generate all 
-the crud routes you need for any model. A full list of the routes generated can be found [here](./routing).
+the crud routes you need for any model. A full list of the routes generated can be found [here](https://fastapi-crudrouter.awtkns.com/routing).
 
 ```python
 from pydantic import BaseModel
