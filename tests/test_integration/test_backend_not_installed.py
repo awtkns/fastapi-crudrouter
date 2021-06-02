@@ -11,7 +11,6 @@ def test_virtualenv(virtualenv):
 
 
 if __name__ == "__main__":
-    # print("OKKK")
     from fastapi_crudrouter import (
         DatabasesCRUDRouter,
         GinoCRUDRouter,

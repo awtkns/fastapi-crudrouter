@@ -104,7 +104,6 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
             model: self.update_schema,  # type: ignore
         ) -> Model:
             try:
-                print("PKK")
                 db_model: Model = await self._get_one()(item_id)
                 async with self.db.transaction():
                     model = model.dict(exclude={self._pk})
