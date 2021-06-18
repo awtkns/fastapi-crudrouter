@@ -23,7 +23,7 @@ or a hackathon? Thankfully, [fastapi-crudrouter](https://github.com/awtkns/fasta
 extension to the APIRouter included with [FastAPI](https://fastapi.tiangolo.com/), the FastAPI CRUDRouter will automatically
 generate and document your CRUD routes for you, all you have to do is pass your model and maybe your database connection.
 
-FastAPI-CRUDRouter is also **lighting fast**, well tested, and production ready.
+FastAPI-CRUDRouter is also **lightning fast**, well tested, and production ready.
 
 ## Installation
 
