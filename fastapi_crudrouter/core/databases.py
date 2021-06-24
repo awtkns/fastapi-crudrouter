@@ -16,6 +16,7 @@ from ._types import PAGINATION, PYDANTIC_SCHEMA, DEPENDENCIES, FILTER, SORT
 
 try:
     from sqlalchemy.sql.schema import Table
+    from sqlalchemy import desc
     from databases.core import Database
 except ImportError:
     databases_installed = False
@@ -79,8 +80,13 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
             sort_: SORT = self.sort,
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
-
             query = self.table.select().limit(limit).offset(skip)
+
+            if sort_:
+                field = getattr(self.table.c, sort_.get("sort", self._pk))
+                order = desc(field) if sort_.get("reverse", False) else field
+                query = query.order_by(order)
+
             for col, val in filter_.items():
                 query = query.where(self.table.c[col] == val)
 

@@ -53,6 +53,8 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
             skip = cast(int, skip)
 
             models = self._get_filtered_list(self.models, filter_)
+            models = self._get_sorted_list(models, sort_)
+
             return models[skip:] if limit is None else models[skip : skip + limit]
 
         return route
@@ -70,7 +72,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
     def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(model: self.create_schema) -> SCHEMA:  # type: ignore
             model_dict = model.dict()
-            model_dict["id"] = self._get_next_id()
+            model_dict[self._pk] = self._get_next_id()
             ready_model = self.schema(**model_dict)
             self.models.append(ready_model)
             return ready_model
@@ -113,6 +115,17 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         self._id += 1
 
         return id_
+
+    def _get_sorted_list(self, models: List[SCHEMA], sort_: SORT) -> List[SCHEMA]:
+        if not sort_:
+            return models
+
+        field = sort_.get("sort", self._pk)
+        models.sort(
+            reverse=bool(sort_.get("reverse", False)), key=lambda x: getattr(x, field)  # type: ignore
+        )
+
+        return models
 
     @staticmethod
     def _get_filtered_list(models: List[SCHEMA], filters_: FILTER) -> List[SCHEMA]:

@@ -66,6 +66,12 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
             query = self.db_model.filter(**filter_).offset(cast(int, skip))
             if limit:
                 query = query.limit(limit)
+
+            if sort_:
+                field = sort_.get("sort", self._pk)
+                order = "-" + field if sort_.get("reverse", False) else field
+                query = query.order_by(order)
+
             return await query
 
         return route
