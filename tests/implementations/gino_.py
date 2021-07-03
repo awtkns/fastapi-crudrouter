@@ -12,10 +12,11 @@ from tests import (
     CustomPotato,
     Potato,
     PotatoType,
+    config
 )
 
-GINO_DATABASE_URL = "asyncpg://postgres:postgres@127.0.0.1/testdb"
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@127.0.0.1/testdb"
+
+GINO_DATABASE_URL = config.POSTGRES_URI.replace("postgresql", "asyncpg")
 
 
 async def migrate(db):
@@ -24,10 +25,10 @@ async def migrate(db):
 
 
 def _setup_base_app():
-    if database_exists(SQLALCHEMY_DATABASE_URL):
-        drop_database(SQLALCHEMY_DATABASE_URL)
+    if database_exists(config.POSTGRES_URI):
+        drop_database(config.POSTGRES_URI)
 
-    create_database(SQLALCHEMY_DATABASE_URL)
+    create_database(config.POSTGRES_URI)
 
     app = FastAPI()
     db = Gino(dsn=GINO_DATABASE_URL)
