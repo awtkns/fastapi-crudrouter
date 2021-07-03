@@ -8,11 +8,19 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [ 3.6, 3.7, 3.8, 3.9 ]
+    env:
+      POSTGRES_HOST: db
+      POSTGRES_DB: test
+      postgres_USER: postgress
+      POSTGRES_PASSWORD: password
+
+    services:
+      postgres:
+        image: postgres
 
     steps:
     - uses: actions/checkout@v2
