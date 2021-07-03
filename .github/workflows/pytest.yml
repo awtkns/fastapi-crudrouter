@@ -16,10 +16,6 @@ jobs:
     services:
       postgres:
         image: postgres
-        env:
-          POSTGRES_DB: test
-          postgres_USER: postgres
-          POSTGRES_PASSWORD: password
         ports:
           - 5432:5432
         options:
@@ -39,7 +35,5 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r tests/dev.requirements.txt
     - name: Test with pytest
-      env:
-        POSTGRES_HOST: postgres
       run: |
         pytest
