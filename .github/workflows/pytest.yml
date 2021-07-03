@@ -12,17 +12,21 @@ jobs:
     strategy:
       matrix:
         python-version: [ 3.6, 3.7, 3.8, 3.9 ]
-    env:
-      POSTGRES_HOST: db
-      POSTGRES_DB: test
-      postgres_USER: postgres
-      POSTGRES_PASSWORD: password
 
     services:
-      db:
+      postgres:
         image: postgres
+        env:
+          POSTGRES_DB: test
+          postgres_USER: postgres
+          POSTGRES_PASSWORD: password
         ports:
           - 5432:5432
+        options:
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     steps:
     - uses: actions/checkout@v2
@@ -35,5 +39,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r tests/dev.requirements.txt
     - name: Test with pytest
+      env:
+        POSTGRES_HOST: postgres
       run: |
         pytest
