@@ -15,12 +15,14 @@ jobs:
     env:
       POSTGRES_HOST: db
       POSTGRES_DB: test
-      postgres_USER: postgress
+      postgres_USER: postgres
       POSTGRES_PASSWORD: password
 
     services:
-      postgres:
+      db:
         image: postgres
+        ports:
+          - 5432:5432
 
     steps:
     - uses: actions/checkout@v2
