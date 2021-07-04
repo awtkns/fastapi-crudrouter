@@ -66,7 +66,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
 
         self._INTEGRITY_ERROR = self._get_integrity_error_type()
 
-    def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:  # type: ignore
+    def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route(
             pagination: PAGINATION = self.pagination,
         ) -> List[Optional[Model]]:
@@ -74,7 +74,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             query = self.schema.objects.offset(cast(int, skip))
             if limit:
                 query = query.limit(limit)
-            return await query.all()
+            return await query.all()  # type: ignore
 
         return route
 
