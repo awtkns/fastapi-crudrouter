@@ -31,4 +31,4 @@ flake8-functions
 flake8-expression-complexity
 
 # Typing
-mypy=0.910
+mypy==0.910
