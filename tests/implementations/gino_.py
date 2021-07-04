@@ -12,7 +12,7 @@ from tests import (
     CustomPotato,
     Potato,
     PotatoType,
-    config
+    config,
 )
 
 
