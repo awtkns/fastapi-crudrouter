@@ -16,6 +16,7 @@ jobs:
       POSTGRES_DB: test
       postgres_USER: postgres
       POSTGRES_PASSWORD: password
+      POSTGRES_HOST: postgres
 
     services:
       postgres:
