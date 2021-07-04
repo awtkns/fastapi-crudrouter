@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,7 +22,8 @@ jobs:
       postgres:
         image: postgres
         ports:
-          - 5432:5432
+          - 5432/tcp
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
     - uses: actions/checkout@v2
@@ -35,6 +36,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r tests/dev.requirements.txt
     - name: Test with pytest
-
+      env:
+         POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
       run: |
         pytest
