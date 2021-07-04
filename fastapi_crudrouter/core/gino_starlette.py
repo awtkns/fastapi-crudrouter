@@ -77,7 +77,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE_SINGLE:
+    def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(item_id: self._pk_type) -> Model:  # type: ignore
             model: Model = await self.db_model.get(item_id)
 
@@ -88,7 +88,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _create(self, *args: Any, **kwargs: Any) -> CALLABLE_SINGLE:
+    def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(
             model: self.create_schema,  # type: ignore
         ) -> Model:
@@ -101,7 +101,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _update(self, *args: Any, **kwargs: Any) -> CALLABLE_SINGLE:
+    def _update(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(
             item_id: self._pk_type,  # type: ignore
             model: self.update_schema,  # type: ignore
@@ -125,7 +125,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _delete_one(self, *args: Any, **kwargs: Any) -> CALLABLE_SINGLE:
+    def _delete_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(item_id: self._pk_type) -> Model:  # type: ignore
             db_model: Model = await self._get_one()(item_id)
             await db_model.delete()
