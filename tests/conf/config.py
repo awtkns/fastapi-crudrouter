@@ -7,7 +7,7 @@ assert ENV_FILE_PATH.exists()
 
 
 class BaseConfig:
-    POSTGRES_HOST = "localhost"
+    POSTGRES_HOST = "postgres"
     POSTGRES_USER = ""
     POSTGRES_PASSWORD = ""
     POSTGRES_DB = ""
@@ -16,6 +16,7 @@ class BaseConfig:
         self._apply_dot_env()
         self._apply_env_vars()
         self.POSTGRES_URI = f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}/{self.POSTGRES_DB}"
+        print(self.POSTGRES_URI)
 
     def _apply_dot_env(self):
         with open(ENV_FILE_PATH) as fp:
