@@ -18,7 +18,7 @@ except ImportError:
 else:
     gino_installed = True
 
-CALLABLE_SINGLE = Callable[..., Coroutine[Any, Any, Model]]
+CALLABLE = Callable[..., Coroutine[Any, Any, Model]]
 CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List[Model]]]
 
 

@@ -66,7 +66,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
 
         self._INTEGRITY_ERROR = self._get_integrity_error_type()
 
-    def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
+    def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:  # type: ignore
         async def route(
             pagination: PAGINATION = self.pagination,
         ) -> List[Optional[Model]]:
