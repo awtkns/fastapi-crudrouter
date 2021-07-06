@@ -12,9 +12,10 @@ def test_virtualenv(virtualenv):
 
 if __name__ == "__main__":
     from fastapi_crudrouter import (
-        SQLAlchemyCRUDRouter,
         DatabasesCRUDRouter,
+        GinoCRUDRouter,
         OrmarCRUDRouter,
+        SQLAlchemyCRUDRouter,
         TortoiseCRUDRouter,
     )
 
@@ -23,6 +24,7 @@ if __name__ == "__main__":
         DatabasesCRUDRouter,
         OrmarCRUDRouter,
         TortoiseCRUDRouter,
+        GinoCRUDRouter,
     ]
 
     for crud_router in routers:

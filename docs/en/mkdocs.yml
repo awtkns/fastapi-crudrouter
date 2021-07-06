@@ -32,6 +32,7 @@ nav:
       - In Memory: backends/memory.md
       - SQLAlchemy: backends/sqlalchemy.md
       - Databases (async): backends/async.md
+      - Gino (async): backends/gino.md
       - Ormar (async): backends/ormar.md
       - Tortoise (async): backends/tortoise.md
   - Routing: routing.md
