@@ -7,9 +7,8 @@ from ._types import DEPENDENCIES, PAGINATION
 from ._types import PYDANTIC_SCHEMA as SCHEMA
 
 try:
-    import asyncpg
+    from asyncpg.exceptions import UniqueViolationError
     from gino import Gino
-
     from sqlalchemy.exc import IntegrityError
     from sqlalchemy.ext.declarative import DeclarativeMeta as Model
 except ImportError:
@@ -96,7 +95,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
                 async with self.db.transaction():
                     db_model: Model = await self.db_model.create(**model.dict())
                     return db_model
-            except (IntegrityError, asyncpg.exceptions.UniqueViolationError):
+            except (IntegrityError, UniqueViolationError):
                 raise HTTPException(422, "Key already exists")
 
         return route
@@ -113,7 +112,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
                     await db_model.update(**model).apply()
 
                 return db_model
-            except (IntegrityError, asyncpg.exceptions.UniqueViolationError) as e:
+            except (IntegrityError, UniqueViolationError) as e:
                 raise HTTPException(422, ", ".join(e.args))
 
         return route
