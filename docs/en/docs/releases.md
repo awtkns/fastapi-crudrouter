@@ -1,9 +1,33 @@
 
+## [v0.8.0 - Gino Backend](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.8.0) { .releases } 
+2021-07-06
+### 🎉 Highlights
+With the release of v0.6.0  fastapi-crudrouter **now supports [Gino](https://github.com/python-gino/gino)** as an async backend! When generating routes, GinoCRUDRouter will automatically tie into your database using your Gino models. To use it, simply pass your Gino database model, a database reference, and your pydantic.
+
+```python
+GinoCRUDRouter(
+    schema=MyPydanticModel,
+    db_model=MyModel, 
+    db=db
+)
+```
+
+Check out the [docs](https://fastapi-crudrouter.awtkns.com/backends/gino.html) for more details on how to use the GinoCRUDRouter.
+
+### ✨ Features
+- Full Gino Support @Turall #78 
+- Documentation improvements #69 #75 
+
+### 🐛 Bug Fixes
+- All Path Prefixes are now correctly lowercase #64 #65  
+
+
+---
+
 ## [v0.7.0 - Advanced Dependencies ](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.7.0) { .releases } 
 2021-04-18
 ### 🎉 Highlights
-With the release of v0.7.0 fastapi-crudrouter now provides the ability to set custom dependencies one a per-route basis; 
-a much requested feature. Prior to this release, it was only possible to set dependencies for all the routes at once.
+With the release of v0.7.0 fastapi-crudrouter now provides the ability to set custom dependencies on a per route basis; a much requested feature. Prior to this release, it was only possible to set dependencies for all the routes at once. 
 
 ```python
 MemoryCRUDRouter(
@@ -13,8 +37,7 @@ MemoryCRUDRouter(
 )
 ```
 
-Shown above is a brief example on how limiting each route to specific access rights would work using this new feature. 
-Check out the [docs](https://fastapi-crudrouter.awtkns.com/dependencies/) for more details.
+Shown above is a brief example on how limiting each route to specific access rights would work using this new feature. Check out the [docs](https://fastapi-crudrouter.awtkns.com/dependencies/) for more details.
 
 ### ✨ Features
 - Custom Dependencies Per Route #37 #59 #60 @DorskFR @jm-moreau 
