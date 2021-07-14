@@ -5,7 +5,7 @@ of how to use [Gino](https://python-gino.org/) with FastAPI can be found both
 [here](https://python-gino.org/docs/en/1.0/tutorials/fastapi.html) and below.
 
 !!! warning
-    To use the `GinoCRUDRouter`, Databases **and** SQLAlchemy must be first installed.
+    To use the `GinoCRUDRouter`, Gino **and** SQLAlchemy must be first installed.
 
 ## Minimal Example
 Below is a minimal example assuming that you have already imported and created 

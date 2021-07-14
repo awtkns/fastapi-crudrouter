@@ -75,6 +75,7 @@ likely grow in future releases.
 - SQLAlchemy ([docs](https://fastapi-crudrouter.awtkns.com/backends/sqlalchemy/))
 - Databases (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/async/))
 - Ormar (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/ormar/))
+- Gino (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/gino/)) 
 - Tortoise ORM  (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/tortoise/))
 
 ## OpenAPI Support
