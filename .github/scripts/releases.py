@@ -37,16 +37,14 @@ def commit_update(content: str):
     else:
         print("Uploading new release documentation")
 
-    repo.update_file(
-        file.path, message=COMMIT_MESSAGE, content=content, sha=file.sha
-    )
+    repo.update_file(file.path, message=COMMIT_MESSAGE, content=content, sha=file.sha)
 
 
 def insert_links(content: str):
-    """ Replaces both #pull and @author with correct links"""
+    """Replaces both #pull and @author with correct links"""
     url = repo.html_url + "/pull"
-    content = re.sub(r'#(\d+)', rf"[#\1]({url}/\1)", content)
-    return re.sub(r'@(\S+)', rf"[@\1]({GITHUB_URL}/\1)", content)
+    content = re.sub(r"#(\d+)", rf"[#\1]({url}/\1)", content)
+    return re.sub(r"@(\S+)", rf"[@\1]({GITHUB_URL}/\1)", content)
 
 
 if __name__ == "__main__":
