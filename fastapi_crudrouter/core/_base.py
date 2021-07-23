@@ -49,7 +49,7 @@ class CRUDGenerator(Generic[T], APIRouter):
         prefix = str(prefix if prefix else self.schema.__name__).lower()
         prefix = self._base_path + prefix.strip("/")
         tags = tags or [prefix.strip("/").capitalize()]
-
+        self.response_model = kwargs.pop("response_model", None)
         super().__init__(prefix=prefix, tags=tags, **kwargs)
 
         if get_all_route:
@@ -57,7 +57,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 "",
                 self._get_all(),
                 methods=["GET"],
-                response_model=Optional[List[self.schema]],  # type: ignore
+                response_model=self.response_model or Optional[List[self.schema]],  # type: ignore
                 summary="Get All",
                 dependencies=get_all_route,
             )
@@ -67,7 +67,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 "",
                 self._create(),
                 methods=["POST"],
-                response_model=self.schema,
+                response_model=self.response_model or self.schema,
                 summary="Create One",
                 dependencies=create_route,
             )
@@ -77,7 +77,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 "",
                 self._delete_all(),
                 methods=["DELETE"],
-                response_model=Optional[List[self.schema]],  # type: ignore
+                response_model=self.response_model or Optional[List[self.schema]],  # type: ignore
                 summary="Delete All",
                 dependencies=delete_all_route,
             )
@@ -87,7 +87,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 "/{item_id}",
                 self._get_one(),
                 methods=["GET"],
-                response_model=self.schema,
+                response_model=self.response_model or self.schema,
                 summary="Get One",
                 dependencies=get_one_route,
             )
@@ -97,7 +97,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 "/{item_id}",
                 self._update(),
                 methods=["PUT"],
-                response_model=self.schema,
+                response_model=self.response_model or self.schema,
                 summary="Update One",
                 dependencies=update_route,
             )
@@ -107,7 +107,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 "/{item_id}",
                 self._delete_one(),
                 methods=["DELETE"],
-                response_model=self.schema,
+                response_model=self.response_model or self.schema,
                 summary="Delete One",
                 dependencies=delete_one_route,
             )
