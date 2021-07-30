@@ -1,0 +1,10 @@
+version: "3.9"
+
+services:
+    db:
+      image: postgres
+      restart: always
+      env_file:
+        - dev.env
+      ports:
+        - 5432:5432

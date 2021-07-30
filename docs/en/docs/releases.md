@@ -1,9 +1,33 @@
 
+## [v0.8.0 - Gino Backend](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.8.0) { .releases } 
+2021-07-06
+### 🎉 Highlights
+With the release of v0.6.0  fastapi-crudrouter **now supports [Gino](https://github.com/python-gino/gino)** as an async backend! When generating routes, GinoCRUDRouter will automatically tie into your database using your Gino models. To use it, simply pass your Gino database model, a database reference, and your pydantic.
+
+```python
+GinoCRUDRouter(
+    schema=MyPydanticModel,
+    db_model=MyModel, 
+    db=db
+)
+```
+
+Check out the [docs](https://fastapi-crudrouter.awtkns.com/backends/gino.html) for more details on how to use the GinoCRUDRouter.
+
+### ✨ Features
+- Full Gino Support [@Turall](https://github.com/Turall) [#78](https://github.com/awtkns/fastapi-crudrouter/pull/78) 
+- Documentation improvements [#69](https://github.com/awtkns/fastapi-crudrouter/pull/69) [#75](https://github.com/awtkns/fastapi-crudrouter/pull/75) 
+
+### 🐛 Bug Fixes
+- All Path Prefixes are now correctly lowercase [#64](https://github.com/awtkns/fastapi-crudrouter/pull/64) [#65](https://github.com/awtkns/fastapi-crudrouter/pull/65)  
+
+
+---
+
 ## [v0.7.0 - Advanced Dependencies ](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.7.0) { .releases } 
 2021-04-18
 ### 🎉 Highlights
-With the release of v0.7.0 fastapi-crudrouter now provides the ability to set custom dependencies one a per-route basis; 
-a much requested feature. Prior to this release, it was only possible to set dependencies for all the routes at once.
+With the release of v0.7.0 fastapi-crudrouter now provides the ability to set custom dependencies on a per route basis; a much requested feature. Prior to this release, it was only possible to set dependencies for all the routes at once. 
 
 ```python
 MemoryCRUDRouter(
@@ -13,13 +37,12 @@ MemoryCRUDRouter(
 )
 ```
 
-Shown above is a brief example on how limiting each route to specific access rights would work using this new feature. 
-Check out the [docs](https://fastapi-crudrouter.awtkns.com/dependencies/) for more details.
+Shown above is a brief example on how limiting each route to specific access rights would work using this new feature. Check out the [docs](https://fastapi-crudrouter.awtkns.com/dependencies/) for more details.
 
 ### ✨ Features
-- Custom Dependencies Per Route #37 #59 #60 @DorskFR @jm-moreau 
-- Ability to Provide a List of Custom Tags for OpenAPI #57 @jm-moreau 
-- Improved Documentation #52 
+- Custom Dependencies Per Route [#37](https://github.com/awtkns/fastapi-crudrouter/pull/37) [#59](https://github.com/awtkns/fastapi-crudrouter/pull/59) [#60](https://github.com/awtkns/fastapi-crudrouter/pull/60) [@DorskFR](https://github.com/DorskFR) [@jm-moreau](https://github.com/jm-moreau) 
+- Ability to Provide a List of Custom Tags for OpenAPI [#57](https://github.com/awtkns/fastapi-crudrouter/pull/57) [@jm-moreau](https://github.com/jm-moreau) 
+- Improved Documentation [#52](https://github.com/awtkns/fastapi-crudrouter/pull/52) 
 - Dark Mode for Documentation
 
 ---
@@ -39,14 +62,14 @@ OrmarCRUDRouter(
 Check out the [docs](https://fastapi-crudrouter.awtkns.com/backends/ormar/) for more details on how to use the `OrmarCRUDRouter`.
 
 ### ✨ Features
-- Full Ormar Support @collerek #46
-- Better handling of database errors in the update route @sorXCode #48 
-- Improved typing #46 #43
-- Black, Flake8 and Mypy linting #46 
-- Additional Tests for nested models #40 
+- Full Ormar Support [@collerek](https://github.com/collerek) [#46](https://github.com/awtkns/fastapi-crudrouter/pull/46)
+- Better handling of database errors in the update route [@sorXCode](https://github.com/sorXCode) [#48](https://github.com/awtkns/fastapi-crudrouter/pull/48) 
+- Improved typing [#46](https://github.com/awtkns/fastapi-crudrouter/pull/46) [#43](https://github.com/awtkns/fastapi-crudrouter/pull/43)
+- Black, Flake8 and Mypy linting [#46](https://github.com/awtkns/fastapi-crudrouter/pull/46) 
+- Additional Tests for nested models [#40](https://github.com/awtkns/fastapi-crudrouter/pull/40) 
 
 ### 🐛 Bug Fixes
-- Pagination issues when max limit was set to null @ethanhaid #42 
+- Pagination issues when max limit was set to null [@ethanhaid](https://github.com/ethanhaid) [#42](https://github.com/awtkns/fastapi-crudrouter/pull/42) 
 
 ---
 
@@ -65,25 +88,25 @@ CRUDRouter(
 Check out the [docs](https://fastapi-crudrouter.awtkns.com/pagination/) on pagination for more information!
 
 ### ✨ Features
-- Pagination Support #34 
-- Ability to set custom update schemas @andreipopovici #31 #27 
-- Better documentation of past releases #36
+- Pagination Support [#34](https://github.com/awtkns/fastapi-crudrouter/pull/34) 
+- Ability to set custom update schemas [@andreipopovici](https://github.com/andreipopovici) [#31](https://github.com/awtkns/fastapi-crudrouter/pull/31) [#27](https://github.com/awtkns/fastapi-crudrouter/pull/27) 
+- Better documentation of past releases [#36](https://github.com/awtkns/fastapi-crudrouter/pull/36)
 
 ### 🐛 Bug Fixes
-- Prefixing not available for versions of fastapi below v0.62.0 #29 #30 
-- Fixed an Import Issue SQLAlchemy and Integrity Errors @andreipopovici  #33
+- Prefixing not available for versions of fastapi below v0.62.0 [#29](https://github.com/awtkns/fastapi-crudrouter/pull/29) [#30](https://github.com/awtkns/fastapi-crudrouter/pull/30) 
+- Fixed an Import Issue SQLAlchemy and Integrity Errors [@andreipopovici](https://github.com/andreipopovici)  [#33](https://github.com/awtkns/fastapi-crudrouter/pull/33)
 
 ---
 
 ## [v0.4.0 - Tortoise ORM Support](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.4.0) { .releases } 
 2021-02-02
 ### ✨Features
-- Full support for tortoise-orm #24
-- Dynamic pk/id types for get_one, delete_one, and update_one routes #26
+- Full support for tortoise-orm [#24](https://github.com/awtkns/fastapi-crudrouter/pull/24)
+- Dynamic pk/id types for get_one, delete_one, and update_one routes [#26](https://github.com/awtkns/fastapi-crudrouter/pull/26)
 
 ### 🐛 Bug Fixes  
-- Fixed the summary  for the delete one route #16 
-- Fixed import errors when certain packages are not installed #21 
+- Fixed the summary  for the delete one route [#16](https://github.com/awtkns/fastapi-crudrouter/pull/16) 
+- Fixed import errors when certain packages are not installed [#21](https://github.com/awtkns/fastapi-crudrouter/pull/21) 
 - Improved SQLA type hinting 
 
 ---

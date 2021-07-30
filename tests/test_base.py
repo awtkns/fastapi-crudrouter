@@ -1,8 +1,13 @@
 import pytest
 from fastapi import APIRouter, FastAPI
-
-from fastapi_crudrouter import MemoryCRUDRouter, SQLAlchemyCRUDRouter, OrmarCRUDRouter
+from fastapi_crudrouter import (
+    GinoCRUDRouter,
+    MemoryCRUDRouter,
+    OrmarCRUDRouter,
+    SQLAlchemyCRUDRouter,
+)
 from fastapi_crudrouter.core._base import CRUDGenerator
+
 from tests import Potato
 
 
@@ -11,6 +16,7 @@ def test_router_type():
     assert issubclass(SQLAlchemyCRUDRouter, APIRouter)
     assert issubclass(MemoryCRUDRouter, APIRouter)
     assert issubclass(OrmarCRUDRouter, APIRouter)
+    assert issubclass(GinoCRUDRouter, APIRouter)
 
 
 def test_get_one():

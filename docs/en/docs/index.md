@@ -23,7 +23,7 @@ or a hackathon? Thankfully, [fastapi-crudrouter](https://github.com/awtkns/fasta
 extension to the APIRouter included with [FastAPI](https://fastapi.tiangolo.com/), the FastAPI CRUDRouter will automatically
 generate and document your CRUD routes for you, all you have to do is pass your model and maybe your database connection.
 
-FastAPI-CRUDRouter is also **lighting fast**, well tested, and production ready.
+FastAPI-CRUDRouter is also **lightning fast**, well tested, and production ready.
 
 ## Installation
 
@@ -75,6 +75,7 @@ likely grow in future releases.
 - SQLAlchemy ([docs](https://fastapi-crudrouter.awtkns.com/backends/sqlalchemy/))
 - Databases (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/async/))
 - Ormar (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/ormar/))
+- Gino (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/gino/)) 
 - Tortoise ORM  (async) ([docs](https://fastapi-crudrouter.awtkns.com/backends/tortoise/))
 
 ## OpenAPI Support
