@@ -32,8 +32,14 @@ implementations = [
 ]
 
 try:
-    from .tortoise_ import tortoise_implementation
+    from .tortoise_ import (
+        tortoise_implementation,
+        tortoise_implementation_no_init,
+        tortoise_implementation_init,
+    )
 except ImportError:
     pass
 else:
     implementations.append(tortoise_implementation)
+    implementations.append(tortoise_implementation_no_init)
+    implementations.append(tortoise_implementation_init)

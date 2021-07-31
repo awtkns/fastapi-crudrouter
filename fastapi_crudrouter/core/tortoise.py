@@ -1,26 +1,32 @@
 from typing import Any, Callable, List, Type, cast, Coroutine, Optional, Union
 
 from . import CRUDGenerator, NOT_FOUND
-from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA
 
 try:
     from tortoise.models import Model
+    from tortoise.contrib.pydantic.base import PydanticModel as TORTOISE_SCHEMA
 except ImportError:
-    Model: Any = None  # type: ignore
     tortoise_installed = False
+
+    class TORTOISE_SCHEMA(PYDANTIC_SCHEMA):
+        pass
+
+
 else:
     tortoise_installed = True
 
+SCHEMA = Union["TORTOISE_SCHEMA", "PYDANTIC_SCHEMA"]
 
-CALLABLE = Callable[..., Coroutine[Any, Any, Model]]
-CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List[Model]]]
+CALLABLE = Callable[..., Coroutine[Any, Any, "Model"]]
+CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List["Model"]]]
 
 
 class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
     def __init__(
         self,
         schema: Type[SCHEMA],
-        db_model: Type[Model],
+        db_model: Type["Model"],
         create_schema: Optional[Type[SCHEMA]] = None,
         update_schema: Optional[Type[SCHEMA]] = None,
         prefix: Optional[str] = None,
@@ -58,39 +64,72 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         )
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
-        async def route(pagination: PAGINATION = self.pagination) -> List[Model]:
-            skip, limit = pagination.get("skip"), pagination.get("limit")
-            query = self.db_model.all().offset(cast(int, skip))
-            if limit:
-                query = query.limit(limit)
-            return await query
+        if issubclass(self.schema, TORTOISE_SCHEMA):
+
+            async def route(
+                pagination: PAGINATION = self.pagination,
+            ) -> List[self.schema]:
+                skip, limit = pagination.get("skip"), pagination.get("limit")
+                query = self.db_model.all().offset(cast(int, skip))
+                if limit:
+                    query = query.limit(limit)
+                return await self.schema.from_queryset(query)
+
+        else:
+
+            async def route(pagination: PAGINATION = self.pagination) -> List["Model"]:
+                skip, limit = pagination.get("skip"), pagination.get("limit")
+                query = self.db_model.all().offset(cast(int, skip))
+                if limit:
+                    query = query.limit(limit)
+                return await query
 
         return route
 
     def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
-        async def route(item_id: int) -> Model:
-            model = await self.db_model.filter(id=item_id).first()
+        if issubclass(self.schema, TORTOISE_SCHEMA):
 
-            if model:
+            async def route(item_id: int) -> self.schema:
+                model = await self.db_model.filter(id=item_id).first()
+
+                if not model:
+                    raise NOT_FOUND
+
+                return await self.schema.from_tortoise_orm(model)
+
+        else:
+
+            async def route(item_id: int) -> "Model":
+                model = await self.db_model.filter(id=item_id).first()
+
+                if not model:
+                    raise NOT_FOUND
+
                 return model
-            else:
-                raise NOT_FOUND
 
         return route
 
     def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
-        async def route(model: self.create_schema) -> Model:  # type: ignore
-            db_model = self.db_model(**model.dict())
-            await db_model.save()
+        if issubclass(self.schema, TORTOISE_SCHEMA):
 
-            return db_model
+            async def route(model: self.create_schema) -> self.schema:  # type: ignore
+                db_model = self.db_model(**model.dict())
+                await db_model.save()
+                return await self.schema.from_tortoise_orm(db_model)
+
+        else:
+
+            async def route(model: self.create_schema) -> "Model":  # type: ignore
+                db_model = self.db_model(**model.dict())
+                await db_model.save()
+                return db_model
 
         return route
 
     def _update(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(
             item_id: int, model: self.update_schema  # type: ignore
-        ) -> Model:
+        ) -> Union["Model", self.schema]:
             await self.db_model.filter(id=item_id).update(
                 **model.dict(exclude_unset=True)
             )
@@ -99,15 +138,15 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         return route
 
     def _delete_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
-        async def route() -> List[Model]:
+        async def route() -> List[self.schema]:
             await self.db_model.all().delete()
             return await self._get_all()(pagination={"skip": 0, "limit": None})
 
         return route
 
     def _delete_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
-        async def route(item_id: int) -> Model:
-            model: Model = await self._get_one()(item_id)
+        async def route(item_id: int) -> self.schema:
+            model: "Model" = await self._get_one()(item_id)
             await self.db_model.filter(id=item_id).delete()
 
             return model
