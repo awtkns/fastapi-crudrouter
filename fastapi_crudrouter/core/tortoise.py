@@ -63,7 +63,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
             query = self.db_model.all().offset(cast(int, skip))
             if limit:
                 query = query.limit(limit)
-            return await query
+            return await self.schema.from_queryset(query)
 
         return route
 
@@ -72,7 +72,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
             model = await self.db_model.filter(id=item_id).first()
 
             if model:
-                return model
+                return await self.schema.from_tortoise_orm(model)
             else:
                 raise NOT_FOUND
 
@@ -83,7 +83,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
             db_model = self.db_model(**model.dict())
             await db_model.save()
 
-            return db_model
+            return await self.schema.from_tortoise_orm(db_model)
 
         return route
 
