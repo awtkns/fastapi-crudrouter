@@ -15,13 +15,13 @@ from tests import (
     Potato,
     PotatoType,
     CUSTOM_TAGS,
-    config
+    config,
 )
 
 DSN_LIST = [
     "sqlite:///./test.db?check_same_thread=false",
     # config.MSSQL_URI,
-    config.POSTGRES_URI
+    config.POSTGRES_URI,
 ]
 
 

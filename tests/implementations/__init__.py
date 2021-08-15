@@ -21,14 +21,14 @@ from .sqlalchemy_ import (
     sqlalchemy_implementation_custom_ids,
     sqlalchemy_implementation_integrity_errors,
     sqlalchemy_implementation_string_pk,
-    DSN_LIST
+    DSN_LIST,
 )
 
 implementations = [
-    (memory_implementation, ''),
-    (databases_implementation, ''),
-    (ormar_implementation, ''),
-    (gino_implementation, ''),
+    (memory_implementation, ""),
+    (databases_implementation, ""),
+    (ormar_implementation, ""),
+    (gino_implementation, ""),
 ]
 
 implementations.extend([(sqlalchemy_implementation, dsn) for dsn in DSN_LIST])
