@@ -41,7 +41,7 @@ async def on_shutdown():
     await Tortoise.close_connections()
 
 
-def tortoise_implementation():
+def tortoise_implementation(**kwargs):
     [
         os.remove(f"./db.sqlite3{s}")
         for s in ["", "-wal", "-shm"]

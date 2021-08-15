@@ -19,11 +19,17 @@ def yield_test_client(app, impl):
             yield c
 
 
-@pytest.fixture(params=implementations, scope="class")
-def client(request):
-    impl = request.param
+def label_func(*args):
+    func, dsn = args[0]
+    dsn = dsn.split(":")[0].split("+")[0]
+    return f"{func.__name__}-{dsn}"
 
-    app, router, settings = impl()
+
+@pytest.fixture(params=implementations, ids=label_func, scope="class")
+def client(request):
+    impl, dsn = request.param
+
+    app, router, settings = impl(db_uri=dsn)
     [app.include_router(router(**kwargs)) for kwargs in settings]
     yield from yield_test_client(app, impl)
 

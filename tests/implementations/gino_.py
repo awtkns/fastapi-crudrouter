@@ -36,7 +36,7 @@ def _setup_base_app():
     return db, app
 
 
-def gino_implementation():
+def gino_implementation(**kwargs):
     db, app = _setup_base_app()
 
     class PotatoModel(db.Model):

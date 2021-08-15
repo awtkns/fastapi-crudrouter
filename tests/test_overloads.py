@@ -18,9 +18,9 @@ DELETE_ALL = "Overloaded Delete All"
 
 @pytest.fixture(params=implementations, scope="class")
 def overloaded_client(request):
-    impl = request.param
+    impl, dsn = request.param
 
-    app, router, settings = impl()
+    app, router, settings = impl(db_uri=dsn)
     routers = [router(**s) for s in settings]
 
     for r in routers:

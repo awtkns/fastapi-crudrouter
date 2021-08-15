@@ -12,7 +12,7 @@ AUTH = {"Authorization": "Bearer my_token"}
 
 @pytest.fixture(params=implementations, scope="class")
 def client(request):
-    impl = request.param
+    impl, dsn = request.param
 
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
@@ -20,7 +20,7 @@ def client(request):
         if not token:
             raise HTTPException(401, "Invalid token")
 
-    app, router, settings = impl()
+    app, router, settings = impl(db_uri=dsn)
     [
         app.include_router(router(**s, dependencies=[Depends(token_auth)]))
         for s in settings
