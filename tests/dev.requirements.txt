@@ -17,6 +17,7 @@ pytest-virtualenv
 requests
 asynctest
 psycopg2
+pyodbc
 
 # Linting
 flake8

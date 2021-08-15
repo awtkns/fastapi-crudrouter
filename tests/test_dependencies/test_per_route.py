@@ -36,9 +36,9 @@ DEPENDS_KWARGS = dict(
 
 @pytest.fixture(params=implementations)
 def client(request):
-    impl = request.param
+    impl, dsn = request.param
 
-    app, router, settings = impl()
+    app, router, settings = impl(db_uri=dsn)
     [app.include_router(router(**s, **DEPENDS_KWARGS)) for s in settings]
 
     yield from yield_test_client(app, impl)

@@ -4,7 +4,7 @@ from fastapi_crudrouter import MemoryCRUDRouter
 from tests import Potato, Carrot, CarrotUpdate, PAGINATION_SIZE, CUSTOM_TAGS
 
 
-def memory_implementation():
+def memory_implementation(**kwargs):
     app = FastAPI()
     router_settings = [
         dict(schema=Potato, paginate=PAGINATION_SIZE),

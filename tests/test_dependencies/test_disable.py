@@ -16,9 +16,9 @@ DISABLE_KWARGS = {k: False for k in KEY_WORDS}
 
 @pytest.fixture(params=implementations, scope="class")
 def client(request):
-    impl = request.param
+    impl, dsn = request.param
 
-    app, router, settings = impl()
+    app, router, settings = impl(db_uri=dsn)
     [app.include_router(router(**s, **DISABLE_KWARGS)) for s in settings]
 
     yield from yield_test_client(app, impl)

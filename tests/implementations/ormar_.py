@@ -105,7 +105,7 @@ def get_app():
     return app
 
 
-def ormar_implementation():
+def ormar_implementation(**kwargs):
     app = get_app()
 
     router_settings = [

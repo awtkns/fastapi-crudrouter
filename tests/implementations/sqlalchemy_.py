@@ -15,22 +15,25 @@ from tests import (
     Potato,
     PotatoType,
     CUSTOM_TAGS,
+    config
 )
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+DSN_LIST = [
+    "sqlite:///./test.db?check_same_thread=false",
+    # config.MSSQL_URI,
+    config.POSTGRES_URI
+]
 
 
-def _setup_base_app():
-    if database_exists(SQLALCHEMY_DATABASE_URL):
-        drop_database(SQLALCHEMY_DATABASE_URL)
+def _setup_base_app(db_uri: str = DSN_LIST[0]):
+    if database_exists(db_uri):
+        drop_database(db_uri)
 
-    create_database(SQLALCHEMY_DATABASE_URL)
+    create_database(db_uri)
 
     app = FastAPI()
 
-    engine = create_engine(
-        SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
-    )
+    engine = create_engine(db_uri)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     Base = declarative_base()
 
@@ -45,8 +48,8 @@ def _setup_base_app():
     return app, engine, Base, session
 
 
-def sqlalchemy_implementation():
-    app, engine, Base, session = _setup_base_app()
+def sqlalchemy_implementation(db_uri: str):
+    app, engine, Base, session = _setup_base_app(db_uri)
 
     class PotatoModel(Base):
         __tablename__ = "potatoes"

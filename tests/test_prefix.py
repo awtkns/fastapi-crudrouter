@@ -5,9 +5,9 @@ from tests.implementations import implementations
 
 @pytest.fixture(params=implementations)
 def router(request):
-    impl = request.param
+    impl, dsn = request.param
 
-    app, router, settings = impl()
+    app, router, settings = impl(db_uri=dsn)
     kwargs = {**settings[0], **dict(prefix=None)}
     router = router(**kwargs)
 

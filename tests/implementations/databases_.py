@@ -29,7 +29,7 @@ def _setup_database():
     return engine, database
 
 
-def databases_implementation():
+def databases_implementation(**kwargs):
     engine, database = _setup_database()
 
     metadata = MetaData()
