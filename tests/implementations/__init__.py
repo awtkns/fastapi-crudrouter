@@ -1,3 +1,5 @@
+from tests.conf import datasource_factory
+
 from .databases_ import (
     databases_implementation,
     databases_implementation_custom_ids,
@@ -39,3 +41,5 @@ except ImportError:
     pass
 else:
     implementations.append((tortoise_implementation, ""))
+
+implementations = [(impl[0], datasource_factory.get_datasource(impl[1])) for impl in implementations]

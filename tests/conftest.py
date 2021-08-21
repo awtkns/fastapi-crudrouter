@@ -20,16 +20,16 @@ def yield_test_client(app, impl):
 
 
 def label_func(*args):
-    func, dsn = args[0]
-    dsn = dsn.split(":")[0].split("+")[0]
-    return f"{func.__name__}-{dsn}"
+    func, datasource = args[0]
+    return f"{func.__name__}-{datasource.name}"
 
 
 @pytest.fixture(params=implementations, ids=label_func, scope="class")
 def client(request):
-    impl, dsn = request.param
+    impl, datasource = request.param
 
-    app, router, settings = impl(db_uri=dsn)
+    datasource.clean()
+    app, router, settings = impl(db_uri=datasource.uri)
     [app.include_router(router(**kwargs)) for kwargs in settings]
     yield from yield_test_client(app, impl)
 

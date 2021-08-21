@@ -1,6 +1,9 @@
 import os
 import pathlib
 
+import pyodbc
+
+pyodbc.pooling = False
 
 ENV_FILE_PATH = pathlib.Path(__file__).parent / "dev.env"
 assert ENV_FILE_PATH.exists()

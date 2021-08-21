@@ -3,9 +3,11 @@ from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy_utils import create_database, database_exists, drop_database
+
+from sqlalchemy.pool import NullPool
 
 from fastapi_crudrouter import SQLAlchemyCRUDRouter
+from tests.conf import datasource_factory, Datasource, config
 from tests import (
     Carrot,
     CarrotCreate,
@@ -15,25 +17,19 @@ from tests import (
     Potato,
     PotatoType,
     CUSTOM_TAGS,
-    config,
 )
 
 DSN_LIST = [
     "sqlite:///./test.db?check_same_thread=false",
-    # config.MSSQL_URI,
+    config.MSSQL_URI,
     config.POSTGRES_URI,
 ]
 
 
-def _setup_base_app(db_uri: str = DSN_LIST[0]):
-    if database_exists(db_uri):
-        drop_database(db_uri)
-
-    create_database(db_uri)
-
+def _setup_base_app(uri: str):
     app = FastAPI()
 
-    engine = create_engine(db_uri)
+    engine = create_engine(uri, poolclass=NullPool)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     Base = declarative_base()
 
