@@ -70,7 +70,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
             db_models: List[Model] = (
                 db.query(self.db_model)
-                .order_by(self._pk)
+                .order_by(getattr(self.db_model, self._pk))
                 .limit(limit)
                 .offset(skip)
                 .all()
