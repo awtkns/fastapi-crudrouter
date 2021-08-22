@@ -1,58 +1,53 @@
+from typing import Type
+
 import pytest
+
+
 import inspect
 from fastapi.testclient import TestClient
 
 from .implementations import *
+from .implementations._base import BaseImpl, create_implementation
+
+from tests import config
 
 
 def yield_test_client(app, impl):
-    if impl.__name__ == "tortoise_implementation":
-        from tortoise.contrib.test import initializer, finalizer
-
-        initializer(["tests.implementations.tortoise_"])
-        with TestClient(app) as c:
-            yield c
-        finalizer()
-
-    else:
-        with TestClient(app) as c:
-            yield c
+    # if impl.__name__ == "tortoise_implementation":
+    #     from tortoise.contrib.test import initializer, finalizer
+    #
+    #     initializer(["tests.implementations.tortoise_"])
+    #     with TestClient(app) as c:
+    #         yield c
+    #     finalizer()
+    #
+    # else:
+    with TestClient(app) as c:
+        yield c
 
 
 def label_func(*args):
-    func, datasource = args[0]
-    return f"{func.__name__}-{datasource.name}"
+    impl = args[0]
+    return str(impl)
 
 
 @pytest.fixture(params=implementations, ids=label_func, scope="class")
 def client(request):
-    impl, datasource = request.param
+    impl: BaseImpl = request.param
 
-    datasource.clean()
-    app, router, settings = impl(db_uri=datasource.uri)
-    [app.include_router(router(**kwargs)) for kwargs in settings]
+    impl.datasource.clean()
+    app = create_implementation(impl)
+
     yield from yield_test_client(app, impl)
 
 
-@pytest.fixture(
-    params=[
-        sqlalchemy_implementation_custom_ids,
-        databases_implementation_custom_ids,
-        ormar_implementation_custom_ids,
-        gino_implementation_custom_ids,
-    ]
-)
+@pytest.fixture(params=[])
 def custom_id_client(request):
     yield from yield_test_client(request.param(), request.param)
 
 
 @pytest.fixture(
-    params=[
-        sqlalchemy_implementation_string_pk,
-        databases_implementation_string_pk,
-        ormar_implementation_string_pk,
-        gino_implementation_string_pk,
-    ],
+    params=[],
     scope="function",
 )
 def string_pk_client(request):
@@ -60,11 +55,7 @@ def string_pk_client(request):
 
 
 @pytest.fixture(
-    params=[
-        sqlalchemy_implementation_integrity_errors,
-        ormar_implementation_integrity_errors,
-        gino_implementation_integrity_errors,
-    ],
+    params=[],
     scope="function",
 )
 def integrity_errors_client(request):

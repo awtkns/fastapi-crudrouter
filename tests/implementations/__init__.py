@@ -1,45 +1,11 @@
 from tests.conf import datasource_factory
 
-from .databases_ import (
-    databases_implementation,
-    databases_implementation_custom_ids,
-    databases_implementation_string_pk,
-)
-from .gino_ import (
-    gino_implementation,
-    gino_implementation_custom_ids,
-    gino_implementation_integrity_errors,
-    gino_implementation_string_pk,
-)
-from .memory import memory_implementation
-from .ormar_ import (
-    ormar_implementation,
-    ormar_implementation_custom_ids,
-    ormar_implementation_integrity_errors,
-    ormar_implementation_string_pk,
-)
-from .sqlalchemy_ import (
-    sqlalchemy_implementation,
-    sqlalchemy_implementation_custom_ids,
-    sqlalchemy_implementation_integrity_errors,
-    sqlalchemy_implementation_string_pk,
-    DSN_LIST,
-)
+from .sqlalchemy_ import SqlAlchemyImpl
 
-implementations = [
-    (memory_implementation, ""),
-    (databases_implementation, ""),
-    (ormar_implementation, ""),
-    (gino_implementation, ""),
-]
+_implementations = [SqlAlchemyImpl]
 
-implementations.extend([(sqlalchemy_implementation, dsn) for dsn in DSN_LIST])
-
-try:
-    from .tortoise_ import tortoise_implementation
-except ImportError:
-    pass
-else:
-    implementations.append((tortoise_implementation, ""))
-
-implementations = [(impl[0], datasource_factory.get_datasource(impl[1])) for impl in implementations]
+implementations = []
+for impl_cls in _implementations:
+    for uri in impl_cls.supported_backends():
+        ds = datasource_factory.get_datasource(uri)
+        implementations.append(impl_cls(ds))

@@ -1,13 +1,11 @@
-from fastapi import FastAPI
+from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy import Column, Float, Integer, String
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
 from sqlalchemy.pool import NullPool
 
 from fastapi_crudrouter import SQLAlchemyCRUDRouter
-from tests.conf import datasource_factory, Datasource, config
 from tests import (
     Carrot,
     CarrotCreate,
@@ -18,149 +16,143 @@ from tests import (
     PotatoType,
     CUSTOM_TAGS,
 )
-
-DSN_LIST = [
-    "sqlite:///./test.db?check_same_thread=false",
-    config.MSSQL_URI,
-    config.POSTGRES_URI,
-]
+from tests.conf import config
+from tests.implementations._base import BaseImpl, create_implementation
 
 
-def _setup_base_app(uri: str):
-    app = FastAPI()
-
-    engine = create_engine(uri, poolclass=NullPool)
-    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    Base = declarative_base()
-
-    def session():
-        session = SessionLocal()
-        try:
-            yield session
-            session.commit()
-        finally:
-            session.close()
-
-    return app, engine, Base, session
+class PotatoModel:
+    __tablename__ = "potatoes"
+    id = Column(Integer, primary_key=True, index=True)
+    thickness = Column(Float)
+    mass = Column(Float)
+    color = Column(String)
+    type = Column(String)
 
 
-def sqlalchemy_implementation(db_uri: str):
-    app, engine, Base, session = _setup_base_app(db_uri)
-
-    class PotatoModel(Base):
-        __tablename__ = "potatoes"
-        id = Column(Integer, primary_key=True, index=True)
-        thickness = Column(Float)
-        mass = Column(Float)
-        color = Column(String)
-        type = Column(String)
-
-    class CarrotModel(Base):
-        __tablename__ = "carrots"
-        id = Column(Integer, primary_key=True, index=True)
-        length = Column(Float)
-        color = Column(String)
-
-    Base.metadata.create_all(bind=engine)
-    router_settings = [
-        dict(
-            schema=Potato,
-            db_model=PotatoModel,
-            db=session,
-            prefix="potato",
-            paginate=PAGINATION_SIZE,
-        ),
-        dict(
-            schema=Carrot,
-            db_model=CarrotModel,
-            db=session,
-            create_schema=CarrotCreate,
-            update_schema=CarrotUpdate,
-            prefix="carrot",
-            tags=CUSTOM_TAGS,
-        ),
-    ]
-
-    return app, SQLAlchemyCRUDRouter, router_settings
+class PotatoTypeModel:
+    __tablename__ = "potato_type"
+    name = Column(String, primary_key=True, index=True)
+    origin = Column(String)
 
 
-# noinspection DuplicatedCode
-def sqlalchemy_implementation_custom_ids():
-    app, engine, Base, session = _setup_base_app()
-
-    class PotatoModel(Base):
-        __tablename__ = "potatoes"
-        potato_id = Column(Integer, primary_key=True, index=True)
-        thickness = Column(Float)
-        mass = Column(Float)
-        color = Column(String)
-        type = Column(String)
-
-    Base.metadata.create_all(bind=engine)
-    app.include_router(
-        SQLAlchemyCRUDRouter(schema=CustomPotato, db_model=PotatoModel, db=session)
-    )
-
-    return app
+class CarrotModel:
+    __tablename__ = "carrots"
+    id = Column(Integer, primary_key=True, index=True)
+    length = Column(Float)
+    color = Column(String)
 
 
-def sqlalchemy_implementation_string_pk():
-    app, engine, Base, session = _setup_base_app()
+def register_cls(cls, base, to_remove=None, **attrs):
+    if to_remove is None:
+        to_remove = []
 
-    class PotatoTypeModel(Base):
-        __tablename__ = "potato_type"
-        name = Column(String, primary_key=True, index=True)
-        origin = Column(String)
+    cls_dict = dict(cls.__dict__)
+    cls_dict.update(**attrs)
 
-    Base.metadata.create_all(bind=engine)
-    app.include_router(
-        SQLAlchemyCRUDRouter(
+    new_dict = {
+        k: v
+        for k, v in cls_dict.items()
+        if (not k.startswith("__") or k.startswith("__tablename__"))
+        and k not in to_remove
+    }
+
+    ext_cls = type(cls.__name__, cls.__bases__, new_dict)
+
+    class Table(ext_cls, base):
+        __name__ = ext_cls.__name__
+
+    return Table
+
+
+class SqlAlchemyImpl(BaseImpl):
+    @staticmethod
+    def supported_backends():
+        return [config.MSSQL_URI, config.POSTGRES_URI]
+
+    @staticmethod
+    def get_router():
+        return SQLAlchemyCRUDRouter
+
+    def _setup_base_app(self):
+        engine = create_engine(self.uri, poolclass=NullPool)
+        SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+        base_cls = declarative_base()
+
+        def session():
+            session = SessionLocal()
+            try:
+                yield session
+                session.commit()
+            finally:
+                session.close()
+
+        return engine, base_cls, session
+
+    def default_impl(self):
+        engine, base_cls, session = self._setup_base_app()
+        potato = register_cls(PotatoModel, base_cls)
+        carrot = register_cls(CarrotModel, base_cls)
+        base_cls.metadata.create_all(bind=engine)
+
+        return [
+            dict(
+                schema=Potato,
+                db_model=potato,
+                db=session,
+                prefix="potato",
+                paginate=PAGINATION_SIZE,
+            ),
+            dict(
+                schema=Carrot,
+                db_model=carrot,
+                db=session,
+                create_schema=CarrotCreate,
+                update_schema=CarrotUpdate,
+                prefix="carrot",
+                tags=CUSTOM_TAGS,
+            ),
+        ]
+
+    @BaseImpl.single_router
+    def custom_ids_impl(self):
+        engine, base_cls, session = self._setup_base_app()
+        custom_ids = register_cls(
+            PotatoModel,
+            base_cls,
+            to_remove=["id"],
+            potato_id=Column(Integer, primary_key=True, index=True),
+        )
+
+        base_cls.metadata.create_all(bind=engine)
+
+        return dict(schema=CustomPotato, db_model=custom_ids, db=session)
+
+    @BaseImpl.single_router
+    def string_pk_impl(self):
+        engine, base_cls, session = self._setup_base_app()
+        register_cls(PotatoTypeModel, base_cls)
+        base_cls.metadata.create_all(bind=engine)
+
+        return dict(
             schema=PotatoType,
             create_schema=PotatoType,
             db_model=PotatoTypeModel,
             db=session,
             prefix="potato_type",
         )
-    )
 
-    return app
+    @BaseImpl.single_router
+    def integrity_errors_impl(self):
+        engine, base_cls, session = self._setup_base_app()
+        err_model = register_cls(
+            PotatoModel, base_cls, color=Column(String, unique=True)
+        )
+        base_cls.metadata.create_all(bind=engine)
 
-
-def sqlalchemy_implementation_integrity_errors():
-    app, engine, Base, session = _setup_base_app()
-
-    class PotatoModel(Base):
-        __tablename__ = "potatoes"
-        id = Column(Integer, primary_key=True, index=True)
-        thickness = Column(Float)
-        mass = Column(Float)
-        color = Column(String, unique=True)
-        type = Column(String)
-
-    class CarrotModel(Base):
-        __tablename__ = "carrots"
-        id = Column(Integer, primary_key=True, index=True)
-        length = Column(Float)
-        color = Column(String)
-
-    Base.metadata.create_all(bind=engine)
-    app.include_router(
-        SQLAlchemyCRUDRouter(
+        return dict(
             schema=Potato,
-            db_model=PotatoModel,
+            db_model=err_model,
             db=session,
             create_schema=Potato,
             prefix="potatoes",
         )
-    )
-    app.include_router(
-        SQLAlchemyCRUDRouter(
-            schema=Carrot,
-            db_model=CarrotModel,
-            db=session,
-            update_schema=CarrotUpdate,
-            prefix="carrots",
-        )
-    )
-
-    return app
