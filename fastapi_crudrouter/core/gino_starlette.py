@@ -113,7 +113,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
 
                 return db_model
             except (IntegrityError, UniqueViolationError) as e:
-                raise HTTPException(422, ", ".join(e.args))
+                self._raise(e)
 
         return route
 

@@ -114,7 +114,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
                     **model.dict(exclude_unset=True)
                 )
             except self._INTEGRITY_ERROR as e:
-                raise HTTPException(422, ", ".join(e.args))
+                self._raise(e)
             return await self._get_one()(item_id)
 
         return route

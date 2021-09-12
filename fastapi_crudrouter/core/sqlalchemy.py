@@ -128,7 +128,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
                 return db_model
             except IntegrityError as e:
                 db.rollback()
-                raise HTTPException(422, ", ".join(e.args))
+                raise self._raise(e)
 
         return route
 
