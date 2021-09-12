@@ -183,7 +183,7 @@ class CRUDGenerator(Generic[T], APIRouter):
         raise NotImplementedError
 
     def _raise(self, e: Exception, status_code: int = 422):
-        raise HTTPException(422, ', '.join(e.args)) from e
+        raise HTTPException(422, ", ".join(e.args)) from e
 
     @staticmethod
     def get_routes() -> List[str]:
