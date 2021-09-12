@@ -3,7 +3,7 @@ from distutils.util import convert_path
 
 
 def get_version():
-    ver_path = convert_path('fastapi_crudrouter/_version.py')
+    ver_path = convert_path("fastapi_crudrouter/_version.py")
     with open(ver_path) as ver_file:
         main_ns = {}
         exec(ver_file.read(), main_ns)
