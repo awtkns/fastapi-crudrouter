@@ -87,7 +87,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
                     _exclude=False, **filter_
                 ).first()
             except NoMatch:
-                raise NOT_FOUND
+                raise NOT_FOUND from None
             return model
 
         return route
@@ -100,7 +100,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             try:
                 return await self.schema.objects.create(**model_dict)
             except self._INTEGRITY_ERROR:
-                raise HTTPException(422, "Key already exists")
+                raise HTTPException(422, "Key already exists") from None
 
         return route
 
@@ -115,7 +115,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
                     **model.dict(exclude_unset=True)
                 )
             except self._INTEGRITY_ERROR as e:
-                raise HTTPException(422, ", ".join(e.args))
+                self._raise(e)
             return await self._get_one()(item_id)
 
         return route
