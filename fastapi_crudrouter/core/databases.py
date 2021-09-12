@@ -104,7 +104,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
                 rid = await self.db.execute(query=query, values=schema.dict())
                 return {self._pk: rid, **schema.dict()}
             except Exception:
-                raise HTTPException(422, "Key already exists")
+                raise HTTPException(422, "Key already exists") from None
 
         return route
 

@@ -88,7 +88,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             if model:
                 return model
             else:
-                raise NOT_FOUND
+                raise NOT_FOUND from None
 
         return route
 
@@ -105,7 +105,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
                 return db_model
             except IntegrityError:
                 db.rollback()
-                raise HTTPException(422, "Key already exists")
+                raise HTTPException(422, "Key already exists") from None
 
         return route
 
@@ -128,7 +128,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
                 return db_model
             except IntegrityError as e:
                 db.rollback()
-                raise self._raise(e)
+                self._raise(e)
 
         return route
 
