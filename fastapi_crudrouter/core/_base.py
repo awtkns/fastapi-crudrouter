@@ -182,7 +182,7 @@ class CRUDGenerator(Generic[T], APIRouter):
     def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
-    def _raise(self, e: Exception, status_code: int = 422):
+    def _raise(self, e: Exception, status_code: int = 422) -> HTTPException:
         raise HTTPException(422, ", ".join(e.args)) from e
 
     @staticmethod
