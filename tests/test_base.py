@@ -6,6 +6,8 @@ from fastapi_crudrouter import (
     OrmarCRUDRouter,
     SQLAlchemyCRUDRouter,
 )
+
+# noinspection PyProtectedMember
 from fastapi_crudrouter.core._base import CRUDGenerator
 
 from tests import Potato

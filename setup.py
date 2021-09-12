@@ -1,10 +1,18 @@
 from setuptools import setup, find_packages
+from distutils.util import convert_path
 
-VERSION = "0.8.1"
+
+def get_version():
+    ver_path = convert_path("fastapi_crudrouter/_version.py")
+    with open(ver_path) as ver_file:
+        main_ns = {}
+        exec(ver_file.read(), main_ns)
+        return main_ns["__version__"]
+
 
 setup(
     name="fastapi-crudrouter",
-    version=VERSION,
+    version=get_version(),
     author="Adam Watkins",
     author_email="cadamrun@gmail.com",
     packages=find_packages(exclude=("tests.*", "tests")),

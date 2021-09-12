@@ -18,6 +18,7 @@ try:
     from ormar import Model, NoMatch
 except ImportError:
     Model: Any = None  # type: ignore
+    NoMatch: Any = None  # type: ignore
     ormar_installed = False
 else:
     ormar_installed = True
