@@ -7,8 +7,7 @@ from .core import (
     TortoiseCRUDRouter,
 )
 
-# noinspection PyUnresolvedReferences
-from ._version import __version__
+from ._version import __version__  # noqa: F401
 
 __all__ = [
     "MemoryCRUDRouter",
