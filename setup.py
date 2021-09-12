@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
-VERSION = "0.8.1"
+import fastapi_crudrouter
 
 setup(
     name="fastapi-crudrouter",
-    version=VERSION,
+    version=fastapi_crudrouter.__version__,
     author="Adam Watkins",
     author_email="cadamrun@gmail.com",
     packages=find_packages(exclude=("tests.*", "tests")),

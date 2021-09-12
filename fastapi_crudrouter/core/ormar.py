@@ -18,6 +18,7 @@ try:
     from ormar import Model, NoMatch
 except ImportError:
     Model: Any = None  # type: ignore
+    NoMatch: Any = None  # type: ignore
     ormar_installed = False
 else:
     ormar_installed = True
@@ -74,7 +75,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             query = self.schema.objects.offset(cast(int, skip))
             if limit:
                 query = query.limit(limit)
-            return await query.all()  # type: ignore
+            return await query.all()
 
         return route
 
