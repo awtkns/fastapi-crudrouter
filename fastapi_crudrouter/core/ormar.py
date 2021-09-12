@@ -75,7 +75,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             query = self.schema.objects.offset(cast(int, skip))
             if limit:
                 query = query.limit(limit)
-            return await query.all()
+            return await query.all()  # type: ignore
 
         return route
 

@@ -7,7 +7,9 @@ from .core import (
     TortoiseCRUDRouter,
 )
 
-__version__ = "0.8.2"
+# noinspection PyUnresolvedReferences
+from ._version import __version__
+
 __all__ = [
     "MemoryCRUDRouter",
     "SQLAlchemyCRUDRouter",
