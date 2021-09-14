@@ -28,7 +28,10 @@ def delete_all_client(request):
     impl, dsn = request.param
 
     app, router, settings = impl(db_uri=dsn)
-    [app.include_router(router(**s, delete_all_route=False, update_route=False)) for s in settings]
+    [
+        app.include_router(router(**s, delete_all_route=False, update_route=False))
+        for s in settings
+    ]
 
     yield from yield_test_client(app, impl)
 
