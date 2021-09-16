@@ -11,8 +11,9 @@ from typing import (
 
 from fastapi import HTTPException
 
-from . import CRUDGenerator, NOT_FOUND, _utils
+from . import CRUDGenerator, NOT_FOUND
 from ._types import PAGINATION, PYDANTIC_SCHEMA, DEPENDENCIES
+from ._utils import AttrDict, get_pk_type
 
 try:
     from sqlalchemy.sql.schema import Table
@@ -25,6 +26,15 @@ else:
 Model = Mapping[Any, Any]
 CALLABLE = Callable[..., Coroutine[Any, Any, Model]]
 CALLABLE_LIST = Callable[..., Coroutine[Any, Any, List[Model]]]
+
+
+def pydantify_record(
+    models: Union[Model, List[Model]]
+) -> Union[AttrDict, List[AttrDict]]:
+    if type(models) is list:
+        return [AttrDict(**dict(model)) for model in models]
+    else:
+        return AttrDict(**dict(models))  # type: ignore
 
 
 class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
@@ -54,7 +64,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         self.db = database
         self._pk = table.primary_key.columns.values()[0].name
         self._pk_col = self.table.c[self._pk]
-        self._pk_type: type = _utils.get_pk_type(schema, self._pk)
+        self._pk_type: type = get_pk_type(schema, self._pk)
 
         super().__init__(
             schema=schema,
@@ -79,7 +89,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
             query = self.table.select().limit(limit).offset(skip)
-            return await self.db.fetch_all(query)
+            return pydantify_record(await self.db.fetch_all(query))  # type: ignore
 
         return route
 
@@ -89,7 +99,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
             model = await self.db.fetch_one(query)
 
             if model:
-                return model
+                return pydantify_record(model)  # type: ignore
             else:
                 raise NOT_FOUND
 
@@ -99,10 +109,11 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         async def route(
             schema: self.create_schema,  # type: ignore
         ) -> Model:
+            query = self.table.insert()
+
             try:
-                query = self.table.insert()
                 rid = await self.db.execute(query=query, values=schema.dict())
-                return {self._pk: rid, **schema.dict()}
+                return await self._get_one()(rid)
             except Exception:
                 raise HTTPException(422, "Key already exists") from None
 
@@ -113,14 +124,14 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
             item_id: self._pk_type, schema: self.update_schema  # type: ignore
         ) -> Model:
             query = self.table.update().where(self._pk_col == item_id)
-            rid = await self.db.execute(
-                query=query, values=schema.dict(exclude={self._pk})
-            )
 
-            if rid:
-                return {self._pk: rid, **schema.dict()}
-            else:
-                raise NOT_FOUND
+            try:
+                await self.db.fetch_one(
+                    query=query, values=schema.dict(exclude={self._pk})
+                )
+                return await self._get_one()(item_id)
+            except Exception as e:
+                raise NOT_FOUND from e
 
         return route
 
@@ -137,12 +148,11 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         async def route(item_id: self._pk_type) -> Model:  # type: ignore
             query = self.table.delete().where(self._pk_col == item_id)
 
-            row = await self._get_one()(item_id)
-            rid = await self.db.execute(query=query)
-
-            if rid:
+            try:
+                row = await self._get_one()(item_id)
+                await self.db.execute(query=query)
                 return row
-            else:
-                raise NOT_FOUND
+            except Exception as e:
+                raise NOT_FOUND from e
 
         return route
