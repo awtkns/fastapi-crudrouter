@@ -16,6 +16,8 @@
 
 ---
 
+[![Join the chat at https://gitter.im/fastapi-crudrouter/community](https://badges.gitter.im/fastapi-crudrouter/community.svg)](https://gitter.im/fastapi-crudrouter/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **Documentation**: <a href="https://fastapi-crudrouter.awtkns.com" target="_blank">https://fastapi-crudrouter.awtkns.com</a>
 
 **Source Code**: <a href="https://github.com/awtkns/fastapi-crudrouter" target="_blank">https://github.com/awtkns/fastapi-crudrouter</a>
