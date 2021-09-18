@@ -7,6 +7,8 @@ from ._types import T, DEPENDENCIES
 from ._utils import pagination_factory, schema_factory
 
 NOT_FOUND = HTTPException(404, "Item not found")
+NOT_FOUND_RESPONSE = {"404": {"detail": "Item not found"}}
+RESPONSES = NOT_FOUND_RESPONSE  # can be extended to contain multiple responses
 
 
 class CRUDGenerator(Generic[T], APIRouter):
@@ -90,6 +92,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 response_model=self.schema,
                 summary="Get One",
                 dependencies=get_one_route,
+                responses=RESPONSES,
             )
 
         if update_route:
@@ -100,6 +103,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 response_model=self.schema,
                 summary="Update One",
                 dependencies=update_route,
+                responses=RESPONSES,
             )
 
         if delete_one_route:
@@ -110,6 +114,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 response_model=self.schema,
                 summary="Delete One",
                 dependencies=delete_one_route,
+                responses=RESPONSES,
             )
 
     def _add_api_route(
