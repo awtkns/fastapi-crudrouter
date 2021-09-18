@@ -26,3 +26,9 @@ class TestOpenAPISpec:
 
             for m in method:
                 assert method[m]["tags"] == PATH_TAGS[path]
+
+    def test_response_types(self, client):
+        schema = self.test_schema_exists(client).json()
+        assert "200" in schema["paths"]["/potato/{item_id}"]["get"]["responses"]
+        assert "422" in schema["paths"]["/potato/{item_id}"]["get"]["responses"]
+        assert "404" in schema["paths"]["/potato/{item_id}"]["get"]["responses"]
