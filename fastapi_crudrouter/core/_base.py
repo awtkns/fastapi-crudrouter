@@ -7,7 +7,6 @@ from ._types import T, DEPENDENCIES
 from ._utils import pagination_factory, schema_factory
 
 NOT_FOUND = HTTPException(404, "Item not found")
-RESPONSES = {"404": {"detail": "Item not found"}}
 
 
 class CRUDGenerator(Generic[T], APIRouter):
@@ -91,7 +90,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 response_model=self.schema,
                 summary="Get One",
                 dependencies=get_one_route,
-                responses=RESPONSES,
+                error_responses=[NOT_FOUND],
             )
 
         if update_route:
@@ -102,7 +101,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 response_model=self.schema,
                 summary="Update One",
                 dependencies=update_route,
-                responses=RESPONSES,
+                error_responses=[NOT_FOUND],
             )
 
         if delete_one_route:
@@ -113,7 +112,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 response_model=self.schema,
                 summary="Delete One",
                 dependencies=delete_one_route,
-                responses=RESPONSES,
+                error_responses=[NOT_FOUND],
             )
 
     def _add_api_route(
@@ -121,10 +120,19 @@ class CRUDGenerator(Generic[T], APIRouter):
         path: str,
         endpoint: Callable[..., Any],
         dependencies: Union[bool, DEPENDENCIES],
+        error_responses: Any = None,
         **kwargs: Any,
     ) -> None:
         dependencies = [] if isinstance(dependencies, bool) else dependencies
-        super().add_api_route(path, endpoint, dependencies=dependencies, **kwargs)
+        responses = (
+            {err.status_code: {"detail": err.detail} for err in error_responses}
+            if error_responses
+            else None
+        )
+
+        super().add_api_route(
+            path, endpoint, dependencies=dependencies, responses=responses, **kwargs
+        )
 
     def api_route(
         self, path: str, *args: Any, **kwargs: Any
