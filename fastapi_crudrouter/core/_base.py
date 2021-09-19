@@ -1,4 +1,4 @@
-from typing import Any, Callable, Generic, List, Optional, Type, Union
+from typing import Any, Callable, Generic, List, Optional, Type, Union, Dict
 
 from fastapi import APIRouter, HTTPException
 from fastapi.types import DecoratedCallable
@@ -120,11 +120,11 @@ class CRUDGenerator(Generic[T], APIRouter):
         path: str,
         endpoint: Callable[..., Any],
         dependencies: Union[bool, DEPENDENCIES],
-        error_responses: Any = None,
+        error_responses: Optional[List[HTTPException]] = None,
         **kwargs: Any,
     ) -> None:
         dependencies = [] if isinstance(dependencies, bool) else dependencies
-        responses = (
+        responses: Any = (
             {err.status_code: {"detail": err.detail} for err in error_responses}
             if error_responses
             else None
