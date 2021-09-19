@@ -1,4 +1,4 @@
-from typing import Any, Callable, Generic, List, Optional, Type, Union, Dict
+from typing import Any, Callable, Generic, List, Optional, Type, Union
 
 from fastapi import APIRouter, HTTPException
 from fastapi.types import DecoratedCallable
