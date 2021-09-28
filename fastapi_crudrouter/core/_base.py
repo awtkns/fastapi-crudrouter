@@ -47,6 +47,7 @@ class CRUDGenerator(Generic[T], APIRouter):
         )
 
         prefix = str(prefix if prefix else self.schema.__name__).lower()
+        item_name = prefix
         prefix = self._base_path + prefix.strip("/")
         tags = tags or [prefix.strip("/").capitalize()]
 
@@ -60,6 +61,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 response_model=Optional[List[self.schema]],  # type: ignore
                 summary="Get All",
                 dependencies=get_all_route,
+                name=f"get_all_{item_name}",
             )
 
         if create_route:
@@ -70,6 +72,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 response_model=self.schema,
                 summary="Create One",
                 dependencies=create_route,
+                name=f"create_one_{item_name}",
             )
 
         if delete_all_route:
@@ -80,6 +83,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 response_model=Optional[List[self.schema]],  # type: ignore
                 summary="Delete All",
                 dependencies=delete_all_route,
+                name=f"delete_all_{item_name}",
             )
 
         if get_one_route:
@@ -91,6 +95,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 summary="Get One",
                 dependencies=get_one_route,
                 error_responses=[NOT_FOUND],
+                name=f"get_one_{item_name}",
             )
 
         if update_route:
@@ -102,6 +107,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 summary="Update One",
                 dependencies=update_route,
                 error_responses=[NOT_FOUND],
+                name=f"update_one_{item_name}",
             )
 
         if delete_one_route:
@@ -113,6 +119,7 @@ class CRUDGenerator(Generic[T], APIRouter):
                 summary="Delete One",
                 dependencies=delete_one_route,
                 error_responses=[NOT_FOUND],
+                name=f"delete_one_{item_name}",
             )
 
     def _add_api_route(
