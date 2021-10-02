@@ -19,6 +19,8 @@ try:
     from sqlalchemy.sql.schema import Table
     from databases.core import Database
 except ImportError:
+    Table: Any = None  # type: ignore
+    Database: Any = None  # type: ignore
     databases_installed = False
 else:
     databases_installed = True
@@ -113,6 +115,9 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
 
             try:
                 rid = await self.db.execute(query=query, values=schema.dict())
+                if type(rid) is not self._pk_type:
+                    rid = getattr(schema, self._pk, rid)
+
                 return await self._get_one()(rid)
             except Exception:
                 raise HTTPException(422, "Key already exists") from None

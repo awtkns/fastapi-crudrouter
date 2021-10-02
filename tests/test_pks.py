@@ -1,4 +1,4 @@
-from . import PotatoType, test_router
+from . import test_router
 
 potato_type = dict(name="russet", origin="Canada")
 URL = "/potato_type"
