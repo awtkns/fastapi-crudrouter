@@ -47,10 +47,14 @@ def test_get_one(client, url: str = URL, model: Dict = None, id_key: str = "id")
 
 
 def test_update(client, url: str = URL, model: Dict = None, id_key: str = "id"):
+    test_get(client, url, expected_length=0)
+
     model = model or basic_potato
     res = client.post(url, json=model)
     data = res.json()
     assert res.status_code == 200
+
+    test_get(client, url, expected_length=1)
 
     tuber = {k: v for k, v in model.items()}
     tuber["color"] = "yellow"

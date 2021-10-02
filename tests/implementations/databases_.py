@@ -13,24 +13,29 @@ from tests import (
     Potato,
     PotatoType,
     CUSTOM_TAGS,
+    config,
 )
 
-DATABASE_URL = "sqlite:///./test.db"
+DSN_LIST = [
+    "sqlite:///./test.db?check_same_thread=false",
+    # config.MSSQL_URI,
+    config.POSTGRES_URI,
+]
 
 
-def _setup_database():
-    if database_exists(DATABASE_URL):
-        drop_database(DATABASE_URL)
+def _setup_database(db_uri: str = DSN_LIST[0]):
+    if database_exists(db_uri):
+        drop_database(db_uri)
 
-    create_database(DATABASE_URL)
-    database = databases.Database(DATABASE_URL)
-    engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+    create_database(db_uri)
+    database = databases.Database(db_uri)
+    engine = create_engine(db_uri)
 
     return engine, database
 
 
-def databases_implementation(**kwargs):
-    engine, database = _setup_database()
+def databases_implementation(db_uri: str):
+    engine, database = _setup_database(db_uri)
 
     metadata = MetaData()
     potatoes = Table(
