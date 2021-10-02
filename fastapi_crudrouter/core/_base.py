@@ -47,7 +47,7 @@ class CRUDGenerator(Generic[T], APIRouter):
         )
 
         prefix = str(prefix if prefix else self.schema.__name__).lower()
-        item_name = prefix
+        item_name = self.schema.__name__.lower()
         prefix = self._base_path + prefix.strip("/")
         tags = tags or [prefix.strip("/").capitalize()]
 
