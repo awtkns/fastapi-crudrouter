@@ -8,6 +8,12 @@ from ._types import PAGINATION, PYDANTIC_SCHEMA
 T = TypeVar("T", bound=PYDANTIC_SCHEMA)
 
 
+class AttrDict(dict):  # type: ignore
+    def __init__(self, *args, **kwargs) -> None:  # type: ignore
+        super(AttrDict, self).__init__(*args, **kwargs)
+        self.__dict__ = self
+
+
 def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
     try:
         return schema.__fields__[pk_field].type_

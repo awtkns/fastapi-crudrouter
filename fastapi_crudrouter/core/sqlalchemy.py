@@ -69,7 +69,11 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
             db_models: List[Model] = (
-                db.query(self.db_model).limit(limit).offset(skip).all()
+                db.query(self.db_model)
+                .order_by(getattr(self.db_model, self._pk))
+                .limit(limit)
+                .offset(skip)
+                .all()
             )
             return db_models
 
@@ -84,7 +88,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             if model:
                 return model
             else:
-                raise NOT_FOUND
+                raise NOT_FOUND from None
 
         return route
 
@@ -101,7 +105,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
                 return db_model
             except IntegrityError:
                 db.rollback()
-                raise HTTPException(422, "Key already exists")
+                raise HTTPException(422, "Key already exists") from None
 
         return route
 
@@ -124,7 +128,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
                 return db_model
             except IntegrityError as e:
                 db.rollback()
-                raise HTTPException(422, ", ".join(e.args))
+                self._raise(e)
 
         return route
 

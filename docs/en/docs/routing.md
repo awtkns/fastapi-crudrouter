@@ -81,7 +81,7 @@ class Potato(BaseModel):
     mass: float
 
 app = FastAPI()
-router = CRUDRouter(model=mymodel)
+router = CRUDRouter(schema=Potato)
 
 @router.get('')
 def overloaded_get_all():
@@ -90,4 +90,6 @@ def overloaded_get_all():
 @router.get('/{item_id}')
 def overloaded_get_one():
     return 'My overloaded route that returns one item'
+
+app.include_router(router)
 ```

@@ -96,7 +96,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
                     db_model: Model = await self.db_model.create(**model.dict())
                     return db_model
             except (IntegrityError, UniqueViolationError):
-                raise HTTPException(422, "Key already exists")
+                raise HTTPException(422, "Key already exists") from None
 
         return route
 
@@ -113,7 +113,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
 
                 return db_model
             except (IntegrityError, UniqueViolationError) as e:
-                raise HTTPException(422, ", ".join(e.args))
+                self._raise(e)
 
         return route
 
