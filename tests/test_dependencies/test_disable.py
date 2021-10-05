@@ -1,12 +1,10 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
-
 import pytest
 
 from fastapi_crudrouter.core import CRUDGenerator
 
-from tests.implementations import implementations
+from tests.implementations import implementations, BaseImpl
 from tests.conftest import yield_test_client
+from tests.utils import create_base_impl_with_overrides
 
 URLS = ["/potato", "/carrot"]
 AUTH = {"Authorization": "Bearer my_token"}
@@ -16,10 +14,8 @@ DISABLE_KWARGS = {k: False for k in KEY_WORDS}
 
 @pytest.fixture(params=implementations, scope="class")
 def client(request):
-    impl, dsn = request.param
-
-    app, router, settings = impl(db_uri=dsn)
-    [app.include_router(router(**s, **DISABLE_KWARGS)) for s in settings]
+    impl: BaseImpl = request.param
+    app = create_base_impl_with_overrides(impl, **DISABLE_KWARGS)
 
     yield from yield_test_client(app, impl)
 

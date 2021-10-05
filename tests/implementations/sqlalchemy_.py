@@ -17,7 +17,7 @@ from tests import (
     CUSTOM_TAGS,
 )
 from tests.conf import config
-from tests.implementations._base import BaseImpl, create_implementation
+from tests.implementations._base import BaseImpl
 
 
 class PotatoModel:
@@ -65,15 +65,10 @@ def register_cls(cls, base, to_remove=None, **attrs):
 
 
 class SqlAlchemyImpl(BaseImpl):
-    @staticmethod
-    def supported_backends():
-        return [config.MSSQL_URI, config.POSTGRES_URI]
+    __router__ = SQLAlchemyCRUDRouter
+    __backends__ = [config.SQLITE_URI, config.MSSQL_URI, config.POSTGRES_URI]
 
-    @staticmethod
-    def get_router():
-        return SQLAlchemyCRUDRouter
-
-    def _setup_base_app(self):
+    def _setup(self):
         engine = create_engine(self.uri, poolclass=NullPool)
         SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
         base_cls = declarative_base()
@@ -89,7 +84,7 @@ class SqlAlchemyImpl(BaseImpl):
         return engine, base_cls, session
 
     def default_impl(self):
-        engine, base_cls, session = self._setup_base_app()
+        engine, base_cls, session = self._setup()
         potato = register_cls(PotatoModel, base_cls)
         carrot = register_cls(CarrotModel, base_cls)
         base_cls.metadata.create_all(bind=engine)
@@ -113,9 +108,8 @@ class SqlAlchemyImpl(BaseImpl):
             ),
         ]
 
-    @BaseImpl.single_router
     def custom_ids_impl(self):
-        engine, base_cls, session = self._setup_base_app()
+        engine, base_cls, session = self._setup()
         custom_ids = register_cls(
             PotatoModel,
             base_cls,
@@ -125,34 +119,36 @@ class SqlAlchemyImpl(BaseImpl):
 
         base_cls.metadata.create_all(bind=engine)
 
-        return dict(schema=CustomPotato, db_model=custom_ids, db=session)
+        return [dict(schema=CustomPotato, db_model=custom_ids, db=session)]
 
-    @BaseImpl.single_router
     def string_pk_impl(self):
-        engine, base_cls, session = self._setup_base_app()
+        engine, base_cls, session = self._setup()
         register_cls(PotatoTypeModel, base_cls)
         base_cls.metadata.create_all(bind=engine)
 
-        return dict(
-            schema=PotatoType,
-            create_schema=PotatoType,
-            db_model=PotatoTypeModel,
-            db=session,
-            prefix="potato_type",
-        )
+        return [
+            dict(
+                schema=PotatoType,
+                create_schema=PotatoType,
+                db_model=PotatoTypeModel,
+                db=session,
+                prefix="potato_type",
+            )
+        ]
 
-    @BaseImpl.single_router
     def integrity_errors_impl(self):
-        engine, base_cls, session = self._setup_base_app()
+        engine, base_cls, session = self._setup()
         err_model = register_cls(
             PotatoModel, base_cls, color=Column(String, unique=True)
         )
         base_cls.metadata.create_all(bind=engine)
 
-        return dict(
-            schema=Potato,
-            db_model=err_model,
-            db=session,
-            create_schema=Potato,
-            prefix="potatoes",
-        )
+        return [
+            dict(
+                schema=Potato,
+                db_model=err_model,
+                db=session,
+                create_schema=Potato,
+                prefix="potatoes",
+            )
+        ]

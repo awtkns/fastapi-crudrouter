@@ -24,6 +24,7 @@ class BaseConfig:
         self._apply_env_vars()
         self.POSTGRES_URI = f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         self.MSSQL_URI = f"mssql+pyodbc://sa:{self.SA_PASSWORD}@{self.POSTGRES_HOST}:{self.MSSQL_PORT}/test?driver=SQL+Server"
+        self.SQLITE_URI = "sqlite:///./test.db?check_same_thread=false"
 
     def _apply_dot_env(self):
         with open(ENV_FILE_PATH) as fp:

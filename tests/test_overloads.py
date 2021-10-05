@@ -1,7 +1,7 @@
 import pytest
 from fastapi import APIRouter
 
-from .implementations import implementations
+from .implementations import implementations, BaseImpl
 from .conftest import yield_test_client
 
 
@@ -18,13 +18,12 @@ DELETE_ALL = "Overloaded Delete All"
 
 @pytest.fixture(params=implementations, scope="class")
 def overloaded_client(request):
-    impl, dsn = request.param
-
-    app, router, settings = impl(db_uri=dsn)
-    routers = [router(**s) for s in settings]
+    impl: BaseImpl = request.param
+    settings = impl.get_settings()
+    app = impl.get_app()
+    routers = impl.create_routers(settings)
 
     for r in routers:
-        r: APIRouter
 
         @r.api_route("", methods=["GET"])
         def overloaded_get_all():

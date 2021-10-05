@@ -3,8 +3,9 @@ from fastapi.security import OAuth2PasswordBearer
 
 import pytest
 
-from tests.implementations import implementations
+from tests.implementations import implementations, BaseImpl
 from tests.conftest import yield_test_client
+from tests.utils import create_base_impl_with_overrides
 
 URLS = ["/potato", "/carrot"]
 AUTH = {"Authorization": "Bearer my_token"}
@@ -12,7 +13,7 @@ AUTH = {"Authorization": "Bearer my_token"}
 
 @pytest.fixture(params=implementations, scope="class")
 def client(request):
-    impl, dsn = request.param
+    impl: BaseImpl = request.param
 
     oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
@@ -20,11 +21,7 @@ def client(request):
         if not token:
             raise HTTPException(401, "Invalid token")
 
-    app, router, settings = impl(db_uri=dsn)
-    [
-        app.include_router(router(**s, dependencies=[Depends(token_auth)]))
-        for s in settings
-    ]
+    app = create_base_impl_with_overrides(impl, dependencies=[Depends(token_auth)])
 
     yield from yield_test_client(app, impl)
 

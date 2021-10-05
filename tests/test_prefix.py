@@ -1,15 +1,13 @@
 import pytest
 
-from tests.implementations import implementations
+from tests.implementations import implementations, BaseImpl
 
 
 @pytest.fixture(params=implementations)
 def router(request):
-    impl, dsn = request.param
-
-    app, router, settings = impl(db_uri=dsn)
-    kwargs = {**settings[0], **dict(prefix=None)}
-    router = router(**kwargs)
+    impl: BaseImpl = request.param
+    settings = {**impl.get_settings()[0], **dict(prefix=None)}
+    router = impl.get_router()(**settings)
 
     yield router
 

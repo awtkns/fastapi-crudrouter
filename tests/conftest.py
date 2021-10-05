@@ -7,7 +7,7 @@ import inspect
 from fastapi.testclient import TestClient
 
 from .implementations import *
-from .implementations._base import BaseImpl, create_implementation
+from .implementations._base import BaseImpl, TestCase
 
 from tests import config
 
@@ -36,7 +36,7 @@ def client(request):
     impl: BaseImpl = request.param
 
     impl.datasource.clean()
-    app = create_implementation(impl)
+    app = impl.create(TestCase.DEFAULT)
 
     yield from yield_test_client(app, impl)
 
