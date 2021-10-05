@@ -6,7 +6,7 @@ from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 try:
     from tortoise.models import Model
 except ImportError:
-    Model: Any = None  # type: ignore
+    Model = None  # type: ignore
     tortoise_installed = False
 else:
     tortoise_installed = True

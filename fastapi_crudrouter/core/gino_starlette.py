@@ -12,7 +12,10 @@ try:
     from sqlalchemy.exc import IntegrityError
     from sqlalchemy.ext.declarative import DeclarativeMeta as Model
 except ImportError:
-    Model: Any = None  # type: ignore
+    Model = None
+    IntegrityError = None
+    UniqueViolationError = None
+    Gino = None
     gino_installed = False
 else:
     gino_installed = True

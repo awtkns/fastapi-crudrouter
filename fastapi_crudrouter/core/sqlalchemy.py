@@ -10,11 +10,16 @@ try:
     from sqlalchemy.ext.declarative import DeclarativeMeta as Model
     from sqlalchemy.exc import IntegrityError
 except ImportError:
-    Model: Any = None  # type: ignore
+    Model = None
+    Session = None
+    IntegrityError = None
     sqlalchemy_installed = False
 else:
     sqlalchemy_installed = True
     Session = Callable[..., Generator[Session, Any, None]]
+
+CALLABLE = Callable[..., Model]
+CALLABLE_LIST = Callable[..., List[Model]]
 
 
 class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
@@ -61,7 +66,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             **kwargs
         )
 
-    def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[Model]]:
+    def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         def route(
             db: Session = Depends(self.db_func),
             pagination: PAGINATION = self.pagination,
@@ -79,7 +84,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Model]:
+    def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(
             item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
         ) -> Model:
@@ -92,7 +97,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _create(self, *args: Any, **kwargs: Any) -> Callable[..., Model]:
+    def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(
             model: self.create_schema,  # type: ignore
             db: Session = Depends(self.db_func),
@@ -109,7 +114,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _update(self, *args: Any, **kwargs: Any) -> Callable[..., Model]:
+    def _update(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(
             item_id: self._pk_type,  # type: ignore
             model: self.update_schema,  # type: ignore
@@ -132,7 +137,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[Model]]:
+    def _delete_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         def route(db: Session = Depends(self.db_func)) -> List[Model]:
             db.query(self.db_model).delete()
             db.commit()
@@ -141,7 +146,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
-    def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Model]:
+    def _delete_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(
             item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
         ) -> Model:
