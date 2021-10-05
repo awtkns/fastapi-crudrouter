@@ -19,8 +19,8 @@ try:
     from sqlalchemy.sql.schema import Table
     from databases.core import Database
 except ImportError:
-    Table: Any = None  # type: ignore
-    Database: Any = None  # type: ignore
+    Database = None  # type: ignore
+    Table = None
     databases_installed = False
 else:
     databases_installed = True
