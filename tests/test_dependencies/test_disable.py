@@ -1,10 +1,8 @@
-from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
-
 import pytest
 
 from fastapi_crudrouter.core import CRUDGenerator
 
+from tests import test_router
 from tests.implementations import implementations, BaseImpl
 from tests.conftest import yield_test_client
 from tests.utils import create_base_impl_with_overrides
@@ -15,7 +13,7 @@ KEY_WORDS = {f"{r}_route" for r in CRUDGenerator.get_routes()}
 DISABLE_KWARGS = {k: False for k in KEY_WORDS}
 
 
-@pytest.fixture(params=implementations, ids=label_func, scope="class")
+@pytest.fixture(params=implementations, scope="class")
 def client(request):
     impl: BaseImpl = request.param
     app = create_base_impl_with_overrides(impl, **DISABLE_KWARGS)
@@ -23,15 +21,12 @@ def client(request):
     yield from yield_test_client(app, impl)
 
 
-@pytest.fixture(params=implementations, ids=label_func, scope="class")
+@pytest.fixture(params=implementations, scope="class")
 def delete_all_client(request):
-    impl, dsn = request.param
-
-    app, router, settings = impl(db_uri=dsn)
-    [
-        app.include_router(router(**s, delete_all_route=False, update_route=False))
-        for s in settings
-    ]
+    impl: BaseImpl = request.param
+    app = create_base_impl_with_overrides(
+        impl, delete_all_route=False, update_route=False
+    )
 
     yield from yield_test_client(app, impl)
 
