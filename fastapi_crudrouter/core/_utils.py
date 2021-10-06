@@ -1,11 +1,9 @@
-from typing import Optional, Type, TypeVar, Any
+from typing import Optional, Type, Any
 
 from fastapi import Depends, HTTPException
 from pydantic import create_model
 
-from ._types import PAGINATION, PYDANTIC_SCHEMA
-
-T = TypeVar("T", bound=PYDANTIC_SCHEMA)
+from ._types import T, PAGINATION, PYDANTIC_SCHEMA
 
 
 class AttrDict(dict):  # type: ignore
