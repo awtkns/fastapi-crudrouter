@@ -3,7 +3,9 @@ import os
 from fastapi import FastAPI
 from tortoise import Model, Tortoise, fields
 
+
 from fastapi_crudrouter import TortoiseCRUDRouter
+
 from tests import (
     Carrot,
     CarrotCreate,
@@ -11,7 +13,10 @@ from tests import (
     PAGINATION_SIZE,
     Potato,
     CUSTOM_TAGS,
+    config,
 )
+from tests.implementations import BaseImpl
+from tests.implementations._base import SETTINGS
 
 
 class PotatoModel(Model):
@@ -26,48 +31,50 @@ class CarrotModel(Model):
     color = fields.CharField(max_length=255)
 
 
-TORTOISE_ORM = {
-    "connections": {"default": "sqlite://db.sqlite3"},
-    "apps": {
-        "models": {
-            "models": ["tests.implementations.tortoise_"],
-            "default_connection": "default",
-        },
-    },
-}
+class TortoiseImpl(BaseImpl):
+    __router__ = TortoiseCRUDRouter
+    __backends__ = ["aiosqlite://db.sqlite3"]
 
+    def get_app(self) -> FastAPI:
+        app = super().get_app()
+        tortoise_config = {
+            "connections": {"default": self.uri},
+            "apps": {
+                "models": {
+                    "models": ["tests.implementations.tortoise_"],
+                    "default_connection": "default",
+                },
+            },
+        }
 
-async def on_shutdown():
-    await Tortoise.close_connections()
+        @app.on_event("startup")
+        async def startup():
+            await Tortoise.init(config=tortoise_config)
+            await Tortoise.generate_schemas()
 
+        @app.on_event("shutdown")
+        async def shutdown():
+            await Tortoise.close_connections()
 
-def tortoise_implementation(**kwargs):
-    [
-        os.remove(f"./db.sqlite3{s}")
-        for s in ["", "-wal", "-shm"]
-        if os.path.exists(f"./db.sqlite3{s}")
-    ]
+        return app
 
-    app = FastAPI(on_shutdown=[on_shutdown])
+    def default_impl(self) -> SETTINGS:
+        return [
+            dict(
+                schema=Potato,
+                db_model=PotatoModel,
+                prefix="potato",
+                paginate=PAGINATION_SIZE,
+            ),
+            dict(
+                schema=Carrot,
+                db_model=CarrotModel,
+                create_schema=CarrotCreate,
+                update_schema=CarrotUpdate,
+                prefix="carrot",
+                tags=CUSTOM_TAGS,
+            ),
+        ]
 
-    Tortoise.init(config=TORTOISE_ORM)
-    Tortoise.generate_schemas()
-
-    router_settings = [
-        dict(
-            schema=Potato,
-            db_model=PotatoModel,
-            prefix="potato",
-            paginate=PAGINATION_SIZE,
-        ),
-        dict(
-            schema=Carrot,
-            db_model=CarrotModel,
-            create_schema=CarrotCreate,
-            update_schema=CarrotUpdate,
-            prefix="carrot",
-            tags=CUSTOM_TAGS,
-        ),
-    ]
-
-    return app, TortoiseCRUDRouter, router_settings
+    def integrity_errors_impl(self) -> SETTINGS:
+        pass

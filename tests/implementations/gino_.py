@@ -15,146 +15,67 @@ from tests import (
     config,
 )
 
-
-GINO_DATABASE_URL = config.POSTGRES_URI.replace("postgresql", "asyncpg")
-
-
-async def migrate(db):
-    async with db.with_bind(GINO_DATABASE_URL):
-        await db.gino.create_all()
+from tests.implementations import BaseImpl
+from tests.implementations._base import SETTINGS
 
 
-def _setup_base_app():
-    if database_exists(config.POSTGRES_URI):
-        drop_database(config.POSTGRES_URI)
+class GinoImpl(BaseImpl):
+    __router__ = GinoCRUDRouter
+    __backends__ = [config.POSTGRES_URI]
 
-    create_database(config.POSTGRES_URI)
+    def __init__(self, *args, **kwargs):
+        super(GinoImpl, self).__init__(*args, **kwargs)
+        self.uri = self.uri.replace("postgresql", "asyncpg")
+        self.db = None
 
-    app = FastAPI()
-    db = Gino(dsn=GINO_DATABASE_URL)
-    db.init_app(app)
-    return db, app
+    async def _migrate(self):
+        async with self.db.with_bind(self.uri):
+            await self.db.gino.create_all()
 
+    def get_app(self) -> FastAPI:
+        app = super().get_app()
+        self.db.init_app(app)
 
-def gino_implementation(**kwargs):
-    db, app = _setup_base_app()
+        return app
 
-    class PotatoModel(db.Model):
-        __tablename__ = "potatoes"
-        id = db.Column(db.Integer, primary_key=True, index=True)
-        thickness = db.Column(db.Float)
-        mass = db.Column(db.Float)
-        color = db.Column(db.String)
-        type = db.Column(db.String)
+    def default_impl(self) -> SETTINGS:
+        db = Gino(dsn=self.uri)
 
-    class CarrotModel(db.Model):
-        __tablename__ = "carrots"
-        id = db.Column(db.Integer, primary_key=True, index=True)
-        length = db.Column(db.Float)
-        color = db.Column(db.String)
+        class PotatoModel(db.Model):
+            __tablename__ = "potatoes"
+            id = db.Column(db.Integer, primary_key=True, index=True)
+            thickness = db.Column(db.Float)
+            mass = db.Column(db.Float)
+            color = db.Column(db.String)
+            type = db.Column(db.String)
 
-    asyncio.get_event_loop().run_until_complete(migrate(db))
+        class CarrotModel(db.Model):
+            __tablename__ = "carrots"
+            id = db.Column(db.Integer, primary_key=True, index=True)
+            length = db.Column(db.Float)
+            color = db.Column(db.String)
 
-    router_settings = [
-        dict(
-            schema=Potato,
-            db_model=PotatoModel,
-            db=db,
-            prefix="potato",
-            paginate=PAGINATION_SIZE,
-        ),
-        dict(
-            schema=Carrot,
-            db_model=CarrotModel,
-            db=db,
-            create_schema=CarrotCreate,
-            update_schema=CarrotUpdate,
-            prefix="carrot",
-            tags=CUSTOM_TAGS,
-        ),
-    ]
+        self.db = db
+        asyncio.get_event_loop().run_until_complete(self._migrate())
 
-    return app, GinoCRUDRouter, router_settings
+        return [
+            dict(
+                schema=Potato,
+                db_model=PotatoModel,
+                db=db,
+                prefix="potato",
+                paginate=PAGINATION_SIZE,
+            ),
+            dict(
+                schema=Carrot,
+                db_model=CarrotModel,
+                db=db,
+                create_schema=CarrotCreate,
+                update_schema=CarrotUpdate,
+                prefix="carrot",
+                tags=CUSTOM_TAGS,
+            ),
+        ]
 
-
-# noinspection DuplicatedCode
-def gino_implementation_custom_ids():
-    db, app = _setup_base_app()
-
-    class PotatoModel(db.Model):
-        __tablename__ = "potatoes"
-        potato_id = db.Column(db.Integer, primary_key=True, index=True)
-        thickness = db.Column(db.Float)
-        mass = db.Column(db.Float)
-        color = db.Column(db.String)
-        type = db.Column(db.String)
-
-    asyncio.get_event_loop().run_until_complete(migrate(db))
-
-    app.include_router(GinoCRUDRouter(schema=CustomPotato, db_model=PotatoModel, db=db))
-
-    return app
-
-
-def gino_implementation_string_pk():
-    db, app = _setup_base_app()
-
-    class PotatoTypeModel(db.Model):
-        __tablename__ = "potato_type"
-        name = db.Column(db.String, primary_key=True, index=True)
-        origin = db.Column(db.String)
-
-    asyncio.get_event_loop().run_until_complete(migrate(db))
-
-    app.include_router(
-        GinoCRUDRouter(
-            schema=PotatoType,
-            create_schema=PotatoType,
-            db_model=PotatoTypeModel,
-            db=db,
-            prefix="potato_type",
-        )
-    )
-
-    return app
-
-
-def gino_implementation_integrity_errors():
-    db, app = _setup_base_app()
-
-    class PotatoModel(db.Model):
-        __tablename__ = "potatoes"
-        id = db.Column(db.Integer, primary_key=True, index=True)
-        thickness = db.Column(db.Float)
-        mass = db.Column(db.Float)
-        color = db.Column(db.String, unique=True)
-        type = db.Column(db.String)
-
-    class CarrotModel(db.Model):
-        __tablename__ = "carrots"
-        id = db.Column(db.Integer, primary_key=True, index=True)
-        length = db.Column(db.Float)
-        color = db.Column(db.String)
-
-    asyncio.get_event_loop().run_until_complete(migrate(db))
-
-    app.include_router(
-        GinoCRUDRouter(
-            schema=Potato,
-            db_model=PotatoModel,
-            db=db,
-            create_schema=Potato,
-            prefix="potatoes",
-        )
-    )
-    app.include_router(
-        GinoCRUDRouter(
-            schema=Carrot,
-            db_model=CarrotModel,
-            db=db,
-            update_schema=CarrotUpdate,
-            prefix="carrots",
-        )
-    )
-
-    return app
+    def integrity_errors_impl(self) -> SETTINGS:
+        pass

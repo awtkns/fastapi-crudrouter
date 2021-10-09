@@ -5,7 +5,6 @@ import pytest
 
 from tests.implementations import implementations, BaseImpl
 from tests.conftest import yield_test_client
-from tests.utils import create_base_impl_with_overrides
 
 URLS = ["/potato", "/carrot"]
 AUTH = {"Authorization": "Bearer my_token"}
@@ -21,7 +20,7 @@ def client(request):
         if not token:
             raise HTTPException(401, "Invalid token")
 
-    app = create_base_impl_with_overrides(impl, dependencies=[Depends(token_auth)])
+    app = impl.create(dependencies=[Depends(token_auth)])
 
     yield from yield_test_client(app, impl)
 

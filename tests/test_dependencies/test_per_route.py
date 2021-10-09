@@ -3,7 +3,6 @@ from fastapi import Depends, HTTPException
 
 from tests.conftest import yield_test_client
 from tests.implementations import implementations, BaseImpl
-from tests.utils import create_base_impl_with_overrides
 
 URLS = ["/potato", "/carrot"]
 AUTH = {"Authorization": "Bearer my_token"}
@@ -38,7 +37,7 @@ DEPENDS_KWARGS = dict(
 @pytest.fixture(params=implementations)
 def client(request):
     impl: BaseImpl = request.param
-    app = create_base_impl_with_overrides(impl, **DEPENDS_KWARGS)
+    app = impl.create(**DEPENDS_KWARGS)
 
     yield from yield_test_client(app, impl)
 

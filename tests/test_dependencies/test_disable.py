@@ -4,8 +4,7 @@ from fastapi_crudrouter.core import CRUDGenerator
 
 from tests import test_router
 from tests.implementations import implementations, BaseImpl
-from tests.conftest import yield_test_client
-from tests.utils import create_base_impl_with_overrides
+from tests.conftest import yield_test_client, label_func
 
 URLS = ["/potato", "/carrot"]
 AUTH = {"Authorization": "Bearer my_token"}
@@ -13,20 +12,18 @@ KEY_WORDS = {f"{r}_route" for r in CRUDGenerator.get_routes()}
 DISABLE_KWARGS = {k: False for k in KEY_WORDS}
 
 
-@pytest.fixture(params=implementations, scope="class")
+@pytest.fixture(params=implementations, ids=label_func, scope="class")
 def client(request):
     impl: BaseImpl = request.param
-    app = create_base_impl_with_overrides(impl, **DISABLE_KWARGS)
+    app = impl.create(**DISABLE_KWARGS)
 
     yield from yield_test_client(app, impl)
 
 
-@pytest.fixture(params=implementations, scope="class")
+@pytest.fixture(params=implementations, ids=label_func, scope="class")
 def delete_all_client(request):
     impl: BaseImpl = request.param
-    app = create_base_impl_with_overrides(
-        impl, delete_all_route=False, update_route=False
-    )
+    app = impl.create(delete_all_route=False, update_route=False)
 
     yield from yield_test_client(app, impl)
 

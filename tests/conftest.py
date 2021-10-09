@@ -34,10 +34,7 @@ def label_func(*args):
 @pytest.fixture(params=implementations, ids=label_func, scope="class")
 def client(request):
     impl: BaseImpl = request.param
-
-    impl.datasource.clean()
     app = impl.create(TestCase.DEFAULT)
-
     yield from yield_test_client(app, impl)
 
 

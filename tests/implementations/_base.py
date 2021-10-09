@@ -20,6 +20,9 @@ class BaseImpl(ABC):
     __backends__ = []
 
     def __init__(self, datasource):
+        assert self.__router__, "No Router Set, please override __router__ "
+        assert len(self.__backends__)
+
         self._test_case_mapping = {
             TestCase.DEFAULT: self.default_impl,
             TestCase.INTEGRITY_ERRORS: self.integrity_errors_impl,
@@ -43,10 +46,9 @@ class BaseImpl(ABC):
     def create_routers(self, settings: SETTINGS) -> List[APIRouter]:
         return [self.get_router()(**s) for s in settings]
 
-    def create(
-        self, test_case: TestCase = TestCase.DEFAULT, settings: SETTINGS = None
-    ) -> FastAPI:
-        settings = settings if settings else self.get_settings(test_case)
+    def create(self, test_case: TestCase = TestCase.DEFAULT, **kwargs) -> FastAPI:
+        self.datasource.clean()
+        settings = [{**s, **kwargs} for s in self.get_settings()]
 
         app = self.get_app()
         [app.include_router(r) for r in self.create_routers(settings)]
