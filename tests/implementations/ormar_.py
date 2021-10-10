@@ -1,13 +1,10 @@
-import os
-
 import databases
 import ormar
-import pytest
 import sqlalchemy
 from fastapi import FastAPI
 
 from fastapi_crudrouter import OrmarCRUDRouter
-from tests import CarrotCreate, CarrotUpdate, PAGINATION_SIZE, CUSTOM_TAGS, config
+from tests import CarrotUpdate, PAGINATION_SIZE, CUSTOM_TAGS, config
 from tests.implementations import BaseImpl
 from tests.implementations._base import SETTINGS
 

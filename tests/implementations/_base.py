@@ -7,8 +7,6 @@ SETTINGS = List[Dict[str, Any]]
 from fastapi import FastAPI, APIRouter
 from fastapi_crudrouter.core import CRUDGenerator
 
-from tests.conf import Datasource
-
 
 class TestCase(Enum):
     DEFAULT = auto()

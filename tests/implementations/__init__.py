@@ -1,22 +1,29 @@
 from tests.conf import datasource_factory
-
 from ._base import BaseImpl, TestCase
-from .sqlalchemy_ import SqlAlchemyImpl
+from .databases_ import DatabasesImpl
+from .gino_ import GinoImpl
 from .memory import MemoryImpl
 from .ormar_ import OrmarImpl
-from .gino_ import GinoImpl
-from .databases_ import DatabasesImpl
-from .tortoise_ import TortoiseImpl
+from .sqlalchemy_ import SqlAlchemyImpl
 
-implementations = []
-for impl_cls in [
+_implementations = [
     MemoryImpl,
     SqlAlchemyImpl,
     OrmarImpl,
     GinoImpl,
     DatabasesImpl,
-    TortoiseImpl,
-]:
-    for uri in impl_cls.__backends__:
+]
+
+try:
+    from .tortoise_ import TortoiseImpl
+except ImportError:
+    TortoiseImpl = None
+else:
+    _implementations.append(TortoiseImpl)
+
+
+implementations = []
+for cls in _implementations:
+    for uri in cls.__backends__:
         ds = datasource_factory.get_datasource(uri)
-        implementations.append(impl_cls(ds))
+        implementations.append(cls(ds))

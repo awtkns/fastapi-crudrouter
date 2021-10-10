@@ -1,11 +1,7 @@
-import os
-
 from fastapi import FastAPI
 from tortoise import Model, Tortoise, fields
 
-
 from fastapi_crudrouter import TortoiseCRUDRouter
-
 from tests import (
     Carrot,
     CarrotCreate,
@@ -13,7 +9,6 @@ from tests import (
     PAGINATION_SIZE,
     Potato,
     CUSTOM_TAGS,
-    config,
 )
 from tests.implementations import BaseImpl
 from tests.implementations._base import SETTINGS

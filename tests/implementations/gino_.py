@@ -1,20 +1,18 @@
 import asyncio
+
 from fastapi import FastAPI
-from fastapi_crudrouter import GinoCRUDRouter
 from gino.ext.starlette import Gino
-from sqlalchemy_utils import create_database, database_exists, drop_database
+
+from fastapi_crudrouter import GinoCRUDRouter
 from tests import (
     CUSTOM_TAGS,
     PAGINATION_SIZE,
     Carrot,
     CarrotCreate,
     CarrotUpdate,
-    CustomPotato,
     Potato,
-    PotatoType,
     config,
 )
-
 from tests.implementations import BaseImpl
 from tests.implementations._base import SETTINGS
 
