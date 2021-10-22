@@ -48,7 +48,6 @@ $ docker compose -f tests/conf/dev.docker-compose.yaml down
 Crudrouter utilizes the [pytest](https://docs.pytest.org/en/latest/) framework for all of its unittests. Tests can be run 
 as shown below. 
 
-```
 <div class="termy">
 
 ```console
