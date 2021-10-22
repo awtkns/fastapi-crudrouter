@@ -42,6 +42,7 @@ After testing you can tear down the running containers with
 
 ```console
 $ docker compose -f tests/conf/dev.docker-compose.yaml down
+```
 
 #### Running tests
 Crudrouter utilizes the [pytest](https://docs.pytest.org/en/latest/) framework for all of its unittests. Tests can be run 
