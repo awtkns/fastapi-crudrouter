@@ -8,11 +8,11 @@ services:
         - dev.env
       ports:
         - 5432:5432
-    mssql:
-      image: mcr.microsoft.com/mssql/server:2019-latest
-      command: /bin/sh -c "(/opt/mssql/bin/sqlservr &) && sleep 10s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password1! -Q 'CREATE DATABASE test' && sleep infinity"
-      restart: always
-      env_file:
-        - dev.env
-      ports:
-        - 1433:1433
+    # mssql:
+    #   image: mcr.microsoft.com/mssql/server:2019-latest
+    #   command: /bin/sh -c "(/opt/mssql/bin/sqlservr &) && sleep 10s && /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Password1! -Q 'CREATE DATABASE test' && sleep infinity"
+    #   restart: always
+    #   env_file:
+    #     - dev.env
+    #   ports:
+    #     - 1433:1433
