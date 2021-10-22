@@ -27,10 +27,27 @@ $ pip install -r tests/dev.requirements.txt
 </div>
 
 ### Testing
-Crudrouter utilizes the [pytest](https://docs.pytest.org/en/latest/) framework for all of its unittests. Tests can be run 
-as shown below. When adding additional features, please try to add additional tests that prove that your implementation
+When adding additional features, please try to add additional tests that prove that your implementation
 works and is bug free.
 
+#### Test requirements
+Tests require a postgres database for tests to run. The easiest way to accomplish this is with docker. This project offers
+a docker-compose file at tests/conf/dev.docker-compose.yaml. You can use this file with
+
+```console
+$ docker compose -f tests/conf/dev.docker-compose.yaml up -d
+```
+
+After testing you can tear down the running containers with
+
+```console
+$ docker compose -f tests/conf/dev.docker-compose.yaml down
+
+#### Running tests
+Crudrouter utilizes the [pytest](https://docs.pytest.org/en/latest/) framework for all of its unittests. Tests can be run 
+as shown below. 
+
+```
 <div class="termy">
 
 ```console
