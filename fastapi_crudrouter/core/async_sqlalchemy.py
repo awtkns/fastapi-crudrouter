@@ -150,7 +150,7 @@ class AsyncSQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[Model]]:
         async def route(db: Session = Depends(self.db_func)) -> List[Model]:
-            await db.execute('delete from ' + self.db_model.__tablename__)
+            await db.execute("delete from " + self.db_model.__tablename__)
             await db.commit()
             return await self._get_all()(db=db, pagination={"skip": 0, "limit": None})
 
