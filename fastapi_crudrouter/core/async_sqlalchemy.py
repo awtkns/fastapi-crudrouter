@@ -4,8 +4,6 @@ from fastapi import Depends, HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
 from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
-#from fastapi_crudrouter.core._base import CRUDGenerator, NOT_FOUND, _utils
-#from fastapi_crudrouter.core._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 
 try:
     from sqlalchemy.orm import Session
@@ -71,7 +69,8 @@ class AsyncSQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         ) -> List[Model]:
             skip, limit = pagination.get("skip"), pagination.get("limit")
 
-            res = await db.execute(select(self.db_model)
+            res = await db.execute(
+                select(self.db_model)
                 .order_by(getattr(self.db_model, self._pk))
                 .limit(limit)
                 .offset(skip)
@@ -79,10 +78,9 @@ class AsyncSQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             res = res.all()
 
             model: Model
-            db_models: List[Model] = [] # [(row,) for row in res]
+            db_models: List[Model] = []
             for row in res:
                 (model,) = row
-                # print(model)
                 db_models.append(model)
 
             return db_models
@@ -95,11 +93,14 @@ class AsyncSQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         ) -> Model:
             model: Model
             try:
-                (model,) = (await db.execute(select(self.db_model).where(self.db_model.id == item_id))).one()
+                (model,) = (
+                    await db.execute(
+                        select(self.db_model).where(self.db_model.id == item_id)
+                    )
+                ).one()
             except NoResultFound:
                 model = None
 
-            print([model])
             if model:
                 return model
             else:
@@ -149,7 +150,7 @@ class AsyncSQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., List[Model]]:
         async def route(db: Session = Depends(self.db_func)) -> List[Model]:
-            await db.execute('delete from '+self.db_model.__tablename__)
+            await db.execute('delete from ' + self.db_model.__tablename__)
             await db.commit()
             return await self._get_all()(db=db, pagination={"skip": 0, "limit": None})
 
