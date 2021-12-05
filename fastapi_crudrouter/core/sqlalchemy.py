@@ -43,6 +43,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         update_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
+        use_async: Optional[bool] = None, # if not set, try autidetect
         **kwargs: Any
     ) -> None:
         assert (
@@ -51,7 +52,10 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
         self.db_model = db_model
         self.db_func = db
-        self.use_async = (inspect.isasyncgenfunction(db) or inspect.isasyncgen(db)) and sqlalchemy_version >= "1.4" # autodetect async mode
+        if use_async == None:
+            self.use_async = (inspect.isasyncgenfunction(db) or inspect.isasyncgen(db)) and sqlalchemy_version >= "1.4" # autodetect async mode
+        else:
+            self.use_async = use_async
         self._pk: str = db_model.__table__.primary_key.columns.keys()[0]
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
 
