@@ -2,6 +2,11 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/backends", "destination": "/" }
+    { "source": "/backends", "destination": "/" },
+    { "source": "/memory", "destination": "backends/memory.md" },
+    { "source": "/sqlalchemy", "destination": "backends/sqlalchemy" },
+    { "source": "/async", "destination": "backends/async" },
+    { "source": "/gino", "destination": "backends/gino" },
+    { "source": "/tortoise", "destination": "backends/tortoise" }
   ]
 }
