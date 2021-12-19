@@ -3,10 +3,11 @@
   "trailingSlash": false,
   "redirects": [
     { "source": "/backends", "destination": "/" },
-    { "source": "/memory", "destination": "backends/memory.md" },
+    { "source": "/memory", "destination": "backends/memory" },
     { "source": "/sqlalchemy", "destination": "backends/sqlalchemy" },
     { "source": "/async", "destination": "backends/async" },
     { "source": "/gino", "destination": "backends/gino" },
+    { "source": "/ormar", "destination": "backends/ormar" },
     { "source": "/tortoise", "destination": "backends/tortoise" }
   ]
 }
