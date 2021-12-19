@@ -5,7 +5,8 @@ edit_uri: ''
 
 theme:
   name: material
-  # custom_dir: overrides
+  features:
+    - navigation.expand
   palette:
     - scheme: default
       primary: indigo
@@ -41,10 +42,6 @@ nav:
   - Contributing: contributing.md
   - Releases: releases.md
 
-google_analytics:
-  - UA-186315536-1
-  - auto
-
 markdown_extensions:
   - extra
   - admonition
@@ -54,6 +51,9 @@ markdown_extensions:
   - pymdownx.tabbed
 
 extra:
+  analytics:
+    provider: google
+    property: UA-186315536-1
   social:
   - icon: fontawesome/brands/github-alt
     link: https://github.com/awtkns/fastapi-crudrouter
