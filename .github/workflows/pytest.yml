@@ -26,6 +26,15 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      mssql:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        env:
+          ACCEPT_EULA: Y
+          SA_PASSWORD: Password1!
+          MSSQL_PORT: 1433
+          MSSQL_PID: Express
+        ports:
+          - 1433/tcp
 
     steps:
     - uses: actions/checkout@v2
