@@ -23,7 +23,7 @@ class BaseConfig:
         self._apply_dot_env()
         self._apply_env_vars()
         self.POSTGRES_URI = f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-        self.MSSQL_URI = f"mssql+pyodbc://sa:{self.SA_PASSWORD}@{self.POSTGRES_HOST}:{self.MSSQL_PORT}/test?driver=SQL+Server"
+        self.MSSQL_URI = f"mssql+pyodbc://sa:{self.SA_PASSWORD}@{self.POSTGRES_HOST}:{self.MSSQL_PORT}/test?driver={self._get_sql_server_driver()}"
         self.SQLITE_URI = "sqlite:///./test.db?check_same_thread=false"
 
     def _apply_dot_env(self):
@@ -41,3 +41,13 @@ class BaseConfig:
         for k, v in os.environ.items():
             if hasattr(self, k):
                 setattr(self, k, v)
+
+    @staticmethod
+    def _get_sql_server_driver():
+        try:
+            driver = pyodbc.drivers()[0]
+            assert "SQL Server" in driver
+        except IndexError or AssertionError:
+            return "SQL+Server"
+        else:
+            return driver.replace(" ", "+")
