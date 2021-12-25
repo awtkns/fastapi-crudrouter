@@ -16,7 +16,7 @@ pytest
 pytest-virtualenv
 requests
 asynctest
-psycopg2
+psycopg2; sys_platform == 'win32'
 pyodbc
 
 # Linting
