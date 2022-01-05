@@ -1,18 +1,20 @@
 import pathlib
 
 file = pathlib.Path(__file__)
-package = file.parent.parent.parent / "fastapi_crudrouter"
+root_dir = file.parent.parent.parent
+package_src = root_dir / "fastapi_crudrouter"
 
 
 def test_py_typed_file_exists():
-    assert (package / "py.typed").exists()
-    assert (package / "py.typed").is_file()
+    assert (package_src / "py.typed").exists()
+    assert (package_src / "py.typed").is_file()
 
 
 def test_virtualenv(virtualenv):
-    assert (package).exists()
+    assert (root_dir).exists()
+    assert (root_dir / "setup.py").exists()
 
-    virtualenv.run(f"pip install -e {package}")
+    virtualenv.run(f"pip install -e {root_dir}")
     virtualenv.run(f"pip install mypy")
     virtualenv.run(f"mypy {file}")
 
