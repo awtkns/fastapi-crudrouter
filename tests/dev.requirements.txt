@@ -4,7 +4,7 @@ async-exit-stack; python_version=='3.6'
 
 # Backends
 ormar
-tortoise-orm=0.17.8
+tortoise-orm==0.17.8
 databases
 aiosqlite
 sqlalchemy==1.3.22
