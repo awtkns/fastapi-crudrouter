@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from typing import Any, Callable, Generic, List, Optional, Type, Union
 
 from fastapi import APIRouter, HTTPException
@@ -176,23 +177,29 @@ class CRUDGenerator(Generic[T], APIRouter):
             ):
                 self.routes.remove(route)
 
+    @abstractmethod
     def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def _create(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def _update(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        raise NotImplementedError
+        pass
 
     def _raise(self, e: Exception, status_code: int = 422) -> HTTPException:
         raise HTTPException(422, ", ".join(e.args)) from e
