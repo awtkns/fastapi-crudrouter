@@ -179,27 +179,27 @@ class CRUDGenerator(Generic[T], APIRouter):
 
     @abstractmethod
     def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def _create(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def _update(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
-        pass
+        raise NotImplementedError
 
     def _raise(self, e: Exception, status_code: int = 422) -> HTTPException:
         raise HTTPException(422, ", ".join(e.args)) from e

@@ -1,15 +1,16 @@
 import pytest
 from fastapi import APIRouter, FastAPI
+
 from fastapi_crudrouter import (
     GinoCRUDRouter,
     MemoryCRUDRouter,
     OrmarCRUDRouter,
     SQLAlchemyCRUDRouter,
+    DatabasesCRUDRouter,
 )
 
 # noinspection PyProtectedMember
 from fastapi_crudrouter.core._base import CRUDGenerator
-
 from tests import Potato
 
 
@@ -19,9 +20,10 @@ def test_router_type():
     assert issubclass(MemoryCRUDRouter, APIRouter)
     assert issubclass(OrmarCRUDRouter, APIRouter)
     assert issubclass(GinoCRUDRouter, APIRouter)
+    assert issubclass(DatabasesCRUDRouter, APIRouter)
 
 
-def test_get_one():
+def test_raise_not_implemented():
     app = FastAPI()
 
     def foo(*args, **kwargs):
@@ -29,8 +31,6 @@ def test_get_one():
             pass
 
         return bar
-
-    foo()()
 
     methods = CRUDGenerator.get_routes()
 
