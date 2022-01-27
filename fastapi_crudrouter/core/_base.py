@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from typing import Any, Callable, Generic, List, Optional, Type, Union
 
 from fastapi import APIRouter, HTTPException
@@ -9,7 +10,7 @@ from ._utils import pagination_factory, schema_factory
 NOT_FOUND = HTTPException(404, "Item not found")
 
 
-class CRUDGenerator(Generic[T], APIRouter):
+class CRUDGenerator(Generic[T], APIRouter, ABC):
     schema: Type[T]
     create_schema: Type[T]
     update_schema: Type[T]
@@ -176,21 +177,27 @@ class CRUDGenerator(Generic[T], APIRouter):
             ):
                 self.routes.remove(route)
 
+    @abstractmethod
     def _get_all(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
+    @abstractmethod
     def _get_one(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
+    @abstractmethod
     def _create(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
+    @abstractmethod
     def _update(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
+    @abstractmethod
     def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
+    @abstractmethod
     def _delete_all(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
