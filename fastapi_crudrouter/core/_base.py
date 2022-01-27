@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Any, Callable, Generic, List, Optional, Type, Union
 
 from fastapi import APIRouter, HTTPException
@@ -10,7 +10,7 @@ from ._utils import pagination_factory, schema_factory
 NOT_FOUND = HTTPException(404, "Item not found")
 
 
-class CRUDGenerator(Generic[T], APIRouter):
+class CRUDGenerator(Generic[T], APIRouter, ABC):
     schema: Type[T]
     create_schema: Type[T]
     update_schema: Type[T]
