@@ -1,3 +1,5 @@
+Release Notes
+===
 
 ## [v0.8.5 - Typing](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.8.5) { .releases } 
 2022-01-27
@@ -21,7 +23,7 @@ Big thanks to all contributors that made this possible!
 - 404 response not documented in OpenAPI spec [#104](https://github.com/awtkns/fastapi-crudrouter/pull/104) [@sondrelg](https://github.com/sondrelg)
 - DatabasesCRUDRouter not functioning for inserts and deletes with AsyncPG [#98](https://github.com/awtkns/fastapi-crudrouter/pull/98)
 
-**Full Changelog**: https://github.com/awtkns/fastapi-crudrouter/compare/v0.8.0...v0.8.5
+**Full Changelog**: [`v0.8.0...v0.8.5`](https://github.com/awtkns/fastapi-crudrouter/compare/v0.8.0...v0.8.5)
 
 ---
 
