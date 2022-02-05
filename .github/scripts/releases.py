@@ -16,18 +16,12 @@ gh = Github(GITHUB_TOKEN)
 
 
 def generate_header(r: GitRelease, header_row: bool = False):
-    if header_row:
-        header = "Release Notes\n===\n"
-    else:
-        header = "\n\n---\n"
+    header = "Release Notes\n===\n" if header_row else "\n\n---\n"
 
-    return (
-        header
-        + f"""
+    return f"""{header}
 ## [{r.title}]({r.html_url}){" { .releases } "}
 {r.created_at.date()}
 """
-    )
 
 
 def commit_update(content: str):
