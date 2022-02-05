@@ -21,10 +21,13 @@ def generate_header(r: GitRelease, header_row: bool = False):
     else:
         header = "\n\n---\n"
 
-    return f"""{header}
+    return (
+        header
+        + f"""
 ## [{r.title}]({r.html_url}){" { .releases } "}
 {r.created_at.date()}
 """
+    )
 
 
 def commit_update(content: str):
@@ -68,5 +71,4 @@ if __name__ == "__main__":
             show_header = False
 
     new_content = insert_links(new_content)
-    # commit_update(new_content)
-    print(new_content)
+    commit_update(new_content)
