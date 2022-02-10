@@ -18,6 +18,7 @@ requests
 asynctest
 psycopg2
 pyodbc
+schemathesis
 
 # Linting
 flake8
