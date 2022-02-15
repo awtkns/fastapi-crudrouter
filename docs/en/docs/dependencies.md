@@ -14,7 +14,7 @@ from fastapi_crudrouter import MemoryCRUDRouter
 app = FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
-def token_auth(token: str):
+def token_auth(token: str=Depends(oauth2_scheme)):
     if not token:
         raise HTTPException(401, "Invalid token")
 

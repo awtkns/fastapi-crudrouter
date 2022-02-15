@@ -3,11 +3,11 @@ contributing, reading the development guidelines below may help you in the proce
 
 ## Github
 
-### Issues
+#### Issues
 Please create an issue to report a bug, request a feature or to simply ask a question.
 
 
-### Pull Requests
+#### Pull Requests
 Unless the pull request is a simple bugfix, please try to create an issue before starting on the implementation of your pull request.
 This ensures that the potential feature is in alignment with CRUDRouter's goals moving forward. This also allows for feedback
 on the feature and potential help on where to start implementation wise.
@@ -93,9 +93,3 @@ $ mkdocs serve
 ```
 
 </div>
-
-
-### Tidbits on Implementation
-
-
-
