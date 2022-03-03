@@ -86,7 +86,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
             if model:
                 return model
             else:
-                raise NOT_FOUND
+                raise NOT_FOUND["http_exeption"]
 
         return route
 

@@ -87,7 +87,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
                     _exclude=False, **filter_
                 ).first()
             except NoMatch:
-                raise NOT_FOUND from None
+                raise NOT_FOUND["http_exeption"] from None
             return model
 
         return route
