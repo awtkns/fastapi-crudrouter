@@ -1,6 +1,6 @@
 from typing import Any, Callable, List, Type, Generator, Optional, Union
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 
 from . import CRUDGenerator, NOT_FOUND, _utils
 from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
@@ -39,6 +39,11 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         update_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
+        create_status_code: Optional[int] = status.HTTP_201_CREATED,
+        get_all_status_code: Optional[int] = status.HTTP_200_OK,
+        get_one_status_code: Optional[int] = status.HTTP_200_OK,
+        update_status_code: Optional[int] = status.HTTP_200_OK,
+        delete_status_code: Optional[int] = status.HTTP_200_OK,
         **kwargs: Any
     ) -> None:
         assert (
@@ -49,6 +54,9 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         self.db_func = db
         self._pk: str = db_model.__table__.primary_key.columns.keys()[0]
         self._pk_type: type = _utils.get_pk_type(schema, self._pk)
+        self.create_status_code = create_status_code
+        self.update_status_code = update_status_code
+        self.delete_status_code = delete_status_code
 
         super().__init__(
             schema=schema,
@@ -63,6 +71,11 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             update_route=update_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
+            create_status_code=create_status_code,
+            get_all_status_code=get_all_status_code,
+            get_one_status_code=get_one_status_code,
+            update_status_code=update_status_code,
+            delete_status_code=delete_status_code,
             **kwargs
         )
 
@@ -107,7 +120,9 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
                 db.add(db_model)
                 db.commit()
                 db.refresh(db_model)
-                return db_model
+
+                if not self.create_status_code == status.HTTP_204_NO_CONTENT:
+                    return db_model
             except IntegrityError:
                 db.rollback()
                 raise HTTPException(422, "Key already exists") from None
@@ -130,7 +145,8 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
                 db.commit()
                 db.refresh(db_model)
 
-                return db_model
+                if not self.update_status_code == status.HTTP_204_NO_CONTENT:
+                    return db_model
             except IntegrityError as e:
                 db.rollback()
                 self._raise(e)
@@ -154,6 +170,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             db.delete(db_model)
             db.commit()
 
-            return db_model
+            if not self.delete_status_code == status.HTTP_204_NO_CONTENT:
+                return db_model
 
         return route
