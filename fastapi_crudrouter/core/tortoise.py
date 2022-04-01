@@ -69,12 +69,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(item_id: int) -> Model:
-            model = await self.db_model.filter(id=item_id).first()
-
-            if model:
-                return model
-            else:
-                raise NOT_FOUND
+            return await self.db_model.get(id=item_id)
 
         return route
 
