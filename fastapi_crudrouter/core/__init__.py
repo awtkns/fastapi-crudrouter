@@ -6,6 +6,7 @@ from .mem import MemoryCRUDRouter
 from .ormar import OrmarCRUDRouter
 from .sqlalchemy import SQLAlchemyCRUDRouter
 from .tortoise import TortoiseCRUDRouter
+from .beanie import BeanieCRUDRouter
 
 __all__ = [
     "_utils",
@@ -17,4 +18,5 @@ __all__ = [
     "TortoiseCRUDRouter",
     "OrmarCRUDRouter",
     "GinoCRUDRouter",
+    "BeanieCRUDRouter",
 ]

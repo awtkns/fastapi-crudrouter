@@ -5,6 +5,7 @@ from .core import (
     OrmarCRUDRouter,
     SQLAlchemyCRUDRouter,
     TortoiseCRUDRouter,
+    BeanieCRUDRouter,
 )
 
 from ._version import __version__  # noqa: F401
@@ -16,4 +17,5 @@ __all__ = [
     "TortoiseCRUDRouter",
     "OrmarCRUDRouter",
     "GinoCRUDRouter",
+    "BeanieCRUDRouter",
 ]
