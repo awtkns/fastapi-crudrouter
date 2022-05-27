@@ -1,1 +1,7 @@
-fastapi>=0.62.0
+anyio==3.6.1; python_version >= "3.6" and python_full_version >= "3.6.2"
+fastapi==0.75.2; python_full_version >= "3.6.1"
+idna==3.3; python_version >= "3.6" and python_full_version >= "3.6.2"
+pydantic==1.9.1; python_full_version >= "3.6.1"
+sniffio==1.2.0; python_version >= "3.6" and python_full_version >= "3.6.2"
+starlette==0.17.1; python_version >= "3.6" and python_full_version >= "3.6.1"
+typing-extensions==4.2.0; python_version >= "3.7" and python_full_version >= "3.6.2" and python_version < "3.8"
