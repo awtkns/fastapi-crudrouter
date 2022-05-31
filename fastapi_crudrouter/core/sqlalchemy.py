@@ -93,7 +93,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             if model:
                 return model
             else:
-                raise NOT_FOUND["http_exeption"] from None
+                raise NOT_FOUND from None
 
         return route
 

@@ -103,7 +103,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
             if model:
                 return pydantify_record(model)  # type: ignore
             else:
-                raise NOT_FOUND["http_exeption"]
+                raise NOT_FOUND
 
         return route
 
@@ -136,7 +136,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
                 )
                 return await self._get_one()(item_id)
             except Exception as e:
-                raise NOT_FOUND["http_exeption"] from e
+                raise NOT_FOUND from e
 
         return route
 
@@ -158,6 +158,6 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
                 await self.db.execute(query=query)
                 return row
             except Exception as e:
-                raise NOT_FOUND["http_exeption"] from e
+                raise NOT_FOUND from e
 
         return route

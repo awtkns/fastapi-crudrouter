@@ -12,13 +12,7 @@ from ._utils import pagination_factory, schema_factory
 class NotFoundModel(BaseModel):
     detail: str
 
-
-NOT_FOUND = {
-    "status_code": 404,
-    "http_exeption": HTTPException(404, "Item not found"),
-    "class_exeption": NotFoundModel,
-}
-
+NOT_FOUND = HTTPException(404, "Item not found")
 
 class CRUDGenerator(Generic[T], APIRouter, ABC):
     schema: Type[T]
@@ -137,7 +131,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
         dependencies = [] if isinstance(dependencies, bool) else dependencies
         responses: Any = (
             {
-                err["status_code"]: {"model": err["class_exeption"]}
+                err.status_code: {"model": NotFoundModel}
                 for err in error_responses
             }
             if error_responses

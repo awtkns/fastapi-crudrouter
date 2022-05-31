@@ -62,7 +62,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
                 if model.id == item_id:  # type: ignore
                     return model
 
-            raise NOT_FOUND["http_exeption"]
+            raise NOT_FOUND
 
         return route
 
@@ -85,7 +85,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
                     )
                     return self.models[ind]
 
-            raise NOT_FOUND["http_exeption"]
+            raise NOT_FOUND
 
         return route
 
@@ -103,7 +103,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
                     del self.models[ind]
                     return model
 
-            raise NOT_FOUND["http_exeption"]
+            raise NOT_FOUND
 
         return route
 
