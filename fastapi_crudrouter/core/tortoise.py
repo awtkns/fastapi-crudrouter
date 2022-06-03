@@ -4,6 +4,7 @@ from . import CRUDGenerator, NOT_FOUND
 from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 
 try:
+    from tortoise.exceptions import DoesNotExist
     from tortoise.models import Model
 except ImportError:
     Model = None  # type: ignore
@@ -69,7 +70,10 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(item_id: int) -> Model:
-            return await self.db_model.get(id=item_id)
+            try:
+                return await self.db_model.get(id=item_id)
+            except DoesNotExist:
+                raise NOT_FOUND
 
         return route
 
