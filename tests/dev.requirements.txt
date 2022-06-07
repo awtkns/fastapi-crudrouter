@@ -17,7 +17,7 @@ click==8.0.4
 colorama==0.4.4; python_version >= "3.6" and python_full_version < "3.0.0" or python_full_version >= "3.5.0" and python_version >= "3.6"
 contextlib2==21.6.0; python_version >= "3.6"
 contextvars==2.4
-databases==0.5.2; python_version >= "3.6"
+databases==0.5.4; python_version >= "3.6"
 dataclasses==0.8
 distlib==0.3.4; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"
 execnet==1.9.0; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"
@@ -38,13 +38,13 @@ flake8-polyfill==1.0.2
 flake8-variables-names==0.0.4; python_version >= "3.6" and python_version < "3.7"
 flake8-variables-names==0.0.5; python_version >= "3.7" and python_version < "4.0"
 flake8==3.9.2; python_version >= "3.6" and python_version < "4.0"
-gino-starlette==0.1.2; python_version >= "3.6" and python_version < "4.0"
-gino==1.0.0; python_version >= "3.6" and python_version < "4.0"
+gino-starlette==0.1.2; python_version >= "3.6" and python_version < "3.7" or python_version >= "3.7" and python_version < "4.0"
+gino==1.0.0
 gitdb==4.0.9
 gitpython==3.1.20
 greenlet==1.1.2
 idna==3.3; python_version >= "3.5" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version >= "3.5"
-immutables==0.18; python_version >= "3.6" and python_version < "3.7"
+immutables==0.18
 importlib-metadata==1.7.0
 importlib-resources==5.4.0; python_version >= "3.6" and python_full_version < "3.0.0" and python_version < "3.7" or python_full_version >= "3.5.0" and python_version < "3.7" and python_version >= "3.6"
 iniconfig==1.1.1; python_version >= "3.6"
@@ -54,8 +54,7 @@ mock==4.0.3; python_version >= "3.6"
 mr-proper==0.0.7
 mypy-extensions==0.4.3
 mypy==0.910; python_version >= "3.5"
-ormar==0.10.20; python_version >= "3.7" and python_version < "4.0"
-ormar==0.9.3; python_version >= "3.6" and python_version < "3.7"
+ormar==0.9.3; python_version >= "3.6" and python_version < "3.7" or python_version >= "3.7" and python_version < "4.0"
 packaging==21.3; python_version >= "3.6"
 path.py==12.5.0; python_version >= "3.5"
 path==16.2.0; python_version >= "3.6"
@@ -77,20 +76,20 @@ pytest-virtualenv==1.7.0
 pytest==6.2.5; python_version >= "3.6"
 pytz==2022.1; python_version >= "3.7" and python_version < "4.0"
 pyyaml==6.0
-regex==2022.4.24
+regex==2022.6.2
 requests==2.27.1; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.6.0")
 six==1.16.0; python_version >= "3.4" and python_full_version < "3.0.0" and python_version < "4.0" or python_version >= "3.4" and python_version < "4.0" and python_full_version >= "3.5.0"
 smmap==5.0.0
 sqlalchemy-utils==0.38.2; python_version >= "3.4" and python_version < "4.0"
-sqlalchemy==1.4.25; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.6.0")
-starlette==0.14.2; python_version >= "3.6" and python_version < "4.0"
+sqlalchemy==1.4.37; (python_version >= "2.7" and python_full_version < "3.0.0") or (python_full_version >= "3.6.0")
+starlette==0.14.2
 stdlib-list==0.8.0
 stevedore==3.5.0
 termcolor==1.1.0
 toml==0.10.2
 tortoise-orm==0.17.8; python_version >= "3.7" and python_version < "4.0"
 typed-ast==1.4.3
-typing-extensions==3.7.4.3
+typing-extensions==4.1.1
 urllib3==1.26.9; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.6.0" and python_version < "4"
 virtualenv==20.14.1; python_version >= "2.7" and python_full_version < "3.0.0" or python_full_version >= "3.5.0"
 zipp==3.6.0
