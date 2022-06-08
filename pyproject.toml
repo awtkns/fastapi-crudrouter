@@ -11,6 +11,7 @@ pydantic = "<=1.9"
 fastapi = ">=0.62"
 
 [tool.poetry.dev-dependencies]
+dataclasses = {version = "^0.8", python = "~3.6"}
 async_generator = "^1.10"
 async-exit-stack = "^1.0.1"
 
