@@ -52,7 +52,7 @@ flake8-variables-names = [
     {version = "^0.0.5", python = "^3.7"}
 ]
 flake8-bandit = [
-    {version = "^3.0.0", python = "^3.7"}
+    {version = "^3.0.0", python = ">=3.7,<3.10"}
 ]
 flake8-annotations = [
     {version = "^2.9.0", python = "^3.7"}
