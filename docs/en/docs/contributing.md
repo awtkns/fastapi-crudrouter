@@ -14,6 +14,20 @@ on the feature and potential help on where to start implementation wise.
 
 ## Development
 
+### Using [poetry](https://python-poetry.org/)
+
+FastAPI-Crudrouter uses [poetry](https://python-poetry.org/) as depenency management system. To install all of the required dependecies simply run:
+
+    poetry install
+
+Both dev-requirements and project-requirements will be installed with this command.
+
+To enter the virtual-environment created with poetry use:
+
+    poetry shell
+
+If you are not familiar with poetry, please read their [usage guide](https://python-poetry.org/docs/basic-usage/).
+
 ### Installing the Dev Requirements
 FastAPI-Crudrouter requires as set of development requirements that can installed with `pip` be found in `tests/dev.requirements.txt`
 
