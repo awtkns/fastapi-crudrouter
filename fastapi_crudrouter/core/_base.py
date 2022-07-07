@@ -72,6 +72,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 response_model=self.schema,
                 summary="Create One",
                 dependencies=create_route,
+                name=f"create_one_{prefix.replace('/','').lower()}",
             )
 
         if delete_all_route:
