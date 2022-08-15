@@ -150,7 +150,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
 
             try:
                 await self.db.fetch_one(
-                    query=query, values=schema.dict(exclude={self._pk})
+                    query=query, values=schema.dict(exclude={self._pk},exclude_unset=True)
                 )
                 return await self._get_one()(item_id)
             except Exception as e:
