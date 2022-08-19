@@ -121,7 +121,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
                 self._raise(e)
 
         return route
-    
+
     def _patch(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(
             item_id: self._pk_type,  # type: ignore
@@ -130,7 +130,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
             try:
                 db_model: Model = await self._get_one()(item_id)
                 async with self.db.transaction():
-                    model = model.dict(exclude={self._pk},exclude_unset=True)
+                    model = model.dict(exclude={self._pk}, exclude_unset=True)
                     await db_model.update(**model).apply()
                     db_model: Model = await self._get_one()(item_id)
                 return db_model

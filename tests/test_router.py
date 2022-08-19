@@ -69,6 +69,7 @@ def test_update(client, url: str = URL, model: Dict = None, id_key: str = "id"):
     assert compare_dict(res.json(), tuber, exclude=[id_key])
     assert not compare_dict(res.json(), model, exclude=[id_key])
 
+
 def test_patch(client, url: str = URL, model: Dict = None, id_key: str = "id"):
     test_get(client, url, expected_length=0)
 
@@ -82,7 +83,7 @@ def test_patch(client, url: str = URL, model: Dict = None, id_key: str = "id"):
     tuber = {}
     tuber["color"] = "yellow"
     resp_tuber = {k: v for k, v in model.items()}
-    resp_tuber["color"]="yellow"
+    resp_tuber["color"] = "yellow"
     res = client.patch(f"{url}/{data[id_key]}", json=tuber)
     assert res.status_code == 200
     assert compare_dict(res.json(), resp_tuber, exclude=[id_key])
@@ -92,6 +93,7 @@ def test_patch(client, url: str = URL, model: Dict = None, id_key: str = "id"):
     assert res.status_code == 200
     assert compare_dict(res.json(), resp_tuber, exclude=[id_key])
     assert not compare_dict(res.json(), model, exclude=[id_key])
+
 
 def test_delete_one(client, url: str = URL, model: Dict = None, id_key: str = "id"):
     model = model or basic_potato

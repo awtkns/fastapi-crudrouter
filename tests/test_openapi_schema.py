@@ -40,7 +40,7 @@ class TestOpenAPISpec:
         assert "422" in paths[path]["post"]["responses"]
 
         item_path = path + "/{item_id}"
-        for method in ["get", "put", "patch","delete"]:
+        for method in ["get", "put", "patch", "delete"]:
             assert "200" in paths[item_path][method]["responses"]
             assert "404" in paths[item_path][method]["responses"]
             assert "422" in paths[item_path][method]["responses"]

@@ -90,6 +90,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
             raise NOT_FOUND
 
         return route
+
     def _patch(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(item_id: int, model: self.patch_schema) -> SCHEMA:  # type: ignore
             for ind, model_ in enumerate(self.models):
@@ -97,11 +98,8 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
                     stored_item = model_.dict()
                     updated_item = model.dict(exclude_unset=True)
                     stored_item.update(updated_item)
-                    self.models[ind]=self.schema(
-                        **stored_item
-                    )
+                    self.models[ind] = self.schema(**stored_item)
                     return self.models[ind]
-
 
             raise NOT_FOUND
 

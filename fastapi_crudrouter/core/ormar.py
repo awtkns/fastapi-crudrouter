@@ -121,7 +121,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             return await self._get_one()(item_id)
 
         return route
-    
+
     def _patch(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(
             item_id: self._pk_type,  # type: ignore
@@ -137,7 +137,6 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             return await self._get_one()(item_id)
 
         return route
-
 
     def _delete_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
         async def route() -> List[Optional[Model]]:

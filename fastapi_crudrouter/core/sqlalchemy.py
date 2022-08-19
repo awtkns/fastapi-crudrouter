@@ -138,7 +138,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
                 self._raise(e)
 
         return route
-    
+
     def _patch(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(
             item_id: self._pk_type,  # type: ignore
@@ -148,7 +148,9 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             try:
                 db_model: Model = self._get_one()(item_id, db)
 
-                for key, value in model.dict(exclude={self._pk},exclude_unset=True).items():
+                for key, value in model.dict(
+                    exclude={self._pk}, exclude_unset=True
+                ).items():
                     if hasattr(db_model, key):
                         setattr(db_model, key, value)
 

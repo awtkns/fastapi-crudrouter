@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.types import DecoratedCallable
 
 from ._types import T, DEPENDENCIES
-from ._utils import pagination_factory, schema_factory,make_optional
+from ._utils import pagination_factory, schema_factory, make_optional
 
 NOT_FOUND = HTTPException(404, "Item not found")
 
@@ -50,7 +50,9 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
         self.patch_schema = (
             make_optional(update_schema)
             if update_schema
-            else make_optional(schema_factory(self.schema, pk_field_name=self._pk, name="Patch"))
+            else make_optional(
+                schema_factory(self.schema, pk_field_name=self._pk, name="Patch")
+            )
         )
 
         prefix = str(prefix if prefix else self.schema.__name__).lower()
@@ -233,4 +235,12 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
 
     @staticmethod
     def get_routes() -> List[str]:
-        return ["get_all", "create", "delete_all", "get_one", "update", "patch","delete_one"]
+        return [
+            "get_all",
+            "create",
+            "delete_all",
+            "get_one",
+            "update",
+            "patch",
+            "delete_one",
+        ]
