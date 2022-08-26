@@ -111,7 +111,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         async def route(
             schema: self.create_schema,  # type: ignore
         ) -> Model:
-            schema = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=schema, pk_field_name=self._pk)
+            schema, _ = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=schema, pk_field_name=self._pk)
             query = self.table.insert()
 
             try:

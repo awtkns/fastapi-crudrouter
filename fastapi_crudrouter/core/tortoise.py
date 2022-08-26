@@ -81,7 +81,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(model: self.create_schema) -> Model:  # type: ignore
-            model = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
+            model, _ = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
             db_model = self.db_model(**model.dict())
             await db_model.save()
 

@@ -103,7 +103,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             model: self.create_schema,  # type: ignore
             db: Session = Depends(self.db_func),
         ) -> Model:
-            model = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
+            model, _ = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
 
             try:
                 db_model: Model = self.db_model(**model.dict())

@@ -1,5 +1,7 @@
 from typing import Any, Callable, List, Type, cast, Optional, Union
 
+from fastapi import HTTPException
+
 from . import CRUDGenerator, NOT_FOUND
 from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
 from ._utils import create_schema_default_factory
@@ -69,9 +71,14 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(model: self.create_schema) -> SCHEMA:  # type: ignore
-            model = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
+            model, using_default_factory = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
             model_dict = model.dict()
-            model_dict["id"] = self._get_next_id()
+            if using_default_factory:
+                for _model in self.models:
+                    if _model.id == model.id:  # type: ignore
+                        raise HTTPException(422, "Key already exists") from None
+            else:
+                model_dict["id"] = self._get_next_id()
             ready_model = self.schema(**model_dict)
             self.models.append(ready_model)
             return ready_model

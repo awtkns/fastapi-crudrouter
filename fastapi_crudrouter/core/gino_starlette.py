@@ -95,7 +95,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
         async def route(
             model: self.create_schema,  # type: ignore
         ) -> Model:
-            model = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
+            model, _ = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
 
             try:
                 async with self.db.transaction():
