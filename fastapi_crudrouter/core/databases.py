@@ -13,7 +13,7 @@ from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND
 from ._types import PAGINATION, PYDANTIC_SCHEMA, DEPENDENCIES
-from ._utils import AttrDict, get_pk_type
+from ._utils import AttrDict, get_pk_type, create_schema_default_factory
 
 try:
     from sqlalchemy.sql.schema import Table
@@ -111,6 +111,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         async def route(
             schema: self.create_schema,  # type: ignore
         ) -> Model:
+            schema = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=schema, pk_field_name=self._pk)
             query = self.table.insert()
 
             try:

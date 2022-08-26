@@ -13,6 +13,7 @@ from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
 from ._types import DEPENDENCIES, PAGINATION
+from ._utils import create_schema_default_factory
 
 try:
     from ormar import Model, NoMatch
@@ -94,6 +95,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
 
     def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(model: self.create_schema) -> Model:  # type: ignore
+            model = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
             model_dict = model.dict()
             if self.schema.Meta.model_fields[self._pk].autoincrement:
                 model_dict.pop(self._pk, None)

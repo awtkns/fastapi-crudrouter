@@ -19,6 +19,21 @@ def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
         return int
 
 
+def create_schema_default_factory(
+    schema_cls: Type[T], create_schema_instance: T, pk_field_name: str = "id"
+) -> T:
+    """
+    Is used to check for default_factory for the pk on a Schema,
+    passing the CreateSchema values into the Schema if a
+    default_factory on the pk exists
+    """
+
+    if callable(schema_cls.__fields__[pk_field_name].default_factory):
+        return schema_cls(**create_schema_instance.dict())
+    else:
+        return create_schema_instance
+
+
 def schema_factory(
     schema_cls: Type[T], pk_field_name: str = "id", name: str = "Create"
 ) -> Type[T]:

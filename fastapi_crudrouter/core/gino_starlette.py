@@ -5,6 +5,7 @@ from fastapi import HTTPException
 from . import NOT_FOUND, CRUDGenerator, _utils
 from ._types import DEPENDENCIES, PAGINATION
 from ._types import PYDANTIC_SCHEMA as SCHEMA
+from ._utils import create_schema_default_factory
 
 try:
     from asyncpg.exceptions import UniqueViolationError
@@ -94,6 +95,8 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
         async def route(
             model: self.create_schema,  # type: ignore
         ) -> Model:
+            model = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
+
             try:
                 async with self.db.transaction():
                     db_model: Model = await self.db_model.create(**model.dict())
