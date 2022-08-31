@@ -26,7 +26,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
     def __init__(
         self,
         schema: Type[SCHEMA],
-        db_model: Model,
+        db_model: Type[Model],
         db: "Session",
         create_schema: Optional[Type[SCHEMA]] = None,
         update_schema: Optional[Type[SCHEMA]] = None,
