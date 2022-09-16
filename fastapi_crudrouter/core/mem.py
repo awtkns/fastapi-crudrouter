@@ -71,7 +71,11 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(model: self.create_schema) -> SCHEMA:  # type: ignore
-            model, using_default_factory = create_schema_default_factory(schema_cls=self.schema, create_schema_instance=model, pk_field_name=self._pk)
+            model, using_default_factory = create_schema_default_factory(
+                schema_cls=self.schema,
+                create_schema_instance=model,
+                pk_field_name=self._pk,
+            )
             model_dict = model.dict()
             if using_default_factory:
                 for _model in self.models:
