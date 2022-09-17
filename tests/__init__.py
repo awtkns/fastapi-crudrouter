@@ -1,9 +1,11 @@
-from pydantic import BaseModel
+from uuid import uuid4
+from pydantic import BaseModel, Field
 
 from .conf import config
 
 PAGINATION_SIZE = 10
 CUSTOM_TAGS = ["Tag1", "Tag2"]
+POTATO_TAGS = ["Potato"]
 
 
 class ORMModel(BaseModel):
@@ -21,6 +23,16 @@ class PotatoCreate(BaseModel):
 
 
 class Potato(PotatoCreate, ORMModel):
+    pass
+
+
+class DefaultFactoryPotatoCreate(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid4()))
+    color: str
+    mass: float
+
+
+class DefaultFactoryPotato(DefaultFactoryPotatoCreate, ORMModel):
     pass
 
 

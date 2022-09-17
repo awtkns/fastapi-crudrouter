@@ -2,12 +2,20 @@ import os
 
 import databases
 import ormar
+from pydantic import Field
 import pytest
 import sqlalchemy
 from fastapi import FastAPI
 
 from fastapi_crudrouter import OrmarCRUDRouter
-from tests import CarrotCreate, CarrotUpdate, PAGINATION_SIZE, CUSTOM_TAGS
+from tests import (
+    CarrotCreate,
+    CarrotUpdate,
+    PAGINATION_SIZE,
+    CUSTOM_TAGS,
+    POTATO_TAGS,
+    DefaultFactoryPotatoCreate,
+)
 
 DATABASE_URL = "sqlite:///./test.db"
 database = databases.Database(DATABASE_URL)
@@ -42,6 +50,15 @@ class PotatoModel(ormar.Model):
     mass = ormar.Float()
     color = ormar.String(max_length=255)
     type = ormar.String(max_length=255)
+
+
+class DefaultFactoryPotato(ormar.Model):
+    class Meta(BaseMeta):
+        tablename = "defaultfactorypotatoes"
+
+    id = ormar.String(primary_key=True, max_length=300)
+    mass = ormar.Float()
+    color = ormar.String(max_length=255)
 
 
 class CarrotModel(ormar.Model):
@@ -112,6 +129,13 @@ def ormar_implementation(**kwargs):
         dict(
             schema=PotatoModel,
             prefix="potato",
+            paginate=PAGINATION_SIZE,
+        ),
+        dict(
+            schema=DefaultFactoryPotato,
+            create_schema=DefaultFactoryPotatoCreate,
+            prefix="defaultfactorypotato",
+            tags=POTATO_TAGS,
             paginate=PAGINATION_SIZE,
         ),
         dict(

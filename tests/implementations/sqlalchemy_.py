@@ -13,6 +13,8 @@ from tests import (
     CustomPotato,
     PAGINATION_SIZE,
     Potato,
+    DefaultFactoryPotato,
+    POTATO_TAGS,
     PotatoType,
     CUSTOM_TAGS,
     config,
@@ -59,6 +61,12 @@ def sqlalchemy_implementation(db_uri: str):
         color = Column(String)
         type = Column(String)
 
+    class DefaultFactoryPotatoModel(Base):
+        __tablename__ = "defaultfactorypotatoes"
+        id = Column(String, primary_key=True, index=True)
+        mass = Column(Float)
+        color = Column(String)
+
     class CarrotModel(Base):
         __tablename__ = "carrots"
         id = Column(Integer, primary_key=True, index=True)
@@ -72,6 +80,14 @@ def sqlalchemy_implementation(db_uri: str):
             db_model=PotatoModel,
             db=session,
             prefix="potato",
+            paginate=PAGINATION_SIZE,
+        ),
+        dict(
+            schema=DefaultFactoryPotato,
+            db_model=DefaultFactoryPotatoModel,
+            db=session,
+            prefix="defaultfactorypotato",
+            tags=POTATO_TAGS,
             paginate=PAGINATION_SIZE,
         ),
         dict(

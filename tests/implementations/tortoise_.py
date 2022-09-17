@@ -10,6 +10,8 @@ from tests import (
     CarrotUpdate,
     PAGINATION_SIZE,
     Potato,
+    DefaultFactoryPotato,
+    POTATO_TAGS,
     CUSTOM_TAGS,
 )
 
@@ -19,6 +21,12 @@ class PotatoModel(Model):
     mass = fields.FloatField()
     color = fields.CharField(max_length=255)
     type = fields.CharField(max_length=255)
+
+
+class DefaultFactoryPotatoModel(Model):
+    id = fields.CharField(pk=True, index=True, max_length=255)
+    mass = fields.FloatField()
+    color = fields.CharField(max_length=255)
 
 
 class CarrotModel(Model):
@@ -58,6 +66,13 @@ def tortoise_implementation(**kwargs):
             schema=Potato,
             db_model=PotatoModel,
             prefix="potato",
+            paginate=PAGINATION_SIZE,
+        ),
+        dict(
+            schema=DefaultFactoryPotato,
+            db_model=DefaultFactoryPotatoModel,
+            prefix="defaultfactorypotato",
+            tags=POTATO_TAGS,
             paginate=PAGINATION_SIZE,
         ),
         dict(

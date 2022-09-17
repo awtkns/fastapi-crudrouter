@@ -1,13 +1,22 @@
 from fastapi import FastAPI
 
 from fastapi_crudrouter import MemoryCRUDRouter
-from tests import Potato, Carrot, CarrotUpdate, PAGINATION_SIZE, CUSTOM_TAGS
+from tests import (
+    Potato,
+    DefaultFactoryPotato,
+    Carrot,
+    CarrotUpdate,
+    PAGINATION_SIZE,
+    CUSTOM_TAGS,
+    POTATO_TAGS,
+)
 
 
 def memory_implementation(**kwargs):
     app = FastAPI()
     router_settings = [
         dict(schema=Potato, paginate=PAGINATION_SIZE),
+        dict(schema=DefaultFactoryPotato, paginate=PAGINATION_SIZE, tags=POTATO_TAGS),
         dict(schema=Carrot, update_schema=CarrotUpdate, tags=CUSTOM_TAGS),
     ]
 
