@@ -14,6 +14,7 @@ from tests import (
     PAGINATION_SIZE,
     CUSTOM_TAGS,
     POTATO_TAGS,
+    DefaultFactoryPotato,
     DefaultFactoryPotatoCreate,
 )
 
@@ -52,7 +53,7 @@ class PotatoModel(ormar.Model):
     type = ormar.String(max_length=255)
 
 
-class DefaultFactoryPotato(ormar.Model):
+class DefaultFactoryPotatoModel(ormar.Model):
     class Meta(BaseMeta):
         tablename = "defaultfactorypotatoes"
 
@@ -132,8 +133,10 @@ def ormar_implementation(**kwargs):
             paginate=PAGINATION_SIZE,
         ),
         dict(
-            schema=DefaultFactoryPotato,
+            schema=DefaultFactoryPotatoModel,
+            default_factory_schema=DefaultFactoryPotato,
             create_schema=DefaultFactoryPotatoCreate,
+            update_schema=DefaultFactoryPotatoCreate,
             prefix="defaultfactorypotato",
             tags=POTATO_TAGS,
             paginate=PAGINATION_SIZE,
