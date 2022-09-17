@@ -27,12 +27,12 @@ class Potato(PotatoCreate, ORMModel):
 
 
 class DefaultFactoryPotatoCreate(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid4()))
     color: str
     mass: float
 
 
 class DefaultFactoryPotato(DefaultFactoryPotatoCreate, ORMModel):
+    id: str = Field(default_factory=lambda: str(uuid4()))
     pass
 
 
