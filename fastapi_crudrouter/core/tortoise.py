@@ -2,7 +2,7 @@ from typing import Any, Callable, List, Type, cast, Coroutine, Optional, Union
 
 from . import CRUDGenerator, NOT_FOUND
 from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
-from ._utils import create_schema_default_factory
+from ._utils import get_pk_type, create_schema_default_factory
 
 try:
     from tortoise.models import Model
@@ -41,6 +41,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
 
         self.db_model = db_model
         self._pk: str = db_model.describe()["pk_field"]["db_column"]
+        self._pk_type: type = get_pk_type(schema, self._pk)
 
         super().__init__(
             schema=schema,
@@ -69,7 +70,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         return route
 
     def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
-        async def route(item_id: int) -> Model:
+        async def route(item_id: self._pk_type) -> Model:
             model = await self.db_model.filter(id=item_id).first()
 
             if model:
@@ -95,7 +96,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
 
     def _update(self, *args: Any, **kwargs: Any) -> CALLABLE:
         async def route(
-            item_id: int, model: self.update_schema  # type: ignore
+            item_id: self._pk_type, model: self.update_schema  # type: ignore
         ) -> Model:
             await self.db_model.filter(id=item_id).update(
                 **model.dict(exclude_unset=True)
@@ -112,7 +113,7 @@ class TortoiseCRUDRouter(CRUDGenerator[SCHEMA]):
         return route
 
     def _delete_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
-        async def route(item_id: int) -> Model:
+        async def route(item_id: self._pk_type) -> Model:
             model: Model = await self._get_one()(item_id)
             await self.db_model.filter(id=item_id).delete()
 

@@ -12,7 +12,7 @@ class AttrDict(dict):  # type: ignore
         self.__dict__ = self
 
 
-def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
+def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str = "id") -> Any:
     try:
         return schema.__fields__[pk_field].type_
     except KeyError:

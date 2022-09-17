@@ -4,7 +4,7 @@ from fastapi import HTTPException
 
 from . import CRUDGenerator, NOT_FOUND
 from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
-from ._utils import create_schema_default_factory
+from ._utils import get_pk_type, create_schema_default_factory
 
 CALLABLE = Callable[..., SCHEMA]
 CALLABLE_LIST = Callable[..., List[SCHEMA]]
@@ -27,6 +27,8 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any
     ) -> None:
+        self._pk_type: type = get_pk_type(schema)
+
         super().__init__(
             schema=schema,
             create_schema=create_schema,
@@ -60,7 +62,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         return route
 
     def _get_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
-        def route(item_id: int) -> SCHEMA:
+        def route(item_id: self._pk_type) -> SCHEMA:
             for model in self.models:
                 if model.id == item_id:  # type: ignore
                     return model
@@ -90,7 +92,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         return route
 
     def _update(self, *args: Any, **kwargs: Any) -> CALLABLE:
-        def route(item_id: int, model: self.update_schema) -> SCHEMA:  # type: ignore
+        def route(item_id: self._pk_type, model: self.update_schema) -> SCHEMA:  # type: ignore
             for ind, model_ in enumerate(self.models):
                 if model_.id == item_id:  # type: ignore
                     self.models[ind] = self.schema(
@@ -110,7 +112,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         return route
 
     def _delete_one(self, *args: Any, **kwargs: Any) -> CALLABLE:
-        def route(item_id: int) -> SCHEMA:
+        def route(item_id: self._pk_type) -> SCHEMA:
             for ind, model in enumerate(self.models):
                 if model.id == item_id:  # type: ignore
                     del self.models[ind]
