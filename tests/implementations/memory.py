@@ -26,4 +26,7 @@ def memory_implementation(**kwargs):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(memory_implementation(), port=5000)
+    app, route_type, routes = memory_implementation()
+    for route in routes:
+        app.include_router(route_type(**route))
+    uvicorn.run(app, port=5000)
