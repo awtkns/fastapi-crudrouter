@@ -46,16 +46,16 @@ works and is bug free.
 
 #### Test requirements
 Tests require a postgres database for tests to run. The easiest way to accomplish this is with docker. This project offers
-a docker-compose file at tests/conf/dev.docker-compose.yaml. You can use this file with
+a docker-compose file at tests/conf/dev.docker-compose.yml. You can use this file with
 
 ```console
-$ docker compose -f tests/conf/dev.docker-compose.yaml up -d
+$ docker compose -f tests/conf/dev.docker-compose.yml up -d
 ```
 
 After testing you can tear down the running containers with
 
 ```console
-$ docker compose -f tests/conf/dev.docker-compose.yaml down
+$ docker compose -f tests/conf/dev.docker-compose.yml down
 ```
 
 #### Running tests
