@@ -1,7 +1,5 @@
-from typing import TYPE_CHECKING, Callable, Iterator, List, Optional
+from typing import TYPE_CHECKING, Callable, List, Optional
 
-import pytest
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from fastapi_crudrouter import SQLAlchemyCRUDRouter
 from sqlalchemy import Column, ForeignKey, Integer, String, Table, inspect
@@ -74,7 +72,6 @@ class TeamRead(ORMModel):
 class TeamCreateUpdate(ORMModel):
     """Team Update View."""
 
-    # TODO: id shouldn't be here
     id: Optional[int] = None
     name: Optional[str] = None
     headquarters: Optional[str] = None
@@ -115,7 +112,6 @@ class HeroRead(ORMModel):
 class HeroCreateUpdate(ORMModel):
     """Hero Update View."""
 
-    # TODO: id shouldn't be here
     id: Optional[int] = None
     name: Optional[str] = None
     team_id: Optional[int] = None
