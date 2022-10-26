@@ -28,6 +28,20 @@ the [SQLAlchemyCRUDRouter](backends/sqlalchemy.md) will use the model's table na
     You are also able to set custom prefixes with the `prefix` kwarg when creating your CRUDRouter. This can be done like so:
     `router = CRUDRouter(model=mymodel, prefix='carrot')`
 
+## Custom item_id
+
+If you don't want the default `item_id` as your path parameter name for the item id you can use set the `item_id_parameter_name` key when creating a new CRUDRouter. This will change the parameter name in the OpenAPI specification for you.
+
+```python
+SQLAlchemyCRUDRouter(
+    schema=Potato,
+    db_model=PotatoModel,
+    db=session,
+    prefix="potato",
+    item_id_parameter_name="potato_id",
+)
+```
+
 ## Disabling Routes
 Routes can be disabled from generating with a key word argument (kwarg) when creating your CRUDRouter. The valid kwargs 
 are shown below.
