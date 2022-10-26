@@ -21,6 +21,7 @@ from .sqlalchemy_ import (
     sqlalchemy_implementation_custom_ids,
     sqlalchemy_implementation_integrity_errors,
     sqlalchemy_implementation_string_pk,
+    sqlalchemy_implementation_custom_item_id,
     DSN_LIST,
 )
 
