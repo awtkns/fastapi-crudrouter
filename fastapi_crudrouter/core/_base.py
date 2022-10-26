@@ -30,6 +30,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
         update_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
+        item_id_parameter_name: Optional[str] = "item_id",
         **kwargs: Any,
     ) -> None:
 
@@ -46,6 +47,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
             if update_schema
             else schema_factory(self.schema, pk_field_name=self._pk, name="Update")
         )
+        item_id_path = f"/{{{item_id_parameter_name}}}"
 
         prefix = str(prefix if prefix else self.schema.__name__).lower()
         prefix = self._base_path + prefix.strip("/")
@@ -85,7 +87,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
 
         if get_one_route:
             self._add_api_route(
-                "/{item_id}",
+                item_id_path,
                 self._get_one(),
                 methods=["GET"],
                 response_model=self.schema,
@@ -96,7 +98,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
 
         if update_route:
             self._add_api_route(
-                "/{item_id}",
+                item_id_path,
                 self._update(),
                 methods=["PUT"],
                 response_model=self.schema,
@@ -107,7 +109,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
 
         if delete_one_route:
             self._add_api_route(
-                "/{item_id}",
+                item_id_path,
                 self._delete_one(),
                 methods=["DELETE"],
                 response_model=self.schema,
