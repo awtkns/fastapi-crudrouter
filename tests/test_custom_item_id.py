@@ -1,7 +1,6 @@
 from . import test_router
 from pytest import mark
 
-from tests import CUSTOM_TAGS
 
 potato_type = dict(name="russet", origin="Canada")
 
