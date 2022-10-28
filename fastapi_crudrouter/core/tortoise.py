@@ -1,4 +1,4 @@
-from typing import Any, Callable, ItemsView, List, Type, cast, Coroutine, Optional, Union
+from typing import Any, Callable, List, Type, cast, Coroutine, Optional, Union
 
 from . import CRUDGenerator, NOT_FOUND
 from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
