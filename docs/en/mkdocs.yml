@@ -53,7 +53,7 @@ markdown_extensions:
 extra:
   analytics:
     provider: google
-    property: UA-186315536-1
+    property: G-344651366
   social:
   - icon: fontawesome/brands/github-alt
     link: https://github.com/awtkns/fastapi-crudrouter
