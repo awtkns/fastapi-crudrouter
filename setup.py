@@ -14,7 +14,7 @@ setup(
     name="fastapi-crudrouter",
     version=get_version(),
     author="Adam Watkins",
-    author_email="cadamrun@gmail.com",
+    author_email="hello@awtkns.com",
     packages=find_packages(exclude=("tests.*", "tests")),
     url="https://github.com/awtkns/fastapi-crudrouter",
     documentation="https://fastapi-crudrouter.awtkns.com/",

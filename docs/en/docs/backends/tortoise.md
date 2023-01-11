@@ -5,6 +5,9 @@ your database using your [Tortoise](https://tortoise-orm.readthedocs.io/en/lates
 !!! warning
     To use the `TortoiseCRUDRouter`, [Tortoise ORM](https://pypi.org/project/tortoise-orm/) must be first installed.
 
+!!! warning
+    Tortoise ORM works on python versions 3.7 and higher, so if you want to use this backend, you would not be able to use `python 3.6`.
+
 ## Simple Example
 Below is an example assuming that you have already imported and created all the required models.
 
