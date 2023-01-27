@@ -12,6 +12,9 @@ your database using your [Tortoise](https://tortoise-orm.readthedocs.io/en/lates
 Below is an example assuming that you have already imported and created all the required models.
 
 ```python
+from fastapi_crudrouter.core.tortoise import TortoiseCRUDRouter
+from fastapi import FastAPI
+
 app = FastAPI()
 register_tortoise(app, config=TORTOISE_ORM)
 

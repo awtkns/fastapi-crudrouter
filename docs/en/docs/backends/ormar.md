@@ -7,6 +7,11 @@ Below is an example assuming that you have already imported and created all the 
 models.
 
 ```python
+from fastapi_crudrouter import OrmarCRUDRouter
+from fastapi import FastAPI
+
+app = FastAPI()
+
 router = OrmarCRUDRouter(
     schema=MyOrmarModel,
     create_schema=Optional[MyPydanticCreateModel],
