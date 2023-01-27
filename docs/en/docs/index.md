@@ -6,9 +6,15 @@
   <sub>A dynamic FastAPI router that automatically creates routes CRUD for your models</sub>
 </p>
 <p align="center">
-<img alt="Tests" src="https://github.com/awtkns/fastapi-crudrouter/workflows/Python%20application/badge.svg" />
-<img alt="Docs" src="https://github.com/awtkns/fastapi-crudrouter/workflows/docs/badge.svg" />
-<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/fastapi" />
+<img alt="Tests" src="https://img.shields.io/github/actions/workflow/status/awtkns/fastapi-crudrouter/.github/workflows/pytest.yml?color=%2334D058" />
+<img alt="Downloads" src="https://img.shields.io/pypi/dm/fastapi-crudrouter?color=%2334D058" />
+<a href="https://pypi.org/project/fastapi-crudrouter" target="_blank">
+    <img src="https://img.shields.io/pypi/v/fastapi-crudrouter?color=%2334D058&label=pypi%20package" alt="Package version">
+</a>
+<img alt="License" src="https://img.shields.io/github/license/awtkns/fastapi-crudrouter?color=%2334D058" />
+</p>
+<p align="center">
+<img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/fastapi-crudrouter">
 </p>
 
 ---
