@@ -7,6 +7,7 @@ theme:
   name: material
   features:
     - navigation.expand
+    - content.code.copy
   palette:
     - scheme: default
       primary: indigo
@@ -58,11 +59,9 @@ extra:
   - icon: fontawesome/brands/github-alt
     link: https://github.com/awtkns/fastapi-crudrouter
   - icon: fontawesome/brands/linkedin
-    link: https://www.linkedin.com/in/adam-watkins-yvr/
+    link: https://www.linkedin.com/in/awtkns/
   - icon: fontawesome/solid/globe
-    link: https://awtkns.com
-  - icon: fontawesome/brands/instagram
-    link: https://www.instagram.com/adamcwatkins/
+    link: https://github.com/awtkns
 
 extra_css:
   - css/main.css
