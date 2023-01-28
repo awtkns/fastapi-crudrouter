@@ -10,6 +10,11 @@ database dependency.
 Below is an example assuming that you have already imported and created all the required models.
 
 ```python
+from fastapi_crudrouter import SQLAlchemyCRUDRouter
+from fastapi import FastAPI
+
+app = FastAPI()
+
 router = SQLAlchemyCRUDRouter(
     schema=MyPydanticModel,
     create_schema=MyPydanticCreateModel, 
