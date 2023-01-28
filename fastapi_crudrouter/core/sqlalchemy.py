@@ -1,4 +1,5 @@
 from typing import Any, Callable, List, Type, Generator, Optional, Union
+from collections.abc import Sequence
 
 from fastapi import Depends, HTTPException
 
@@ -9,10 +10,12 @@ try:
     from sqlalchemy.orm import Session
     from sqlalchemy.ext.declarative import DeclarativeMeta as Model
     from sqlalchemy.exc import IntegrityError
+    from sqlalchemy import column
 except ImportError:
     Model = None
     Session = None
     IntegrityError = None
+    column = None
     sqlalchemy_installed = False
 else:
     sqlalchemy_installed = True
@@ -39,7 +42,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         update_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
-        **kwargs: Any
+        **kwargs: Any,
     ) -> None:
         assert (
             sqlalchemy_installed
@@ -63,7 +66,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             update_route=update_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
-            **kwargs
+            **kwargs,
         )
 
     def _get_all(self, *args: Any, **kwargs: Any) -> CALLABLE_LIST:
@@ -97,13 +100,49 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
 
         return route
 
+    def _get_orm_object(self, db: Session, orm_model: Model, model: Model) -> Any:
+        query = db.query(orm_model)
+        filter_items = 0
+        for key, val in model.dict().items():
+            if val:
+                filter_items += 1
+                query = query.filter(column(key) == val)
+        if filter_items == 0:
+            raise Exception("No attributes for filter found")
+        return query.one()
+
+    def _get_orm_object_or_value(self, db: Session, val: Any) -> Any:
+        """Return an inflated database object or a plain value.
+
+        If a `val` is a SqlModel type and has defined a Meta.orm model
+        attribute, lookup the object from the `db` and return it.
+        Otherwise, just return the `val`. If `val` is a sequence of
+        objects, return the sequence of objects from the db.
+        """
+        # we want to iterate through sequences but not strings
+        if not val or isinstance(val, str):
+            return val
+
+        if isinstance(val, Sequence):
+            return [self._get_orm_object_or_value(db, v) for v in val]
+        else:
+            if meta_class := getattr(val, "Meta", None):
+                if orm_model := getattr(meta_class, "orm_model", None):
+                    return self._get_orm_object(db, orm_model, val)
+        return val
+
     def _create(self, *args: Any, **kwargs: Any) -> CALLABLE:
         def route(
             model: self.create_schema,  # type: ignore
             db: Session = Depends(self.db_func),
         ) -> Model:
             try:
-                db_model: Model = self.db_model(**model.dict())
+                db_model: Model = self.db_model()
+
+                for key, val in model:
+                    if val:
+                        setattr(db_model, key, self._get_orm_object_or_value(db, val))
+
                 db.add(db_model)
                 db.commit()
                 db.refresh(db_model)
@@ -123,9 +162,12 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             try:
                 db_model: Model = self._get_one()(item_id, db)
 
-                for key, value in model.dict(exclude={self._pk}).items():
-                    if hasattr(db_model, key):
-                        setattr(db_model, key, value)
+                for key, val in model:
+                    if key != self._pk:
+                        if hasattr(db_model, key):
+                            setattr(
+                                db_model, key, self._get_orm_object_or_value(db, val)
+                            )
 
                 db.commit()
                 db.refresh(db_model)
