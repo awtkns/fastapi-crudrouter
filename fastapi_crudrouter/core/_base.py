@@ -3,12 +3,16 @@ from typing import Any, Callable, Generic, List, Optional, Type, Union
 
 from fastapi import APIRouter, HTTPException
 from fastapi.types import DecoratedCallable
+from pydantic import BaseModel
 
-from ._types import T, DEPENDENCIES
+from ._types import DEPENDENCIES, T
 from ._utils import pagination_factory, schema_factory
 
-NOT_FOUND = HTTPException(404, "Item not found")
 
+class NotFoundModel(BaseModel):
+    detail: str
+
+NOT_FOUND = HTTPException(404, "Item not found")
 
 class CRUDGenerator(Generic[T], APIRouter, ABC):
     schema: Type[T]
@@ -126,7 +130,10 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
     ) -> None:
         dependencies = [] if isinstance(dependencies, bool) else dependencies
         responses: Any = (
-            {err.status_code: {"detail": err.detail} for err in error_responses}
+            {
+                err.status_code: {"model": NotFoundModel}
+                for err in error_responses
+            }
             if error_responses
             else None
         )
