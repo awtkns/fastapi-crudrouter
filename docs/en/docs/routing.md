@@ -43,7 +43,7 @@ are shown below.
 
 As an example, the *delete all* route can be disabled by doing the following:
 ```python
-router = MemmoryCRUDRouter(schema=MyModel, deleta_all_route=False)
+router = MemoryCRUDRouter(schema=MyModel, delete_all_route=False)
 ```
 
 !!! tip "Custom Dependencies"

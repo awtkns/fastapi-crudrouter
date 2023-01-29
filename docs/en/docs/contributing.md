@@ -32,16 +32,16 @@ works and is bug free.
 
 #### Test requirements
 Tests require a postgres database for tests to run. The easiest way to accomplish this is with docker. This project offers
-a docker-compose file at tests/conf/dev.docker-compose.yaml. You can use this file with
+a docker-compose file at tests/conf/dev.docker-compose.yml. You can use this file with
 
-```console
-$ docker compose -f tests/conf/dev.docker-compose.yaml up -d
+```bash
+docker compose -f tests/conf/dev.docker-compose.yml up -d
 ```
 
 After testing you can tear down the running containers with
 
-```console
-$ docker compose -f tests/conf/dev.docker-compose.yaml down
+```bash
+docker compose -f tests/conf/dev.docker-compose.yml down
 ```
 
 #### Running tests
@@ -63,19 +63,19 @@ With `dev.requirements.txt` installed above you also install tools to lint, form
 
 To format the project run: 
 
-```
+```bash
 black fastapi_crudrouter tests
 ```
 
 To check styles, imports, annotations, pep8 etc. run:
 
-```
+```bash
 flake8 fastapi_crudrouter
 ```
 
 To check static types annotations run: 
 
-```
+```bash
 mypy fastapi_crudrouter tests
 ```
 
