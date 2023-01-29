@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ "3.6", "3.7", "3.8", "3.9", "3.10" ]
+        python-version: [ "3.7", "3.8", "3.9", "3.10", "3.11" ]
     services:
       postgres:
         image: postgres
@@ -33,13 +33,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install poetry
-      uses: snok/install-poetry@v1
-      with:
-        virtualenvs-create: true
-        virtualenvs-in-project: true
     - name: Install dependencies
-      run: poetry install --no-interaction --no-root
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r tests/dev.requirements.txt
     - name: Test with pytest
       env:
         POSTGRES_DB: test
@@ -48,5 +45,4 @@ jobs:
         POSTGRES_HOST: localhost
         POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
       run: |
-        source .venv/bin/activate
         pytest

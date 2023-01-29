@@ -12,6 +12,11 @@ Below is a minimal example assuming that you have already imported and created
 all the required models and database connections.
 
 ```python
+from fastapi_crudrouter import DatabasesCRUDRouter
+from fastapi import FastAPI
+
+app = FastAPI()
+
 router = DatabasesCRUDRouter(
     schema=MyPydanticModel, 
     table=my_table,
