@@ -12,12 +12,15 @@ gino-starlette==0.1.1
 asyncpg
 
 # Testing
-pytest
+openapi-spec-validator
+pytest; python_version != '3.9'
+pytest !=7.0.0; python_version == '3.9'
 pytest-virtualenv
 requests
 asynctest
 psycopg2
 pyodbc
+schemathesis
 
 # Linting
 flake8
