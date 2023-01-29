@@ -22,6 +22,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         update_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
+        item_id_parameter_name: Optional[str] = "item_id",
         **kwargs: Any
     ) -> None:
         super().__init__(
@@ -37,6 +38,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
             update_route=update_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
+            item_id_parameter_name=item_id_parameter_name,
             **kwargs
         )
 

@@ -68,3 +68,13 @@ def string_pk_client(request):
 )
 def integrity_errors_client(request):
     yield from yield_test_client(request.param(), request.param)
+
+
+@pytest.fixture(
+    params=[
+        sqlalchemy_implementation_custom_item_id,
+    ],
+    scope="function",
+)
+def custom_item_id_client(request):
+    yield from yield_test_client(request.param(), request.param)

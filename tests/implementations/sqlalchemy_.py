@@ -168,3 +168,43 @@ def sqlalchemy_implementation_integrity_errors():
     )
 
     return app
+
+
+def sqlalchemy_implementation_custom_item_id():
+    app, engine, Base, session = _setup_base_app()
+
+    class PotatoModel(Base):
+        __tablename__ = "potatoes"
+        id = Column(Integer, primary_key=True, index=True)
+        thickness = Column(Float)
+        mass = Column(Float)
+        color = Column(String, unique=True)
+        type = Column(String)
+
+    class CarrotModel(Base):
+        __tablename__ = "carrots"
+        id = Column(Integer, primary_key=True, index=True)
+        length = Column(Float)
+        color = Column(String)
+
+    Base.metadata.create_all(bind=engine)
+    app.include_router(
+        SQLAlchemyCRUDRouter(
+            schema=Potato,
+            db_model=PotatoModel,
+            db=session,
+            prefix="potato",
+            item_id_parameter_name="potato_id",
+        )
+    )
+    app.include_router(
+        SQLAlchemyCRUDRouter(
+            schema=Carrot,
+            db_model=CarrotModel,
+            db=session,
+            prefix="carrot",
+            item_id_parameter_name="carrot_id"
+        )
+    )
+
+    return app

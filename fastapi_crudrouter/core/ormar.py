@@ -42,6 +42,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
         update_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
+        item_id_parameter_name: Optional[str] = "item_id",
         **kwargs: Any
     ) -> None:
         assert ormar_installed, "Ormar must be installed to use the OrmarCRUDRouter."
@@ -62,6 +63,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             update_route=update_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
+            item_id_parameter_name=item_id_parameter_name,
             **kwargs
         )
 
