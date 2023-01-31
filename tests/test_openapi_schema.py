@@ -1,12 +1,13 @@
 from pytest import mark
 
-from tests import CUSTOM_TAGS
+from tests import CUSTOM_TAGS, POTATO_TAGS
 
-POTATO_TAGS = ["Potato"]
 PATHS = ["/potato", "/carrot"]
 PATH_TAGS = {
     "/potato": POTATO_TAGS,
     "/potato/{item_id}": POTATO_TAGS,
+    "/defaultfactorypotato": POTATO_TAGS,
+    "/defaultfactorypotato/{item_id}": POTATO_TAGS,
     "/carrot": CUSTOM_TAGS,
     "/carrot/{item_id}": CUSTOM_TAGS,
 }

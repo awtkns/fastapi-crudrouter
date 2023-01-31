@@ -10,6 +10,8 @@ from tests import (
     CarrotCreate,
     CarrotUpdate,
     CustomPotato,
+    DefaultFactoryPotato,
+    POTATO_TAGS,
     Potato,
     PotatoType,
     config,
@@ -47,6 +49,12 @@ def gino_implementation(**kwargs):
         color = db.Column(db.String)
         type = db.Column(db.String)
 
+    class DefaultFactoryPotatoModel(db.Model):
+        __tablename__ = "defaultfactorypotatoes"
+        id = db.Column(db.String, primary_key=True, index=True)
+        mass = db.Column(db.Float)
+        color = db.Column(db.String)
+
     class CarrotModel(db.Model):
         __tablename__ = "carrots"
         id = db.Column(db.Integer, primary_key=True, index=True)
@@ -61,6 +69,14 @@ def gino_implementation(**kwargs):
             db_model=PotatoModel,
             db=db,
             prefix="potato",
+            paginate=PAGINATION_SIZE,
+        ),
+        dict(
+            schema=DefaultFactoryPotato,
+            db_model=DefaultFactoryPotatoModel,
+            db=db,
+            prefix="defaultfactorypotato",
+            tags=POTATO_TAGS,
             paginate=PAGINATION_SIZE,
         ),
         dict(

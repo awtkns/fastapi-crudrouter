@@ -4,6 +4,7 @@ from fastapi import Depends, HTTPException
 
 from . import CRUDGenerator, NOT_FOUND, _utils
 from ._types import DEPENDENCIES, PAGINATION, PYDANTIC_SCHEMA as SCHEMA
+from ._utils import create_schema_default_factory
 
 try:
     from sqlalchemy.orm import Session
@@ -102,6 +103,12 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             model: self.create_schema,  # type: ignore
             db: Session = Depends(self.db_func),
         ) -> Model:
+            model, _ = create_schema_default_factory(
+                schema_cls=self.schema,
+                create_schema_instance=model,
+                pk_field_name=self._pk,
+            )
+
             try:
                 db_model: Model = self.db_model(**model.dict())
                 db.add(db_model)

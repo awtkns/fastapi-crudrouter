@@ -11,7 +11,9 @@ from tests import (
     CustomPotato,
     PAGINATION_SIZE,
     Potato,
+    DefaultFactoryPotato,
     PotatoType,
+    POTATO_TAGS,
     CUSTOM_TAGS,
     config,
 )
@@ -47,6 +49,13 @@ def databases_implementation(db_uri: str):
         Column("color", String),
         Column("type", String),
     )
+    defaultfactorypotatoes = Table(
+        "defaultfactorypotatoes",
+        metadata,
+        Column("id", String, primary_key=True),
+        Column("color", String),
+        Column("mass", Float),
+    )
     carrots = Table(
         "carrots",
         metadata,
@@ -72,6 +81,14 @@ def databases_implementation(db_uri: str):
             table=potatoes,
             schema=Potato,
             prefix="potato",
+            paginate=PAGINATION_SIZE,
+        ),
+        dict(
+            database=database,
+            table=defaultfactorypotatoes,
+            schema=DefaultFactoryPotato,
+            prefix="defaultfactorypotato",
+            tags=POTATO_TAGS,
             paginate=PAGINATION_SIZE,
         ),
         dict(
