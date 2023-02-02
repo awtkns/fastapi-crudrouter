@@ -61,6 +61,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 response_model=Optional[List[self.schema]],  # type: ignore
                 summary="Get All",
                 dependencies=get_all_route,
+                name=f"get_all_{prefix.replace('/','').lower()}",
             )
 
         if create_route:
@@ -71,6 +72,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 response_model=self.schema,
                 summary="Create One",
                 dependencies=create_route,
+                name=f"create_one_{prefix.replace('/','').lower()}",
             )
 
         if delete_all_route:
@@ -81,6 +83,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 response_model=Optional[List[self.schema]],  # type: ignore
                 summary="Delete All",
                 dependencies=delete_all_route,
+                name=f"delete_all_{prefix.replace('/','').lower()}",
             )
 
         if get_one_route:
@@ -92,6 +95,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 summary="Get One",
                 dependencies=get_one_route,
                 error_responses=[NOT_FOUND],
+                 name=f"get_one_{prefix.replace('/','').lower()}",
             )
 
         if update_route:
@@ -103,6 +107,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 summary="Update One",
                 dependencies=update_route,
                 error_responses=[NOT_FOUND],
+                name=f"update_one_{prefix.replace('/','').lower()}",
             )
 
         if delete_one_route:
@@ -114,6 +119,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 summary="Delete One",
                 dependencies=delete_one_route,
                 error_responses=[NOT_FOUND],
+                name=f"delete_one_{prefix.replace('/','').lower()}",
             )
 
     def _add_api_route(
