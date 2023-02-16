@@ -39,6 +39,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
         get_one_route: Union[bool, DEPENDENCIES] = True,
         create_route: Union[bool, DEPENDENCIES] = True,
         update_route: Union[bool, DEPENDENCIES] = True,
+        patch_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any
@@ -61,6 +62,7 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
             get_one_route=get_one_route,
             create_route=create_route,
             update_route=update_route,
+            patch_route=patch_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
             **kwargs
@@ -114,6 +116,23 @@ class GinoCRUDRouter(CRUDGenerator[SCHEMA]):
                     model = model.dict(exclude={self._pk})
                     await db_model.update(**model).apply()
 
+                return db_model
+            except (IntegrityError, UniqueViolationError) as e:
+                self._raise(e)
+
+        return route
+
+    def _patch(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        async def route(
+            item_id: self._pk_type,  # type: ignore
+            model: self.patch_schema,  # type: ignore
+        ) -> Model:
+            try:
+                db_model: Model = await self._get_one()(item_id)
+                async with self.db.transaction():
+                    model = model.dict(exclude={self._pk}, exclude_unset=True)
+                    await db_model.update(**model).apply()
+                    db_model: Model = await self._get_one()(item_id)
                 return db_model
             except (IntegrityError, UniqueViolationError) as e:
                 self._raise(e)

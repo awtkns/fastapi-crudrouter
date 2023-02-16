@@ -37,6 +37,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         get_one_route: Union[bool, DEPENDENCIES] = True,
         create_route: Union[bool, DEPENDENCIES] = True,
         update_route: Union[bool, DEPENDENCIES] = True,
+        patch_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any
@@ -61,6 +62,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
             get_one_route=get_one_route,
             create_route=create_route,
             update_route=update_route,
+            patch_route=patch_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
             **kwargs
@@ -124,6 +126,31 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
                 db_model: Model = self._get_one()(item_id, db)
 
                 for key, value in model.dict(exclude={self._pk}).items():
+                    if hasattr(db_model, key):
+                        setattr(db_model, key, value)
+
+                db.commit()
+                db.refresh(db_model)
+
+                return db_model
+            except IntegrityError as e:
+                db.rollback()
+                self._raise(e)
+
+        return route
+
+    def _patch(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        def route(
+            item_id: self._pk_type,  # type: ignore
+            model: self.patch_schema,  # type: ignore
+            db: Session = Depends(self.db_func),
+        ) -> Model:
+            try:
+                db_model: Model = self._get_one()(item_id, db)
+
+                for key, value in model.dict(
+                    exclude={self._pk}, exclude_unset=True
+                ).items():
                     if hasattr(db_model, key):
                         setattr(db_model, key, value)
 

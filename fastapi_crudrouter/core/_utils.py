@@ -2,7 +2,6 @@ from typing import Optional, Type, Any
 
 from fastapi import Depends, HTTPException
 from pydantic import create_model
-
 from ._types import T, PAGINATION, PYDANTIC_SCHEMA
 
 
@@ -10,6 +9,20 @@ class AttrDict(dict):  # type: ignore
     def __init__(self, *args, **kwargs) -> None:  # type: ignore
         super(AttrDict, self).__init__(*args, **kwargs)
         self.__dict__ = self
+
+
+# TODO this lets the patch request come with arbitrary number of fields
+# Need to validate the fields that are present only in the schema
+def make_optional(baseclass:Type[T]) -> Type[T]:
+    # Extracts the fields and validators from the baseclass and make fields optional
+    fields = baseclass.__fields__
+    validators = {"__validators__": baseclass.__validators__}
+    optional_fields = {
+        key: (Optional[item.type_], None) for key, item in fields.items()
+    }
+    return create_model(
+        f"{baseclass.__name__}Optional", **optional_fields, __validators__=validators
+    )
 
 
 def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:

@@ -54,6 +54,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
         get_one_route: Union[bool, DEPENDENCIES] = True,
         create_route: Union[bool, DEPENDENCIES] = True,
         update_route: Union[bool, DEPENDENCIES] = True,
+        patch_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any
@@ -79,6 +80,7 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
             get_one_route=get_one_route,
             create_route=create_route,
             update_route=update_route,
+            patch_route=patch_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
             **kwargs
@@ -133,6 +135,23 @@ class DatabasesCRUDRouter(CRUDGenerator[PYDANTIC_SCHEMA]):
             try:
                 await self.db.fetch_one(
                     query=query, values=schema.dict(exclude={self._pk})
+                )
+                return await self._get_one()(item_id)
+            except Exception as e:
+                raise NOT_FOUND from e
+
+        return route
+
+    def _patch(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        async def route(
+            item_id: self._pk_type, schema: self.patch_schema  # type: ignore
+        ) -> Model:
+            query = self.table.update().where(self._pk_col == item_id)
+
+            try:
+                await self.db.fetch_one(
+                    query=query,
+                    values=schema.dict(exclude={self._pk}, exclude_unset=True),
                 )
                 return await self._get_one()(item_id)
             except Exception as e:

@@ -40,6 +40,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
         get_one_route: Union[bool, DEPENDENCIES] = True,
         create_route: Union[bool, DEPENDENCIES] = True,
         update_route: Union[bool, DEPENDENCIES] = True,
+        patch_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any
@@ -60,6 +61,7 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
             get_one_route=get_one_route,
             create_route=create_route,
             update_route=update_route,
+            patch_route=patch_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
             **kwargs
@@ -108,6 +110,22 @@ class OrmarCRUDRouter(CRUDGenerator[Model]):
         async def route(
             item_id: self._pk_type,  # type: ignore
             model: self.update_schema,  # type: ignore
+        ) -> Model:
+            filter_ = {self._pk: item_id}
+            try:
+                await self.schema.objects.filter(_exclude=False, **filter_).update(
+                    **model.dict(exclude_unset=True)
+                )
+            except self._INTEGRITY_ERROR as e:
+                self._raise(e)
+            return await self._get_one()(item_id)
+
+        return route
+
+    def _patch(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        async def route(
+            item_id: self._pk_type,  # type: ignore
+            model: self.patch_schema,  # type: ignore
         ) -> Model:
             filter_ = {self._pk: item_id}
             try:

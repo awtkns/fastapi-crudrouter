@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from fastapi.types import DecoratedCallable
 
 from ._types import T, DEPENDENCIES
-from ._utils import pagination_factory, schema_factory
+from ._utils import pagination_factory, schema_factory, make_optional
 
 NOT_FOUND = HTTPException(404, "Item not found")
 
@@ -28,6 +28,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
         get_one_route: Union[bool, DEPENDENCIES] = True,
         create_route: Union[bool, DEPENDENCIES] = True,
         update_route: Union[bool, DEPENDENCIES] = True,
+        patch_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any,
@@ -45,6 +46,13 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
             update_schema
             if update_schema
             else schema_factory(self.schema, pk_field_name=self._pk, name="Update")
+        )
+        self.patch_schema = (
+            make_optional(update_schema)
+            if update_schema
+            else make_optional(
+                schema_factory(self.schema, pk_field_name=self._pk, name="Patch")
+            )
         )
 
         prefix = str(prefix if prefix else self.schema.__name__).lower()
@@ -105,6 +113,17 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 error_responses=[NOT_FOUND],
             )
 
+        if patch_route:
+            self._add_api_route(
+                "/{item_id}",
+                self._patch(),
+                methods=["PATCH"],
+                response_model=self.schema,
+                summary="Partiall Update One",
+                dependencies=patch_route,
+                error_responses=[NOT_FOUND],
+            )
+
         if delete_one_route:
             self._add_api_route(
                 "/{item_id}",
@@ -161,6 +180,12 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
         self.remove_api_route(path, ["PUT"])
         return super().put(path, *args, **kwargs)
 
+    def patch(
+        self, path: str, *args: Any, **kwargs: Any
+    ) -> Callable[[DecoratedCallable], DecoratedCallable]:
+        self.remove_api_route(path, ["PATCH"])
+        return super().put(path, *args, **kwargs)
+
     def delete(
         self, path: str, *args: Any, **kwargs: Any
     ) -> Callable[[DecoratedCallable], DecoratedCallable]:
@@ -194,6 +219,10 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
         raise NotImplementedError
 
     @abstractmethod
+    def _patch(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
+        raise NotImplementedError
+
+    @abstractmethod
     def _delete_one(self, *args: Any, **kwargs: Any) -> Callable[..., Any]:
         raise NotImplementedError
 
@@ -206,4 +235,12 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
 
     @staticmethod
     def get_routes() -> List[str]:
-        return ["get_all", "create", "delete_all", "get_one", "update", "delete_one"]
+        return [
+            "get_all",
+            "create",
+            "delete_all",
+            "get_one",
+            "update",
+            "patch",
+            "delete_one",
+        ]

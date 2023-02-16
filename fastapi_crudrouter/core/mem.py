@@ -20,6 +20,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
         get_one_route: Union[bool, DEPENDENCIES] = True,
         create_route: Union[bool, DEPENDENCIES] = True,
         update_route: Union[bool, DEPENDENCIES] = True,
+        patch_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
         **kwargs: Any
@@ -35,6 +36,7 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
             get_one_route=get_one_route,
             create_route=create_route,
             update_route=update_route,
+            patch_route=patch_route,
             delete_one_route=delete_one_route,
             delete_all_route=delete_all_route,
             **kwargs
@@ -83,6 +85,20 @@ class MemoryCRUDRouter(CRUDGenerator[SCHEMA]):
                     self.models[ind] = self.schema(
                         **model.dict(), id=model_.id  # type: ignore
                     )
+                    return self.models[ind]
+
+            raise NOT_FOUND
+
+        return route
+
+    def _patch(self, *args: Any, **kwargs: Any) -> CALLABLE:
+        def route(item_id: int, model: self.patch_schema) -> SCHEMA:  # type: ignore
+            for ind, model_ in enumerate(self.models):
+                if model_.id == item_id:  # type: ignore
+                    stored_item = model_.dict()
+                    updated_item = model.dict(exclude_unset=True)
+                    stored_item.update(updated_item)
+                    self.models[ind] = self.schema(**stored_item)
                     return self.models[ind]
 
             raise NOT_FOUND
