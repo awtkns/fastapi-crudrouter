@@ -1,3 +1,31 @@
+Release Notes
+===
+
+## [v0.8.5 - Typing](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.8.5) { .releases } 
+2022-01-27
+### 🎉 Highlights
+With the release of v0.8.5 fastapi-crudrouter now officially supports both **Python 3.10** and **typed python**. This release also includes significant improvements to the documentation, test suite, and developer experience. 
+
+Keep an eye of for the next release which will contain support for **async SQLAlchemy** ([#122](https://github.com/awtkns/fastapi-crudrouter/pull/122)). 
+
+Big thanks to all contributors that made this possible!
+
+### ✨ Features
+- Typed python support [#132](https://github.com/awtkns/fastapi-crudrouter/pull/132) [#111](https://github.com/awtkns/fastapi-crudrouter/pull/111)
+- Python 3.10 support [#114](https://github.com/awtkns/fastapi-crudrouter/pull/114)
+- Test suite now runs against multiple databases [#86](https://github.com/awtkns/fastapi-crudrouter/pull/86)
+- Documentation improvements [#79](https://github.com/awtkns/fastapi-crudrouter/pull/79) [#91](https://github.com/awtkns/fastapi-crudrouter/pull/91) [#117](https://github.com/awtkns/fastapi-crudrouter/pull/117) [#123](https://github.com/awtkns/fastapi-crudrouter/pull/123) [#124](https://github.com/awtkns/fastapi-crudrouter/pull/124) [#125](https://github.com/awtkns/fastapi-crudrouter/pull/125) [@andrewthetechie](https://github.com/andrewthetechie)
+- More informative exceptions [#94](https://github.com/awtkns/fastapi-crudrouter/pull/94) [#137](https://github.com/awtkns/fastapi-crudrouter/pull/137)
+- General test suite improvements [#96](https://github.com/awtkns/fastapi-crudrouter/pull/96) [#97](https://github.com/awtkns/fastapi-crudrouter/pull/97)
+
+### 🐛 Bug Fixes
+- OrderBy not working correctly with Microsoft SQL Server [#88](https://github.com/awtkns/fastapi-crudrouter/pull/88)
+- 404 response not documented in OpenAPI spec [#104](https://github.com/awtkns/fastapi-crudrouter/pull/104) [@sondrelg](https://github.com/sondrelg)
+- DatabasesCRUDRouter not functioning for inserts and deletes with AsyncPG [#98](https://github.com/awtkns/fastapi-crudrouter/pull/98)
+
+**Full Changelog**: [`v0.8.0...v0.8.5`](https://github.com/awtkns/fastapi-crudrouter/compare/v0.8.0...v0.8.5)
+
+---
 
 ## [v0.8.0 - Gino Backend](https://github.com/awtkns/fastapi-crudrouter/releases/tag/v0.8.0) { .releases } 
 2021-07-06

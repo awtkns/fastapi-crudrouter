@@ -3,11 +3,11 @@ contributing, reading the development guidelines below may help you in the proce
 
 ## Github
 
-### Issues
+#### Issues
 Please create an issue to report a bug, request a feature or to simply ask a question.
 
 
-### Pull Requests
+#### Pull Requests
 Unless the pull request is a simple bugfix, please try to create an issue before starting on the implementation of your pull request.
 This ensures that the potential feature is in alignment with CRUDRouter's goals moving forward. This also allows for feedback
 on the feature and potential help on where to start implementation wise.
@@ -32,16 +32,16 @@ works and is bug free.
 
 #### Test requirements
 Tests require a postgres database for tests to run. The easiest way to accomplish this is with docker. This project offers
-a docker-compose file at tests/conf/dev.docker-compose.yaml. You can use this file with
+a docker-compose file at tests/conf/dev.docker-compose.yml. You can use this file with
 
-```console
-$ docker compose -f tests/conf/dev.docker-compose.yaml up -d
+```bash
+docker compose -f tests/conf/dev.docker-compose.yml up -d
 ```
 
 After testing you can tear down the running containers with
 
-```console
-$ docker compose -f tests/conf/dev.docker-compose.yaml down
+```bash
+docker compose -f tests/conf/dev.docker-compose.yml down
 ```
 
 #### Running tests
@@ -63,19 +63,19 @@ With `dev.requirements.txt` installed above you also install tools to lint, form
 
 To format the project run: 
 
-```
+```bash
 black fastapi_crudrouter tests
 ```
 
 To check styles, imports, annotations, pep8 etc. run:
 
-```
+```bash
 flake8 fastapi_crudrouter
 ```
 
 To check static types annotations run: 
 
-```
+```bash
 mypy fastapi_crudrouter tests
 ```
 
@@ -93,9 +93,3 @@ $ mkdocs serve
 ```
 
 </div>
-
-
-### Tidbits on Implementation
-
-
-

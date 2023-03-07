@@ -1,15 +1,15 @@
 fastapi
-async-generator; python_version=='3.6'
-async-exit-stack; python_version=='3.6'
+httpx
 
 # Backends
 ormar
-tortoise-orm
+tortoise-orm==0.18.1
 databases
 aiosqlite
-sqlalchemy==1.3.22
+sqlalchemy<1.4.0
 sqlalchemy_utils==0.36.8
 gino-starlette==0.1.1
+asyncpg
 
 # Testing
 pytest
