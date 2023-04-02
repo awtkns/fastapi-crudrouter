@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Callable, Generic, List, Optional, Type, Union
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from fastapi.types import DecoratedCallable
 
 from ._types import T, DEPENDENCIES
@@ -30,6 +30,11 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
         update_route: Union[bool, DEPENDENCIES] = True,
         delete_one_route: Union[bool, DEPENDENCIES] = True,
         delete_all_route: Union[bool, DEPENDENCIES] = True,
+        create_status_code: Optional[int] = status.HTTP_201_CREATED,
+        get_all_status_code: Optional[int] = status.HTTP_200_OK,
+        get_one_status_code: Optional[int] = status.HTTP_200_OK,
+        update_status_code: Optional[int] = status.HTTP_200_OK,
+        delete_status_code: Optional[int] = status.HTTP_200_OK,
         **kwargs: Any,
     ) -> None:
 
@@ -61,6 +66,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 response_model=Optional[List[self.schema]],  # type: ignore
                 summary="Get All",
                 dependencies=get_all_route,
+                status_code=get_all_status_code,
             )
 
         if create_route:
@@ -68,9 +74,10 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 "",
                 self._create(),
                 methods=["POST"],
-                response_model=self.schema,
+                response_model=None if create_status_code == 204 else self.schema,
                 summary="Create One",
                 dependencies=create_route,
+                status_code=create_status_code,
             )
 
         if delete_all_route:
@@ -92,6 +99,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 summary="Get One",
                 dependencies=get_one_route,
                 error_responses=[NOT_FOUND],
+                status_code=get_one_status_code,
             )
 
         if update_route:
@@ -99,10 +107,11 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 "/{item_id}",
                 self._update(),
                 methods=["PUT"],
-                response_model=self.schema,
+                response_model=None if update_status_code == 204 else self.schema,
                 summary="Update One",
                 dependencies=update_route,
                 error_responses=[NOT_FOUND],
+                status_code=update_status_code,
             )
 
         if delete_one_route:
@@ -110,10 +119,11 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
                 "/{item_id}",
                 self._delete_one(),
                 methods=["DELETE"],
-                response_model=self.schema,
+                response_model=None if delete_status_code == 204 else self.schema,
                 summary="Delete One",
                 dependencies=delete_one_route,
                 error_responses=[NOT_FOUND],
+                status_code=delete_status_code,
             )
 
     def _add_api_route(
@@ -122,6 +132,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
         endpoint: Callable[..., Any],
         dependencies: Union[bool, DEPENDENCIES],
         error_responses: Optional[List[HTTPException]] = None,
+        status_code: Optional[int] = 200,
         **kwargs: Any,
     ) -> None:
         dependencies = [] if isinstance(dependencies, bool) else dependencies
@@ -132,7 +143,7 @@ class CRUDGenerator(Generic[T], APIRouter, ABC):
         )
 
         super().add_api_route(
-            path, endpoint, dependencies=dependencies, responses=responses, **kwargs
+            path, endpoint, dependencies=dependencies, responses=responses, status_code=status_code, **kwargs
         )
 
     def api_route(
