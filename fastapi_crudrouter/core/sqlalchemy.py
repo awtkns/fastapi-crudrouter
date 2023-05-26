@@ -88,7 +88,7 @@ class SQLAlchemyCRUDRouter(CRUDGenerator[SCHEMA]):
         def route(
             item_id: self._pk_type, db: Session = Depends(self.db_func)  # type: ignore
         ) -> Model:
-            model: Model = db.query(self.db_model).get(item_id)
+            model: Model = db.get(self.db_model, {"id": item_id})
 
             if model:
                 return model
