@@ -26,11 +26,23 @@ def schema_factory(
     Is used to create a CreateSchema which does not contain pk
     """
 
-    fields = {
-        f.name: (f.type_, ...)
-        for f in schema_cls.__fields__.values()
-        if f.name != pk_field_name
-    }
+    # for handle pydantic 2.x migration
+    from pydantic import __version__ as pydantic_version
+
+    if int(pydantic_version.split(".")[0]) >= 2:
+        # pydantic 2.x
+        fields = {
+            fk: (fv.annotation, ...)
+            for fk, fv in schema_cls.model_fields.items()
+            if fk != pk_field_name
+        }
+    else:
+        # pydantic 1.x
+        fields = {
+            f.name: (f.type_, ...)
+            for f in schema_cls.__fields__.values()
+            if f.name != pk_field_name
+        }
 
     name = schema_cls.__name__ + name
     schema: Type[T] = create_model(__model_name=name, **fields)  # type: ignore
