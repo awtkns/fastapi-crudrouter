@@ -14,7 +14,10 @@ class AttrDict(dict):  # type: ignore
 
 def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
     try:
-        return schema.__fields__[pk_field].type_
+        if int(pydantic_version.split(".")[0]) >= 2:
+            return schema.model_fields[pk_field].annotation
+        else:
+            return schema.__fields__[pk_field].type_
     except KeyError:
         return int
 
