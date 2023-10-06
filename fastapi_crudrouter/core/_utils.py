@@ -1,7 +1,7 @@
 from typing import Optional, Type, Any
 
 from fastapi import Depends, HTTPException
-from pydantic import create_model
+from pydantic import create_model, __version__ as pydantic_version
 
 from ._types import T, PAGINATION, PYDANTIC_SCHEMA
 
@@ -14,6 +14,7 @@ class AttrDict(dict):  # type: ignore
 
 def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
     try:
+        # for handle pydantic 2.x migration
         if int(pydantic_version.split(".")[0]) >= 2:
             return schema.model_fields[pk_field].annotation
         else:
@@ -30,8 +31,6 @@ def schema_factory(
     """
 
     # for handle pydantic 2.x migration
-    from pydantic import __version__ as pydantic_version
-
     if int(pydantic_version.split(".")[0]) >= 2:
         # pydantic 2.x
         fields = {
@@ -90,3 +89,4 @@ def pagination_factory(max_limit: Optional[int] = None) -> Any:
         return {"skip": skip, "limit": limit}
 
     return Depends(pagination)
+
