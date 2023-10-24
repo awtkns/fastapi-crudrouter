@@ -14,6 +14,9 @@ class AttrDict(dict):  # type: ignore
 
 def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
     try:
+        # for handle pydantic 2.x migration
+        from pydantic import __version__ as pydantic_version
+        
         if int(pydantic_version.split(".")[0]) >= 2:
             return schema.model_fields[pk_field].annotation
         else:
