@@ -2,9 +2,11 @@ from typing import Optional, Type, Any
 
 from fastapi import Depends, HTTPException
 from pydantic import create_model
+from pydantic import __version__ as pydantic_version
 
 from ._types import T, PAGINATION, PYDANTIC_SCHEMA
 
+PYDANTIC_MAJOR_VERSION = int(pydantic_version.split(".", maxsplit=1)[0])
 
 class AttrDict(dict):  # type: ignore
     def __init__(self, *args, **kwargs) -> None:  # type: ignore
@@ -14,10 +16,7 @@ class AttrDict(dict):  # type: ignore
 
 def get_pk_type(schema: Type[PYDANTIC_SCHEMA], pk_field: str) -> Any:
     try:
-        # for handle pydantic 2.x migration
-        from pydantic import __version__ as pydantic_version
-        
-        if int(pydantic_version.split(".")[0]) >= 2:
+        if PYDANTIC_MAJOR_VERSION >= 2:
             return schema.model_fields[pk_field].annotation
         else:
             return schema.__fields__[pk_field].type_
@@ -32,10 +31,7 @@ def schema_factory(
     Is used to create a CreateSchema which does not contain pk
     """
 
-    # for handle pydantic 2.x migration
-    from pydantic import __version__ as pydantic_version
-
-    if int(pydantic_version.split(".")[0]) >= 2:
+    if PYDANTIC_MAJOR_VERSION >= 2:
         # pydantic 2.x
         fields = {
             fk: (fv.annotation, ...)
